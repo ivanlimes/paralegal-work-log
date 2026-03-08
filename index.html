@@ -1,0 +1,4478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paralegal Work Log</title>
+  <style>
+    :root {
+      --space-4: 4px;
+      --space-8: 8px;
+      --space-12: 12px;
+      --space-16: 16px;
+      --space-20: 20px;
+      --space-24: 24px;
+      --space-32: 32px;
+      --radius-sm: 10px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-pill: 999px;
+      --status-strip: 4px;
+      --font-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --text-xs: 12px;
+      --text-sm: 14px;
+      --text-md: 18px;
+      --text-lg: 24px;
+      --text-xl: 32px;
+      --text-2xl: 40px;
+      --text-timer: 56px;
+      --lh-xs: 16px;
+      --lh-sm: 20px;
+      --lh-md: 24px;
+      --lh-lg: 30px;
+      --lh-xl: 36px;
+      --lh-2xl: 46px;
+      --lh-timer: 60px;
+      --bg-app: #F4F1F6;
+      --bg-surface: #FCFAFD;
+      --bg-surface-2: #F6F1F8;
+      --bg-surface-3: #ECE3F1;
+      --bg-elevated: #FFFFFF;
+      --border-subtle: #DDD2E5;
+      --border-default: #CDBDD9;
+      --border-strong: #B39BC4;
+      --text-primary: #241C2C;
+      --text-secondary: #5E5368;
+      --text-tertiary: #85798E;
+      --text-on-accent: #FFFFFF;
+      --accent-50: #F4EEF8;
+      --accent-100: #E8DBF1;
+      --accent-200: #D8C4E7;
+      --accent-300: #C2A7D9;
+      --accent-400: #A67FC3;
+      --accent-500: #8B63A8;
+      --accent-600: #75518E;
+      --accent-700: #5E3F73;
+      --success-bg: #E8F1E4;
+      --success-border: #AFC89E;
+      --success-text: #47633E;
+      --warning-bg: #F9F0CF;
+      --warning-border: #DABB6B;
+      --warning-text: #7A6217;
+      --danger-bg: #F8E6E6;
+      --danger-border: #D8A0A0;
+      --danger-text: #8E4343;
+      --info-bg: #E7EEF6;
+      --info-border: #AFC2D8;
+      --info-text: #47627C;
+      --focus-ring: 0 0 0 2px rgba(139, 99, 168, 0.18);
+      --ticket-width: 10px;
+      --card-gap: 12px;
+    }
+
+    body.dark,
+    body[data-theme="dark"] {
+      --bg-app: #1F232B;
+      --bg-surface: #2A303A;
+      --bg-surface-2: #323947;
+      --bg-surface-3: #3A4354;
+      --bg-elevated: #353D4A;
+      --border-subtle: #424B5C;
+      --border-default: #566173;
+      --border-strong: #738099;
+      --text-primary: #F3F5F8;
+      --text-secondary: #CBD2DD;
+      --text-tertiary: #9CA8BA;
+      --text-on-accent: #FFFFFF;
+      --accent-50: #2F2740;
+      --accent-100: #413056;
+      --accent-200: #5B4175;
+      --accent-300: #76549A;
+      --accent-400: #8E6AB4;
+      --accent-500: #A884CD;
+      --accent-600: #C3A6E2;
+      --accent-700: #D7C1EE;
+      --success-bg: #2E3A2C;
+      --success-border: #607C5A;
+      --success-text: #C9DFC1;
+      --warning-bg: #453A22;
+      --warning-border: #8F7340;
+      --warning-text: #F0D89B;
+      --danger-bg: #472D2D;
+      --danger-border: #936161;
+      --danger-text: #F1C4C4;
+      --info-bg: #2B3947;
+      --info-border: #5A748E;
+      --info-text: #C3D7EB;
+      --focus-ring: 0 0 0 2px rgba(168, 132, 205, 0.22);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font-ui);
+      background: var(--bg-app);
+      color: var(--text-primary);
+      font-size: var(--text-sm);
+      line-height: var(--lh-sm);
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    input, select, textarea {
+      color: var(--text-primary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+    }
+    :focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+    .app-shell {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 24px 28px 40px;
+    }
+    .app-stack { display: grid; gap: 24px; }
+    .app-grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+    .col-8 { grid-column: span 8; }
+    .col-4 { grid-column: span 4; }
+    .grid-4, .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .stack-4 { display: grid; gap: 4px; }
+    .stack-8 { display: grid; gap: 8px; }
+    .stack-12, .list { display: grid; gap: 12px; }
+    .stack-16 { display: grid; gap: 16px; }
+    .stack-20 { display: grid; gap: 20px; }
+    .stack-24 { display: grid; gap: 24px; }
+
+    .header-bar { align-items: stretch; }
+    .header-brand {
+      min-height: 112px;
+      padding: 20px 24px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      display: grid;
+      align-content: center;
+      gap: 8px;
+    }
+    .header-title, .hero h1 {
+      margin: 0;
+      font-size: var(--text-2xl);
+      line-height: var(--lh-2xl);
+      font-weight: 700;
+    }
+    .header-subtitle, .hero p {
+      margin: 0;
+      max-width: 780px;
+      color: var(--text-secondary);
+    }
+    .toolbar, .header-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-tabs, .tabs {
+      display: flex;
+      gap: 8px;
+      min-height: 48px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .tab.active, .tab.is-active {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .panel, .card, .step-card, .modal-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+    }
+    .panel-entry { min-height: 0; padding: 24px; }
+    .panel-header, .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .panel-title, .card h2, .card h3, .section-head h2, .section-head h3, .modal-card h2 {
+      margin: 0;
+      font-size: var(--text-md);
+      line-height: var(--lh-md);
+      font-weight: 650;
+      color: var(--text-primary);
+    }
+    .panel-subtitle, .subtle, .helper-note, .footer-note, .muted {
+      color: var(--text-secondary);
+    }
+    .helper-note, .instruction-callout, .timer-footnote {
+      margin-top: 16px;
+      padding: 12px 14px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .entry-form, .form-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .field {
+      display: grid;
+      gap: 6px;
+      grid-column: span 6;
+    }
+    .field.full, .span-12 { grid-column: span 12; }
+    .span-6 { grid-column: span 6; }
+    .span-3 { grid-column: span 3; }
+    .field label, .field-label {
+      font-size: var(--text-xs);
+      line-height: var(--lh-xs);
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    input, select, textarea, .field-control {
+      min-height: 44px;
+      width: 100%;
+      padding: 0 14px;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+    }
+    textarea {
+      min-height: 96px;
+      padding: 12px 14px;
+      resize: vertical;
+    }
+    input::placeholder, textarea::placeholder { color: var(--text-tertiary); }
+
+    .task-menu {
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      background: var(--bg-surface-2);
+      padding: 12px;
+    }
+    .type-grid, .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chips {
+      min-height: 44px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      display: grid;
+      grid-auto-flow: column;
+      gap: 4px;
+    }
+    .pill, .chip {
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .chips .pill {
+      min-height: 34px;
+      border-radius: 8px;
+      background: transparent;
+      border-color: transparent;
+    }
+    .pill.active, .chip.is-active, .chip[aria-pressed="true"], .chips .pill.active {
+      background: var(--accent-500);
+      border-color: var(--accent-500);
+      color: var(--text-on-accent);
+    }
+    .pill.service-paralegal, .pill.service-admin, .pill.billable, .pill.nonbillable, .pill.urgent, .pill.follow {
+      width: 100%;
+    }
+    .preset-strip {
+      min-height: 56px;
+      padding: 10px 12px;
+      border: 1px dashed var(--border-default);
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      display: grid;
+      gap: 10px;
+      margin: 4px 0 8px;
+    }
+    .preset-strip-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .preset-strip-labels {
+      display: grid;
+      gap: 4px;
+      flex: 1 1 320px;
+      min-width: 0;
+    }
+    .shortcut-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: end;
+      justify-content: flex-end;
+      flex: 0 1 auto;
+    }
+    .shortcut-toolbar .field {
+      min-width: 132px;
+      margin: 0;
+    }
+    .shortcut-toolbar .field.compact-count {
+      min-width: 96px;
+      max-width: 110px;
+    }
+    .shortcut-toolbar label {
+      margin-bottom: 6px;
+      font-size: var(--text-xs);
+      line-height: var(--lh-xs);
+      color: var(--text-secondary);
+    }
+    .recent-shortcut-summary {
+      margin-top: 4px;
+      font-size: var(--text-xs);
+      line-height: var(--lh-xs);
+      color: var(--text-secondary);
+    }
+    @media (max-width: 860px) {
+      .shortcut-toolbar {
+        width: 100%;
+        justify-content: stretch;
+      }
+      .shortcut-toolbar .field,
+      .shortcut-toolbar .field.compact-count {
+        min-width: 0;
+        flex: 1 1 180px;
+        max-width: none;
+      }
+    }
+    .preset-chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .shortcut-empty-note {
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 1px dashed var(--border-default);
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      text-align: center;
+    }
+    .quick-path-actions {
+      margin-top: 18px;
+    }
+    .quick-path-actions .btn {
+      flex: 1 1 180px;
+    }
+    .compact-section {
+      border-style: solid;
+      margin: 0;
+      padding: 12px 14px;
+      background: var(--bg-surface);
+    }
+    .compact-section summary {
+      list-style: none;
+      cursor: pointer;
+    }
+    .compact-section summary::-webkit-details-marker {
+      display: none;
+    }
+    .compact-section .compact-section-body {
+      display: grid;
+      gap: 12px;
+      padding-top: 12px;
+    }
+    .compact-section:not([open]) .compact-section-body {
+      display: none;
+    }
+    .compact-section .preset-strip-top {
+      margin: 0;
+    }
+    .compact-section summary .preset-strip-top::after {
+      content: 'Show';
+      margin-left: auto;
+      min-width: 58px;
+      text-align: center;
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface-2);
+      color: var(--text-secondary);
+      font-size: var(--text-xs);
+      line-height: var(--lh-xs);
+      font-weight: 700;
+    }
+    .compact-section[open] summary .preset-strip-top::after {
+      content: 'Hide';
+    }
+    .dashboard-shortcuts {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .timer-box.ready {
+      background: var(--accent-50);
+      border-color: var(--accent-300);
+    }
+    .timer-box.warn {
+      background: var(--warning-bg);
+      border-color: var(--warning-border);
+    }
+    .timer-box.active {
+      background: var(--bg-surface-2);
+      border-color: var(--accent-300);
+    }
+    .status-note-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .recent-matters-panel {
+      max-height: 420px;
+      overflow: auto;
+    }
+    button[disabled], .btn[disabled] {
+      opacity: .58;
+      cursor: not-allowed;
+    }
+    .matter-total-chip {
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface-2);
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      font-size: var(--text-xs);
+      line-height: var(--lh-xs);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .btn, .btn-primary, .btn-secondary, .btn-success, .btn-danger-ghost {
+      min-height: 40px;
+      padding: 0 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      background: transparent;
+      color: var(--text-primary);
+    }
+    .btn.primary, .btn-primary {
+      background: var(--accent-500);
+      color: var(--text-on-accent);
+    }
+    .btn.primary:hover, .btn-primary:hover { background: var(--accent-600); }
+    .btn.secondary, .btn-secondary, .btn.soft, .btn.ghost {
+      background: var(--bg-surface);
+      border-color: var(--border-default);
+      color: var(--text-primary);
+    }
+    .btn.success, .btn-success {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+    .btn.warn, .btn-danger-ghost {
+      background: transparent;
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+    .btn-sm { min-height: 32px; padding: 0 12px; border-radius: var(--radius-sm); }
+    .btn-lg { min-height: 44px; }
+    .row-actions, .entry-actions, .timer-actions, .timer-actions-primary, .card-actions, .preset-actions, .modal-actions, .timer-utility-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .timer-actions, .timer-actions-primary { margin-top: 16px; }
+    .compact-row-actions { min-width: 160px; }
+
+    .live-status, .global-reminder {
+      position: sticky;
+      top: 16px;
+      z-index: 10;
+      min-height: 72px;
+      padding: 14px 20px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .live-status strong, .global-reminder strong { color: var(--text-primary); }
+    .hidden { display: none !important; }
+
+    .kpi-card, .stat {
+      min-height: 92px;
+      padding: 14px 18px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      display: grid;
+      align-content: center;
+      gap: 4px;
+    }
+    .kpi-label, .stat .label {
+      font-size: var(--text-xs);
+      line-height: var(--lh-xs);
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .kpi-value, .stat .value {
+      font-size: var(--text-xl);
+      line-height: var(--lh-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .timer-rail { display: grid; gap: 16px; }
+    .timer-box, .timer-display-wrap {
+      min-height: 112px;
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .timer-display {
+      font-size: var(--text-timer);
+      line-height: var(--lh-timer);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-primary);
+    }
+    .timer-reminder { font-size: 13px; line-height: 18px; color: var(--text-secondary); }
+    .timer-reminder.idle { color: var(--text-secondary); }
+
+    .matter-summary {
+      min-height: 64px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      display: grid;
+      gap: 2px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state, .empty {
+      min-height: 72px;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1px dashed var(--border-default);
+      color: var(--text-secondary);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: var(--bg-surface);
+    }
+
+    .card-timeline,
+    .card-followup,
+    .card-matter,
+    .preset-row,
+    .paused-timer,
+    .recent-row,
+    .entry,
+    .follow-item,
+    .matter {
+      position: relative;
+      min-height: 108px;
+      padding: 14px 16px 14px 24px;
+      border-radius: 14px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      display: grid;
+      gap: 12px;
+      overflow: hidden;
+    }
+    .card-status-strip, .entry-color, .follow-color, .matter-color, .recent-color {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: var(--status-strip);
+      border-radius: 4px;
+      background: var(--info-border);
+    }
+    .ticket-strip {
+      position: absolute;
+      inset: 0 auto 0 4px;
+      width: var(--ticket-width);
+      border-radius: 6px;
+      opacity: .95;
+    }
+    .card-timeline[data-state="followup"] .card-status-strip,
+    .entry.has-followup .entry-color { background: var(--warning-border); }
+    .card-timeline[data-state="done"] .card-status-strip { background: var(--success-border); }
+    .card-timeline[data-state="urgent"] .card-status-strip { background: var(--danger-border); }
+    .card-followup[data-urgency="overdue"] .card-status-strip { background: var(--danger-border); }
+    .card-followup[data-urgency="today"] .card-status-strip { background: var(--warning-border); }
+    .card-followup[data-urgency="upcoming"] .card-status-strip { background: var(--info-border); }
+    .card-followup[data-urgency="none"] .card-status-strip { background: var(--border-default); }
+    .card-top, .entry-top, .follow-top, .matter-top, .preset-head, .paused-top, .recent-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .card-title, .entry-title, .matter-title, .follow-title, .preset-title {
+      font-size: var(--text-sm);
+      line-height: var(--lh-sm);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .card-meta, .card-right-meta, .preset-subtle, .paused-subtle {
+      font-size: var(--text-xs);
+      line-height: var(--lh-xs);
+      color: var(--text-secondary);
+    }
+    .card-right-meta { white-space: nowrap; }
+    .card-meta-line, .card-note, .entry-body .subtle, .recent-body .subtle {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 18px;
+    }
+    .card-badges, .meta, .preset-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .badge, .tiny-badge {
+      min-height: 24px;
+      padding: 0 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      font-size: var(--text-xs);
+      line-height: var(--lh-xs);
+      font-weight: 600;
+    }
+    .tiny-badge { min-height: 22px; padding: 0 8px; }
+    .badge-semantic-warning, .badge.follow, .badge.waiting {
+      background: var(--warning-bg);
+      border-color: var(--warning-border);
+      color: var(--warning-text);
+    }
+    .badge-semantic-success, .badge.active {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+    .badge-semantic-danger, .badge.closed {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+    .badge.timer { background: var(--info-bg); border-color: var(--info-border); color: var(--info-text); }
+
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .summary-box {
+      min-height: 92px;
+      padding: 14px 18px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      display: grid;
+      align-content: center;
+      gap: 4px;
+    }
+    .summary-box .label { font-size: var(--text-xs); color: var(--text-secondary); font-weight: 600; }
+    .summary-box .value { font-size: var(--text-xl); font-weight: 700; color: var(--text-primary); }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      background: var(--bg-surface);
+    }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1100px; }
+    thead th {
+      position: sticky; top: 0;
+      background: var(--bg-surface-2);
+      color: var(--text-secondary);
+      font-size: var(--text-xs);
+      text-transform: none;
+      letter-spacing: 0;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-default);
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+      color: var(--text-primary);
+      background: var(--bg-surface);
+    }
+    tbody tr:nth-child(even) td { background: var(--bg-surface-2); }
+
+    .inline-toggle {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .inline-toggle input { max-width: 180px; }
+
+    .filter-bar {
+      display: grid;
+      grid-template-columns: minmax(180px, 280px) minmax(180px, 1fr) auto;
+      gap: 10px;
+      align-items: end;
+      margin: 12px 0 16px;
+    }
+    .filter-bar .field { margin: 0; }
+    .filter-bar .btn { min-width: 120px; }
+    .filter-summary-note { margin-top: -4px; margin-bottom: 8px; }
+
+    .color-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-top: 2px;
+    }
+    .color-chip {
+      width: 28px; height: 28px;
+      border-radius: 999px;
+      border: 2px solid transparent;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+    }
+    .color-chip.active { border-color: var(--text-primary); }
+
+    .checklist { display: grid; gap: 14px; }
+    .check-item {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      align-items: start;
+      gap: 14px;
+      min-height: 34px;
+      color: var(--text-primary);
+    }
+    .check-item input {
+      width: 22px; height: 22px; margin-top: 2px;
+      accent-color: var(--accent-500);
+      border-radius: 6px;
+    }
+
+    .instructions-grid, .grid.two {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+    .simple-steps, .mini-list { margin: 0; padding-left: 20px; line-height: 1.55; }
+    .simple-steps li, .mini-list li { margin: 8px 0; }
+    .split-note { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 12, 22, 0.55);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .modal-card {
+      width: min(760px, 100%);
+      max-height: calc(100vh - 48px);
+      overflow: auto;
+    }
+    .footer-note { text-align: center; padding: 8px 0 0; color: var(--text-tertiary); }
+
+    @media (max-width: 1279px) {
+      .app-grid-12, .grid-4, .summary-strip { grid-template-columns: 1fr 1fr; }
+      .col-8, .col-4 { grid-column: span 2; }
+      .toolbar, .header-actions { justify-content: flex-start; }
+    }
+    @media (max-width: 767px) {
+      .app-shell { padding: 14px 14px 28px; }
+      .panel, .card, .step-card, .modal-card, .panel-entry { padding: 18px; }
+      .app-grid-12, .grid-4, .summary-strip, .instructions-grid, .grid.two, .split-note { grid-template-columns: 1fr; }
+      .col-8, .col-4 { grid-column: span 1; }
+      .form-grid, .entry-form { grid-template-columns: 1fr; gap: 16px; }
+      .field, .field.full, .span-12, .span-6, .span-3 { grid-column: span 1; }
+      .live-status, .global-reminder { flex-direction: column; align-items: stretch; }
+      .card-top, .entry-top, .follow-top, .matter-top, .paused-top, .preset-head, .recent-top { flex-direction: column; }
+      .row-actions, .entry-actions, .timer-actions, .timer-actions-primary, .card-actions, .preset-actions, .modal-actions, .toolbar, .header-actions { width: 100%; }
+      .row-actions .btn, .entry-actions .btn, .timer-actions .btn, .timer-actions-primary .btn, .card-actions .btn, .preset-actions .btn { width: 100%; }
+      .inline-toggle { align-items: stretch; }
+      .inline-toggle input { max-width: 100%; }
+      .filter-bar { grid-template-columns: 1fr; }
+      .header-title, .hero h1 { font-size: 30px; line-height: 36px; }
+      .recent-matters-panel { max-height: none; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <div class="app-shell">
+    <div class="app-stack">
+      <header class="header-bar app-grid-12 topbar">
+        <section class="header-brand hero col-8">
+          <h1 class="header-title">Paralegal Work Log</h1>
+          <p class="header-subtitle">Fast capture for family law work, follow-ups, and Excel-ready time entries. Built for one independent paralegal supporting one attorney, not for a bloated legal-software circus.</p>
+        </section>
+        <div class="toolbar header-actions col-4">
+          <button class="btn secondary" id="themeToggle">Dark / Light</button>
+          <button class="btn secondary" id="backupBtn">Backup</button>
+          <label class="btn secondary" for="restoreInput">Restore</label>
+          <input id="restoreInput" type="file" accept="application/json" class="hidden" />
+        </div>
+      </header>
+
+      <nav class="nav-tabs tabs" aria-label="Primary">
+        <button class="tab active" data-screen="dashboard">Dashboard</button>
+        <button class="tab" data-screen="matters">Matters</button>
+        <button class="tab" data-screen="review">Review & Export</button>
+        <button class="tab" data-screen="weekly">Weekly View</button>
+        <button class="tab" data-screen="instructions">Instructions</button>
+        <button class="tab" data-screen="settings">Settings</button>
+      </nav>
+
+      <div class="live-status global-reminder hidden" id="globalReminderBanner"></div>
+
+      <section class="grid-4 stats" id="stats"></section>
+
+      <section class="screen active" id="dashboard">
+        <div class="app-stack">
+          <section class="app-grid-12">
+            <section class="panel panel-entry col-8">
+              <header class="panel-header section-head">
+                <div>
+                  <h2 class="panel-title">Quick Add Entry</h2>
+                  <div class="panel-subtitle subtle">Fast capture first. Sorting and exports later.</div>
+                </div>
+              </header>
+
+              <div class="entry-form form-grid">
+                <div class="field span-6">
+                  <label for="entryMatter">Matter / Client</label>
+                  <select id="entryMatter"></select>
+                </div>
+                <div class="field span-3">
+                  <label for="entryDate">Date</label>
+                  <input id="entryDate" type="date" />
+                </div>
+                <div class="field span-3">
+                  <label for="entryDuration">Duration (minutes)</label>
+                  <input id="entryDuration" type="number" min="1" step="1" placeholder="15" />
+                </div>
+
+                <section class="field full chip-group-wrap span-12">
+                  <label>Task Type</label>
+                  <div class="task-menu">
+                    <div class="type-grid" id="taskTypeButtons"></div>
+                  </div>
+                </section>
+
+                <div class="field span-6">
+                  <label>Service Type</label>
+                  <div class="chips">
+                    <button type="button" class="pill service-paralegal" data-toggle="service" data-value="Paralegal">Paralegal</button>
+                    <button type="button" class="pill service-admin" data-toggle="service" data-value="Admin">Admin</button>
+                  </div>
+                </div>
+                <div class="field span-6">
+                  <label>Billing</label>
+                  <div class="chips">
+                    <button type="button" class="pill billable" data-toggle="billable" data-value="billable">Billable</button>
+                    <button type="button" class="pill nonbillable" data-toggle="billable" data-value="non-billable">Non-billable</button>
+                  </div>
+                </div>
+
+                <div class="field full span-12">
+                  <label for="entryDesc">Short Description</label>
+                  <input id="entryDesc" type="text" maxlength="180" placeholder="Ex: Email to client re financial affidavit and next steps" />
+                </div>
+                <div class="field span-6">
+                  <label for="entryRelated">Related Person</label>
+                  <input id="entryRelated" type="text" placeholder="Client, attorney, court, OC" />
+                </div>
+                <div class="field span-3">
+                  <label>RUSH</label>
+                  <div class="chips">
+                    <button type="button" class="pill urgent" id="urgentToggle">RUSH</button>
+                  </div>
+                </div>
+                <div class="field span-3">
+                  <label for="entryUrgentFee">Applied Price</label>
+                  <input id="entryUrgentFee" type="text" placeholder="0.00" readonly />
+                </div>
+                <div class="field span-3">
+                  <label>Follow-Up</label>
+                  <div class="chips">
+                    <button type="button" class="pill follow" id="followToggle">Needs Follow-Up</button>
+                  </div>
+                </div>
+                <div class="field span-6">
+                  <label for="entryFollowStatus">Follow-Up Status</label>
+                  <select id="entryFollowStatus">
+                    <option value="Needs reply">Needs reply</option>
+                    <option value="Waiting on client">Waiting on client</option>
+                    <option value="Waiting on attorney">Waiting on attorney</option>
+                    <option value="Waiting on court">Waiting on court</option>
+                    <option value="Waiting on opposing counsel">Waiting on opposing counsel</option>
+                    <option value="Scheduled later">Scheduled later</option>
+                  </select>
+                </div>
+                <div class="field full span-12">
+                  <label for="entryNotes">Notes (optional)</label>
+                  <textarea id="entryNotes" placeholder="Keep it short. This is a work log, not a memoir."></textarea>
+                </div>
+              </div>
+
+              <div class="entry-actions row-actions quick-path-actions">
+                <button class="btn primary btn-lg" id="saveEntryBtn">Save Entry</button>
+                <button class="btn success btn-lg" id="startTimerFromEntryBtn">Start Timer from Entry</button>
+                <button class="btn secondary btn-lg" id="clearEntryBtn">Clear</button>
+                <button class="btn secondary btn-lg" id="savePresetBtn">Save Current as Preset</button>
+              </div>
+
+              <div class="helper-note">Fastest path: pick the matter, choose the task, add a short description, then either save it or start the timer from the same setup. The shortcut sections are tucked below so the page breathes instead of shouting every option at you at once.</div>
+
+              <div class="dashboard-shortcuts">
+                <details class="preset-strip compact-section" id="recentShortcutSection" open>
+                  <summary>
+                    <div class="preset-strip-top">
+                      <div class="preset-strip-labels">
+                        <strong>Recent Entry Shortcuts</strong>
+                        <span>Pin the repeat items you use constantly. When you select a matter, this strip automatically focuses on that client. Smart Now also leans on the current part of the day so morning patterns stop fighting afternoon work.</span>
+                        <div class="recent-shortcut-summary" id="recentShortcutSummary"></div>
+                      </div>
+                      <div class="shortcut-toolbar" aria-label="Recent shortcut controls">
+                        <div class="field">
+                          <label for="recentShortcutMode">Show</label>
+                          <select id="recentShortcutMode">
+                            <option value="smart-now">Smart Now</option>
+                            <option value="most-used">Most Used</option>
+                            <option value="top-used-week">Top Used This Week</option>
+                            <option value="recent-first">Most Recent</option>
+                          </select>
+                        </div>
+                        <div class="field compact-count">
+                          <label for="recentShortcutLimit">Visible</label>
+                          <select id="recentShortcutLimit">
+                            <option value="4">4</option>
+                            <option value="6">6</option>
+                            <option value="8">8</option>
+                            <option value="10">10</option>
+                            <option value="12">12</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </summary>
+                  <div class="compact-section-body">
+                    <div class="list" id="recentEntryStrip"></div>
+                  </div>
+                </details>
+
+                <details class="preset-strip compact-section" id="presetSection">
+                  <summary>
+                    <div class="preset-strip-top">
+                      <div class="preset-strip-labels">
+                        <strong>One-Tap Presets</strong>
+                        <span>Favorite the ones you use constantly. They stay at the top and cut the repetitive nonsense.</span>
+                      </div>
+                    </div>
+                  </summary>
+                  <div class="compact-section-body">
+                    <div class="list" id="presetList"></div>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <aside class="timer-rail col-4 stack-16">
+              <section class="panel card">
+                <header class="panel-header section-head">
+                  <div>
+                    <h2 class="panel-title">Active Timer</h2>
+                    <div class="panel-subtitle subtle">For drafting, long calls, and anything likely to get forgotten.</div>
+                  </div>
+                </header>
+
+                <div class="timer-box timer-display-wrap">
+                  <div class="timer-display" id="timerDisplay">00:00:00</div>
+                  <div class="timer-reminder idle" id="timerReminder">No timer is running. Start one when work begins so the day does not vanish into email fog.</div>
+                </div>
+
+                <div class="form-grid">
+                  <div class="field span-6">
+                    <label for="timerMatter">Matter / Client</label>
+                    <select id="timerMatter"></select>
+                  </div>
+                  <div class="field span-6">
+                    <label for="timerTaskType">Task Type</label>
+                    <select id="timerTaskType"></select>
+                  </div>
+                  <div class="field full span-12">
+                    <label for="timerDesc">Description</label>
+                    <input id="timerDesc" type="text" maxlength="180" placeholder="Ex: Drafted proposed parenting plan revisions" />
+                  </div>
+                  <div class="field span-6">
+                    <label for="timerServiceType">Service Type</label>
+                    <select id="timerServiceType">
+                      <option value="Paralegal">Paralegal</option>
+                      <option value="Admin">Admin</option>
+                    </select>
+                  </div>
+                  <div class="field span-6">
+                    <label for="timerBillable">Billing</label>
+                    <select id="timerBillable">
+                      <option value="billable">Billable</option>
+                      <option value="non-billable">Non-billable</option>
+                    </select>
+                  </div>
+                  <div class="field span-6">
+                    <label for="timerRelated">Related Person</label>
+                    <input id="timerRelated" type="text" placeholder="Client, attorney, court, OC" />
+                  </div>
+                  <div class="field span-3">
+                    <label for="timerUrgent">RUSH</label>
+                    <select id="timerUrgent">
+                      <option value="No">No</option>
+                      <option value="Yes">Yes</option>
+                    </select>
+                  </div>
+                  <div class="field span-3">
+                    <label for="timerUrgentFee">Applied Price</label>
+                    <input id="timerUrgentFee" type="text" placeholder="0.00" readonly />
+                  </div>
+                  <div class="field span-6">
+                    <label for="timerFollow">Follow-Up</label>
+                    <select id="timerFollow">
+                      <option value="No">No follow-up</option>
+                      <option value="Yes">Needs follow-up</option>
+                    </select>
+                  </div>
+                  <div class="field span-6">
+                    <label for="timerFollowStatus">Follow-Up Status</label>
+                    <select id="timerFollowStatus">
+                      <option value="Needs reply">Needs reply</option>
+                      <option value="Waiting on client">Waiting on client</option>
+                      <option value="Waiting on attorney">Waiting on attorney</option>
+                      <option value="Waiting on court">Waiting on court</option>
+                      <option value="Waiting on opposing counsel">Waiting on opposing counsel</option>
+                      <option value="Scheduled later">Scheduled later</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="timer-actions-primary timer-actions row-actions">
+                  <button class="btn primary btn-lg" id="stopTimerBtn">Stop & Save</button>
+                  <button class="btn secondary btn-lg" id="pauseTimerBtn">Pause</button>
+                  <button class="btn success btn-lg" id="startTimerBtn">Pause Current + Start New</button>
+                </div>
+                <div class="timer-actions-danger row-actions">
+                  <button class="btn warn" id="discardTimerBtn">Discard</button>
+                  <button class="btn secondary" id="saveTimerPresetBtn">Save Timer Setup as Preset</button>
+                </div>
+                <div class="timer-footnote">Timer entries save into the same main log as manual entries. Paused timers remain visible so they do not become tiny forgotten landmines later.</div>
+              </section>
+
+              <section class="panel card">
+                <header class="panel-header section-head">
+                  <div>
+                    <h2 class="panel-title">Paused Timers</h2>
+                    <div class="panel-subtitle subtle">Resume, save, or clear them before they turn into mystery time.</div>
+                  </div>
+                </header>
+                <div class="list" id="pausedTimerList"></div>
+              </section>
+
+              <section class="panel card">
+                <header class="panel-header section-head">
+                  <div>
+                    <h2 class="panel-title">Recent Matters</h2>
+                    <div class="panel-subtitle subtle">Color-coded for faster scanning.</div>
+                  </div>
+                </header>
+                <div class="list recent-matters-panel" id="recentMatters"></div>
+              </section>
+            </aside>
+          </section>
+
+          <section class="app-grid-12">
+            <section class="panel col-8 card">
+              <header class="panel-header section-head">
+                <div>
+                  <h2 class="panel-title">Today’s Timeline</h2>
+                  <div class="panel-subtitle subtle">Newest first. Dense enough to scan without turning into tag soup.</div>
+                </div>
+              </header>
+              <div class="list stack-12" id="todayTimeline"></div>
+            </section>
+
+            <section class="panel col-4 card">
+              <header class="panel-header section-head">
+                <div>
+                  <h2 class="panel-title">Open Follow-Ups</h2>
+                  <div class="panel-subtitle subtle">Sorted by urgency. The app should not politely hide looming problems.</div>
+                </div>
+              </header>
+              <div class="list stack-12" id="followList"></div>
+            </section>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen" id="matters">
+        <div class="app-grid-12">
+          <section class="panel col-4 card">
+            <header class="panel-header section-head">
+              <div>
+                <h2 class="panel-title">Add Matter</h2>
+                <div class="panel-subtitle subtle">A quick reusable matter list. Not a fake Clio clone wearing costume jewelry.</div>
+              </div>
+            </header>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="matterName">Client / Matter Name</label>
+                <input id="matterName" type="text" placeholder="Ex: Jane Doe - Divorce" />
+              </div>
+              <div class="field span-6">
+                <label for="matterType">Matter Type</label>
+                <select id="matterType"></select>
+              </div>
+              <div class="field span-6">
+                <label for="matterStatus">Status</label>
+                <select id="matterStatus"></select>
+              </div>
+              <div class="field full">
+                <label>Matter Color</label>
+                <div class="color-picker" id="matterColorPicker"></div>
+              </div>
+              <div class="field full">
+                <label for="matterNote">Notes</label>
+                <textarea id="matterNote" placeholder="Optional short note"></textarea>
+              </div>
+            </div>
+            <div class="row-actions" style="margin-top: 14px;">
+              <button class="btn primary" id="saveMatterBtn">Save Matter</button>
+              <button class="btn secondary" id="clearMatterBtn">Clear</button>
+            </div>
+          </section>
+          <section class="panel col-8 card">
+            <header class="panel-header section-head">
+              <div>
+                <h2 class="panel-title">Matters</h2>
+                <div class="panel-subtitle subtle">Alternating shades and color tickets so the list stops looking like one long legal noodle.</div>
+              </div>
+            </header>
+            <div class="list stack-12" id="matterList"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen" id="review">
+        <div class="app-stack">
+          <section class="panel card">
+            <header class="panel-header section-head">
+              <div>
+                <h2 class="panel-title">Review & Export</h2>
+                <div class="panel-subtitle subtle">One table, one sheet, and clear columns for service type, price type, set price, and line total. Separate tabs would make the data harder to sort and easier to screw up.</div>
+              </div>
+              <div class="inline-toggle">
+                <input id="reviewDate" type="date" />
+                <button class="btn secondary" id="todayReviewBtn">Today</button>
+                <button class="btn primary" id="exportBtn">Export for Excel</button>
+              </div>
+            </header>
+            <div class="summary-strip" id="reviewSummary"></div>
+            <div class="filter-bar">
+              <div class="field">
+                <label for="reviewMatterFilter">Filter by Matter / Client</label>
+                <select id="reviewMatterFilter"></select>
+              </div>
+              <div class="field">
+                <label for="reviewSearchFilter">Find by Description / Person / Task</label>
+                <input id="reviewSearchFilter" type="text" placeholder="Search entries on this date" />
+              </div>
+              <div class="field">
+                <label>&nbsp;</label>
+                <button class="btn secondary" id="clearReviewFiltersBtn">Clear Filters</button>
+              </div>
+            </div>
+            <div class="subtle filter-summary-note" id="reviewFilterSummary"></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Matter / Client</th>
+                    <th>Matter Type</th>
+                    <th>Task Type</th>
+                    <th>Service Type</th>
+                    <th>Billing</th>
+                    <th>Price Type</th>
+                    <th>Set Price</th>
+                    <th>Duration</th>
+                    <th>Line Total</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="reviewBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel card">
+            <header class="panel-header section-head">
+              <div>
+                <h3 class="panel-title">Matter Totals for This Date</h3>
+                <div class="panel-subtitle subtle">Client-level totals so you can spot where the day really went before Excel starts acting important.</div>
+              </div>
+            </header>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Matter / Client</th>
+                    <th>Matter Type</th>
+                    <th>Entries</th>
+                    <th>Open Follow-Ups</th>
+                    <th>Paralegal</th>
+                    <th>Admin</th>
+                    <th>RUSH</th>
+                    <th>Billable Total</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="reviewMatterSummaryBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <div class="grid two">
+            <section class="panel card">
+              <h3>End-of-Day Check</h3>
+              <div class="checklist">
+                <label class="check-item"><input type="checkbox" /><span>I logged all emails that required work, not just the dramatic ones.</span></label>
+                <label class="check-item"><input type="checkbox" /><span>I logged all calls, voicemails, and call-backs.</span></label>
+                <label class="check-item"><input type="checkbox" /><span>I logged drafting, review, filing, and court-prep time.</span></label>
+                <label class="check-item"><input type="checkbox" /><span>I marked any open follow-up that still needs a response.</span></label>
+                <label class="check-item"><input type="checkbox" /><span>I checked whether RUSH work is using the RUSH set price.</span></label>
+              </div>
+            </section>
+
+            <section class="panel card">
+              <h3>How Pricing Maps Best to Excel</h3>
+              <div class="subtle" style="line-height: 1.5;">
+                Keep everything on one export. Each row should carry its own service type, price type, set price, and line total.
+                That way Excel can filter or subtotal by Admin, Paralegal, or RUSH without forcing the user to bounce between tabs like a trapped hamster.
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="screen" id="weekly">
+        <div class="app-stack">
+          <section class="panel card">
+            <header class="panel-header section-head">
+              <div>
+                <h2 class="panel-title">Weekly View</h2>
+                <div class="panel-subtitle subtle">Catch missing work before the week dissolves into courtroom fog and inbox archaeology. This view starts on Monday.</div>
+              </div>
+              <div class="inline-toggle">
+                <input id="weeklyStart" type="date" />
+                <button class="btn secondary" id="currentWeekBtn">This Week</button>
+                <button class="btn primary" id="exportWeekBtn">Export Week for Excel</button>
+              </div>
+            </header>
+            <div class="summary-strip" id="weeklySummary"></div>
+            <div class="filter-bar">
+              <div class="field">
+                <label for="weeklyMatterFilter">Filter by Matter / Client</label>
+                <select id="weeklyMatterFilter"></select>
+              </div>
+              <div class="field">
+                <label for="weeklySearchFilter">Find by Description / Person / Task</label>
+                <input id="weeklySearchFilter" type="text" placeholder="Search this week" />
+              </div>
+              <div class="field">
+                <label>&nbsp;</label>
+                <button class="btn secondary" id="clearWeeklyFiltersBtn">Clear Filters</button>
+              </div>
+            </div>
+            <div class="subtle filter-summary-note" id="weeklyFilterSummary"></div>
+          </section>
+
+          <div class="grid two">
+            <section class="panel card">
+              <h3>Daily Totals</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Entries</th>
+                      <th>Billable Total</th>
+                      <th>Open Follow-Ups</th>
+                    </tr>
+                  </thead>
+                  <tbody id="weeklyDayBody"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel card">
+              <header class="panel-header section-head">
+                <div>
+                  <h3 class="panel-title">Matter Totals for This Week</h3>
+                  <div class="panel-subtitle subtle">Totals by client so you can see the week at a glance without making Excel do all the emotional labor.</div>
+                </div>
+              </header>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Matter / Client</th>
+                      <th>Matter Type</th>
+                      <th>Entries</th>
+                      <th>Open Follow-Ups</th>
+                      <th>Paralegal</th>
+                      <th>Admin</th>
+                      <th>RUSH</th>
+                      <th>Billable Total</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="weeklyMatterSummaryBody"></tbody>
+                </table>
+              </div>
+              <div class="helper-note">Use this table to sanity-check the week by client. If one matter looks suspiciously empty, that usually means missing entries, not a supernatural spreadsheet event.</div>
+            </section>
+          </div>
+
+          <section class="panel card">
+            <header class="panel-header section-head">
+              <div>
+                <h3 class="panel-title">Week Entries</h3>
+                <div class="panel-subtitle subtle">Full week detail with one row per entry.</div>
+              </div>
+            </header>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Matter / Client</th>
+                    <th>Task Type</th>
+                    <th>Service Type</th>
+                    <th>Price Type</th>
+                    <th>Billing</th>
+                    <th>Set Price</th>
+                    <th>Duration</th>
+                    <th>Line Total</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="weeklyEntryBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen" id="instructions">
+        <div class="grid">
+          <div class="card panel">
+            <div class="section-head">
+              <div>
+                <h2>How to Use This App</h2>
+                <div class="subtle">Plain-English version. No software goblin dialect required.</div>
+              </div>
+            </div>
+            <div class="instruction-callout">
+              This app has one job: help you capture work as it happens so your Excel time sheet is not built from vibes, fragments, and courtroom-adjacent guesswork.
+            </div>
+          </div>
+
+          <div class="instructions-grid">
+            <div class="step-card panel">
+              <h3>1) Add your matters first</h3>
+              <ol class="simple-steps">
+                <li>Open <strong>Matters</strong>.</li>
+                <li>Add each client or matter you work on.</li>
+                <li>Pick a color for each one so lists are easier to scan.</li>
+                <li>Save the matter. After that, it shows up everywhere else in the app.</li>
+              </ol>
+            </div>
+
+            <div class="step-card panel">
+              <h3>2) Use Quick Add for short finished work</h3>
+              <ol class="simple-steps">
+                <li>On <strong>Dashboard</strong>, choose a task type.</li>
+                <li>Select the matter.</li>
+                <li>Write a short description.</li>
+                <li>Enter the minutes.</li>
+                <li>Save the entry.</li>
+              </ol>
+              <div class="helper-note">Best for short emails, short calls, quick reviews, and tasks you already finished.</div>
+            </div>
+
+            <div class="step-card panel">
+              <h3>3) Use the timer for longer work</h3>
+              <ol class="simple-steps">
+                <li>Choose the matter, task type, and description in the timer section.</li>
+                <li>Click <strong>Start Timer</strong>.</li>
+                <li>When the work changes, click <strong>Pause</strong> or <strong>Stop &amp; Save</strong>.</li>
+                <li>If you click <strong>Start Timer</strong> again for new work, the app pauses the old timer automatically.</li>
+              </ol>
+              <div class="helper-note">That means you can switch clients without losing the first timer. Tiny miracle. Useful one, too.</div>
+            </div>
+
+            <div class="step-card panel">
+              <h3>4) How paused timers work</h3>
+              <ol class="simple-steps">
+                <li>A paused timer stays in the <strong>Paused Timers</strong> list.</li>
+                <li>You can <strong>Resume</strong> it, <strong>Save to Log</strong> it, <strong>Load to Form</strong>, or <strong>Discard</strong> it.</li>
+                <li>If you return to that client later, resume the paused timer instead of starting from scratch.</li>
+                <li>The app also warns you when paused timers are sitting there waiting to be dealt with.</li>
+              </ol>
+            </div>
+
+            <div class="step-card panel">
+              <h3>5) How to make a preset</h3>
+              <ol class="simple-steps">
+                <li>Fill out the Quick Add form or the Timer form with a common setup.</li>
+                <li>Click <strong>Save Current as Preset</strong> or <strong>Save Timer Setup as Preset</strong>.</li>
+                <li>Give it a simple name you will recognize fast.</li>
+                <li>Examples: <em>Smith client email</em>, <em>Jones drafting</em>, <em>Court follow-up call</em>.</li>
+                <li>Favorite the presets you use constantly so they stay at the top.</li>
+              </ol>
+            </div>
+
+            <div class="step-card panel">
+              <h3>6) What a preset actually does</h3>
+              <ol class="simple-steps">
+                <li><strong>Fill Entry</strong> loads the preset into Quick Add.</li>
+                <li><strong>Load Timer</strong> loads the preset into the timer form.</li>
+                <li><strong>Start Timer</strong> loads the preset and starts timing right away.</li>
+                <li>Presets save clicks. They do not save completed work by themselves.</li>
+              </ol>
+              <div class="helper-note">A preset is a reusable setup, not a finished time entry. It is the difference between a template and an actual billable line.</div>
+            </div>
+
+            <div class="step-card panel">
+              <h3>7) Review and export</h3>
+              <ol class="simple-steps">
+                <li>Open <strong>Review &amp; Export</strong>.</li>
+                <li>Pick the date you want to review.</li>
+                <li>Check the entries.</li>
+                <li>Click <strong>Export for Excel</strong>.</li>
+              </ol>
+              <div class="helper-note">Use the filter bar to narrow the list by matter/client or search words before export. Every exported row includes service type, price type, set price, and line total so Excel can sort it cleanly. The Weekly View also helps you catch weird gaps before export.</div>
+            </div>
+
+            <div class="step-card panel">
+              <h3>8) Reuse or duplicate past work fast</h3>
+              <ol class="simple-steps">
+                <li>On Today&apos;s Timeline, Review &amp; Export, or Weekly View, click <strong>Reuse</strong> to load that entry back into Quick Add.</li>
+                <li>Click <strong>Duplicate</strong> to create a new copy dated today with the same setup.</li>
+                <li>Reuse is better when you want to tweak the description or minutes first.</li>
+                <li>Duplicate is better when the work line is basically the same and you just need it logged again.</li>
+              </ol>
+              <div class="helper-note">This is the anti-retyping feature. Let the app remember the pattern so your hands do less nonsense.</div>
+            </div>
+
+            <div class="step-card panel">
+              <h3>9) Use Recent Entry Shortcuts for repeat work</h3>
+              <ol class="simple-steps">
+                <li>On the Dashboard, look for <strong>Recent Entry Shortcuts</strong>.</li>
+                <li>These are built from finished entries you already logged.</li>
+                <li>Click <strong>Duplicate Today</strong> to log that same type of work again right away.</li>
+                <li>Click <strong>Load to Quick Add</strong> if you want to tweak the text or minutes first.</li>
+                <li>Click <strong>Pin</strong> to keep your most-used shortcuts at the top.</li>
+              </ol>
+              <div class="helper-note">Think of this strip as a fast lane for repeat work lines. It is pulled from real past entries, not from presets you still have to finish filling out. Use the <strong>Show</strong> menu to switch between <strong>Smart Now</strong>, Most Used, Top Used This Week, or Most Recent, and use <strong>Visible</strong> to decide how many shortcut cards stay on screen. When you pick a matter in Quick Add or the timer, the strip automatically narrows to that client when it has matching history.</div>
+            </div>
+
+            <div class="step-card panel">
+              <h3>10) Use matter totals before export</h3>
+              <ol class="simple-steps">
+                <li>Open <strong>Review &amp; Export</strong> for one day or <strong>Weekly View</strong> for the week.</li>
+                <li>Check the <strong>Matter Totals</strong> table to see totals by client.</li>
+                <li>Use <strong>Filter This Matter</strong> if you want to narrow the screen to one client fast.</li>
+                <li>Export after the totals and entries look right.</li>
+              </ol>
+              <div class="helper-note">This catches missing work and weird pricing sooner. Excel should be the final destination, not the first place you discover the day fell apart.</div>
+            </div>
+          </div>
+
+          <div class="card panel">
+            <div class="section-head">
+              <div>
+                <h2>Best habits</h2>
+                <div class="subtle">This is where the app starts actually helping instead of just existing on a screen.</div>
+              </div>
+            </div>
+            <div class="split-note">
+              <div class="instruction-callout">
+                <strong>Use Quick Add</strong><br>
+                for short finished tasks.
+                <ul class="mini-list">
+                  <li>short emails</li>
+                  <li>short calls</li>
+                  <li>quick document review</li>
+                </ul>
+              </div>
+              <div class="instruction-callout">
+                <strong>Use the Timer</strong><br>
+                for work that can stretch or get interrupted.
+                <ul class="mini-list">
+                  <li>drafting</li>
+                  <li>long calls</li>
+                  <li>court prep</li>
+                  <li>review across multiple documents</li>
+                </ul>
+              </div>
+            </div>
+            <div class="helper-note">The app only works if you use it in the moment. Waiting until the end of the day to remember everything is how your timesheet turns into historical fiction.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="settings">
+        <div class="grid two">
+          <div class="card panel">
+            <h2>Defaults & Fixed Prices</h2>
+            <div class="form-grid">
+              <div class="field span-6">
+                <label for="defaultBillable">Default Billing</label>
+                <select id="defaultBillable">
+                  <option value="billable">Billable</option>
+                  <option value="non-billable">Non-billable</option>
+                </select>
+              </div>
+              <div class="field span-6">
+                <label for="defaultTask">Default Task Type</label>
+                <select id="defaultTask"></select>
+              </div>
+              <div class="field span-6">
+                <label for="defaultServiceType">Default Service Type</label>
+                <select id="defaultServiceType">
+                  <option value="Paralegal">Paralegal</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </div>
+              <div class="field span-6">
+                <label for="paralegalRate">Paralegal Set Price</label>
+                <input id="paralegalRate" type="number" min="0" step="0.01" placeholder="75.00" readonly />
+              </div>
+              <div class="field span-6">
+                <label for="adminRate">Admin Set Price</label>
+                <input id="adminRate" type="number" min="0" step="0.01" placeholder="65.00" readonly />
+              </div>
+              <div class="field span-6">
+                <label for="defaultUrgentSurcharge">RUSH Set Price</label>
+                <input id="defaultUrgentSurcharge" type="number" min="0" step="0.01" placeholder="85.00" readonly />
+              </div>
+            </div>
+            <div class="helper-note">These prices are locked for this user: Admin = $65, Paralegal = $75, and RUSH = $85. You can still save the other defaults here without poking the pricing and creating spreadsheet nonsense.</div>
+            <div class="row-actions" style="margin-top: 14px;">
+              <button class="btn primary" id="saveSettingsBtn">Save Settings</button>
+            </div>
+          </div>
+
+          <div class="card panel">
+            <h2>Timer Reminder Support</h2>
+            <div class="subtle" style="line-height: 1.6; margin-bottom: 16px;">
+              Best realistic setup in a local HTML app: visible in-app reminders, a changing browser tab title, leave-page warnings, paused-timer nudges, and optional browser alerts while this page is open.
+            </div>
+            <div class="form-grid">
+              <div class="field span-6">
+                <label for="timerReminderMinutes">Reminder Interval (minutes)</label>
+                <input id="timerReminderMinutes" type="number" min="5" step="5" placeholder="20" />
+              </div>
+              <div class="field span-6">
+                <label>Browser Alerts</label>
+                <div class="row-actions">
+                  <button class="btn secondary" id="notifyPermissionBtn">Enable Browser Alerts</button>
+                  <button class="btn secondary" id="testReminderBtn">Test Reminder</button>
+                </div>
+              </div>
+            </div>
+            <div class="helper-note">Alerts are most useful when the app stays open in a browser tab during the workday. This is not a magical background service. It is still just a very capable HTML file, not a tiny sorcerer.</div>
+            <hr style="border:0;border-top:1px solid var(--border-default);margin:20px 0;">
+            <h2>Data Reset</h2>
+            <div class="subtle">Nuclear option. Deletes matters, entries, timer state, paused timers, presets, and settings.</div>
+            <div class="row-actions" style="margin-top: 14px;">
+              <button class="btn warn" id="resetBtn">Reset App Data</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer-note">Local-first single-file MVP. Data is stored in this browser using localStorage.</div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="modalOverlay">
+    <div class="modal-card">
+      <div class="section-head">
+        <div>
+          <h2 id="modalTitle">Edit</h2>
+          <div class="subtle" id="modalSubtitle"></div>
+        </div>
+        <button class="btn ghost" id="modalCloseBtn">Close</button>
+      </div>
+      <div id="modalBody"></div>
+      <div class="modal-actions">
+        <button class="btn secondary" id="modalCancelBtn">Cancel</button>
+        <button class="btn primary" id="modalSaveBtn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+    const STORAGE_KEY = 'paralegal-work-log-v1';
+
+    const TASK_TYPES = [
+      'Email',
+      'Call',
+      'Drafting',
+      'Document Review',
+      'Filing / Service',
+      'Research',
+      'Court Prep',
+      'Hearing Support',
+      'Client Update',
+      'Attorney Update',
+      'Admin',
+      'Follow-Up'
+    ];
+
+    const MATTER_TYPES = [
+      'Divorce',
+      'Child Custody',
+      'Parenting Plan',
+      'Child Support',
+      'Contempt / Enforcement',
+      'Order of Protection',
+      'Modification',
+      'Adoption',
+      'General Family Matter'
+    ];
+
+    const MATTER_STATUSES = [
+      'Active',
+      'Waiting on Client',
+      'Waiting on Attorney',
+      'Waiting on Court',
+      'Waiting on Opposing Counsel',
+      'Closed'
+    ];
+
+    const FOLLOW_STATUSES = [
+      'Needs reply',
+      'Waiting on client',
+      'Waiting on attorney',
+      'Waiting on court',
+      'Waiting on opposing counsel',
+      'Scheduled later'
+    ];
+
+    const MATTER_COLORS = [
+      { label: 'Lavender', value: '#9d7eae' },
+      { label: 'Sage', value: '#8ca386' },
+      { label: 'Dusty Blue', value: '#7b93a8' },
+      { label: 'Rose Clay', value: '#b58a87' },
+      { label: 'Sand', value: '#c7aa7a' },
+      { label: 'Plum', value: '#8b6f98' },
+      { label: 'Muted Teal', value: '#6f9a98' },
+      { label: 'Mauve', value: '#b18fa6' }
+    ];
+
+    const FIXED_PRICES = Object.freeze({
+      Admin: 65,
+      Paralegal: 75,
+      RUSH: 85
+    });
+
+    const defaultState = {
+      theme: 'light',
+      settings: {
+        defaultBillable: 'billable',
+        defaultTask: 'Email',
+        defaultServiceType: 'Paralegal',
+        paralegalRate: FIXED_PRICES.Paralegal,
+        adminRate: FIXED_PRICES.Admin,
+        defaultUrgentSurcharge: FIXED_PRICES.RUSH,
+        timerReminderMinutes: 20,
+        recentShortcutMode: 'smart-now',
+        recentShortcutLimit: 8
+      },
+      matters: [
+        {
+          id: crypto.randomUUID(),
+          name: 'Sample Matter - Smith Divorce',
+          type: 'Divorce',
+          status: 'Active',
+          color: '#9d7eae',
+          notes: 'Delete or edit this sample matter.'
+        }
+      ],
+      entries: [],
+      activeTimer: null,
+      pausedTimers: [],
+      presets: [],
+      ui: {
+        selectedTaskType: 'Email',
+        manualBillable: 'billable',
+        manualServiceType: 'Paralegal',
+        manualFollowUp: false,
+        manualUrgent: false,
+        selectedMatterColor: '#9d7eae',
+        lastActiveReminderBucket: 0,
+        lastPausedReminderBucket: 0,
+        pinnedRecentSignatures: []
+      }
+    };
+
+    let state = loadState();
+    let timerInterval = null;
+    let modalState = { type: null, id: null, color: '#9d7eae' };
+
+    const els = {
+      tabs: document.querySelectorAll('.tab'),
+      screens: document.querySelectorAll('.screen'),
+      globalReminderBanner: document.getElementById('globalReminderBanner'),
+      stats: document.getElementById('stats'),
+      taskTypeButtons: document.getElementById('taskTypeButtons'),
+      entryMatter: document.getElementById('entryMatter'),
+      entryDate: document.getElementById('entryDate'),
+      entryDesc: document.getElementById('entryDesc'),
+      entryDuration: document.getElementById('entryDuration'),
+      entryRelated: document.getElementById('entryRelated'),
+      entryUrgentFee: document.getElementById('entryUrgentFee'),
+      entryFollowStatus: document.getElementById('entryFollowStatus'),
+      entryNotes: document.getElementById('entryNotes'),
+      saveEntryBtn: document.getElementById('saveEntryBtn'),
+      startTimerFromEntryBtn: document.getElementById('startTimerFromEntryBtn'),
+      clearEntryBtn: document.getElementById('clearEntryBtn'),
+      savePresetBtn: document.getElementById('savePresetBtn'),
+      presetList: document.getElementById('presetList'),
+      recentEntryStrip: document.getElementById('recentEntryStrip'),
+      recentShortcutMode: document.getElementById('recentShortcutMode'),
+      recentShortcutLimit: document.getElementById('recentShortcutLimit'),
+      recentShortcutSummary: document.getElementById('recentShortcutSummary'),
+      followToggle: document.getElementById('followToggle'),
+      urgentToggle: document.getElementById('urgentToggle'),
+
+      timerDisplay: document.getElementById('timerDisplay'),
+      timerReminder: document.getElementById('timerReminder'),
+      timerMatter: document.getElementById('timerMatter'),
+      timerTaskType: document.getElementById('timerTaskType'),
+      timerServiceType: document.getElementById('timerServiceType'),
+      timerDesc: document.getElementById('timerDesc'),
+      timerRelated: document.getElementById('timerRelated'),
+      timerBillable: document.getElementById('timerBillable'),
+      timerUrgent: document.getElementById('timerUrgent'),
+      timerUrgentFee: document.getElementById('timerUrgentFee'),
+      timerFollow: document.getElementById('timerFollow'),
+      timerFollowStatus: document.getElementById('timerFollowStatus'),
+      startTimerBtn: document.getElementById('startTimerBtn'),
+      pauseTimerBtn: document.getElementById('pauseTimerBtn'),
+      stopTimerBtn: document.getElementById('stopTimerBtn'),
+      discardTimerBtn: document.getElementById('discardTimerBtn'),
+      saveTimerPresetBtn: document.getElementById('saveTimerPresetBtn'),
+      pausedTimerList: document.getElementById('pausedTimerList'),
+
+      todayTimeline: document.getElementById('todayTimeline'),
+      followList: document.getElementById('followList'),
+      recentMatters: document.getElementById('recentMatters'),
+
+      matterName: document.getElementById('matterName'),
+      matterType: document.getElementById('matterType'),
+      matterStatus: document.getElementById('matterStatus'),
+      matterColorPicker: document.getElementById('matterColorPicker'),
+      matterNote: document.getElementById('matterNote'),
+      saveMatterBtn: document.getElementById('saveMatterBtn'),
+      clearMatterBtn: document.getElementById('clearMatterBtn'),
+      matterList: document.getElementById('matterList'),
+
+      reviewDate: document.getElementById('reviewDate'),
+      todayReviewBtn: document.getElementById('todayReviewBtn'),
+      reviewBody: document.getElementById('reviewBody'),
+      reviewSummary: document.getElementById('reviewSummary'),
+      reviewMatterSummaryBody: document.getElementById('reviewMatterSummaryBody'),
+      reviewMatterFilter: document.getElementById('reviewMatterFilter'),
+      reviewSearchFilter: document.getElementById('reviewSearchFilter'),
+      clearReviewFiltersBtn: document.getElementById('clearReviewFiltersBtn'),
+      reviewFilterSummary: document.getElementById('reviewFilterSummary'),
+      exportBtn: document.getElementById('exportBtn'),
+      weeklyStart: document.getElementById('weeklyStart'),
+      currentWeekBtn: document.getElementById('currentWeekBtn'),
+      exportWeekBtn: document.getElementById('exportWeekBtn'),
+      weeklySummary: document.getElementById('weeklySummary'),
+      weeklyMatterFilter: document.getElementById('weeklyMatterFilter'),
+      weeklySearchFilter: document.getElementById('weeklySearchFilter'),
+      clearWeeklyFiltersBtn: document.getElementById('clearWeeklyFiltersBtn'),
+      weeklyFilterSummary: document.getElementById('weeklyFilterSummary'),
+      weeklyDayBody: document.getElementById('weeklyDayBody'),
+      weeklyEntryBody: document.getElementById('weeklyEntryBody'),
+      weeklyMatterSummaryBody: document.getElementById('weeklyMatterSummaryBody'),
+
+      themeToggle: document.getElementById('themeToggle'),
+      backupBtn: document.getElementById('backupBtn'),
+      restoreInput: document.getElementById('restoreInput'),
+
+      defaultBillable: document.getElementById('defaultBillable'),
+      defaultTask: document.getElementById('defaultTask'),
+      defaultServiceType: document.getElementById('defaultServiceType'),
+      paralegalRate: document.getElementById('paralegalRate'),
+      adminRate: document.getElementById('adminRate'),
+      defaultUrgentSurcharge: document.getElementById('defaultUrgentSurcharge'),
+      timerReminderMinutes: document.getElementById('timerReminderMinutes'),
+      notifyPermissionBtn: document.getElementById('notifyPermissionBtn'),
+      saveSettingsBtn: document.getElementById('saveSettingsBtn'),
+      testReminderBtn: document.getElementById('testReminderBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+
+      modalOverlay: document.getElementById('modalOverlay'),
+      modalTitle: document.getElementById('modalTitle'),
+      modalSubtitle: document.getElementById('modalSubtitle'),
+      modalBody: document.getElementById('modalBody'),
+      modalSaveBtn: document.getElementById('modalSaveBtn'),
+      modalCloseBtn: document.getElementById('modalCloseBtn'),
+      modalCancelBtn: document.getElementById('modalCancelBtn')
+    };
+
+    init();
+
+    function init() {
+      populateStaticSelects();
+      applyTheme();
+      bindEvents();
+      seedInputs();
+      renderAll();
+      startTimerTickIfNeeded();
+      updateDocumentTitle();
+      window.addEventListener('beforeunload', beforeUnloadGuard);
+    }
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (!saved) return structuredClone(defaultState);
+        return normalizeState(saved);
+      } catch {
+        return structuredClone(defaultState);
+      }
+    }
+
+    function normalizeState(saved) {
+      const normalized = {
+        ...structuredClone(defaultState),
+        ...saved,
+        settings: { ...defaultState.settings, ...(saved.settings || {}) },
+        ui: { ...defaultState.ui, ...(saved.ui || {}) },
+        matters: Array.isArray(saved.matters) ? saved.matters.map(normalizeMatter) : structuredClone(defaultState.matters),
+        entries: Array.isArray(saved.entries) ? saved.entries.map(normalizeEntry) : [],
+        activeTimer: saved.activeTimer ? normalizeTimer(saved.activeTimer) : null,
+        pausedTimers: Array.isArray(saved.pausedTimers) ? saved.pausedTimers.map(normalizeTimer) : [],
+        presets: Array.isArray(saved.presets) ? saved.presets.map(normalizePreset) : []
+      };
+      normalized.settings.paralegalRate = FIXED_PRICES.Paralegal;
+      normalized.settings.adminRate = FIXED_PRICES.Admin;
+      normalized.settings.defaultUrgentSurcharge = FIXED_PRICES.RUSH;
+      if (!['smart-now', 'most-used', 'top-used-week', 'recent-first'].includes(normalized.settings.recentShortcutMode)) {
+        normalized.settings.recentShortcutMode = 'smart-now';
+      }
+      normalized.settings.recentShortcutLimit = clampRecentShortcutLimit(normalized.settings.recentShortcutLimit || 8);
+      return normalized;
+    }
+
+    function normalizeMatter(matter) {
+      return {
+        id: matter.id || crypto.randomUUID(),
+        name: matter.name || 'Untitled Matter',
+        type: matter.type || 'General Family Matter',
+        status: matter.status || 'Active',
+        color: matter.color || '#9d7eae',
+        notes: matter.notes || ''
+      };
+    }
+
+    function normalizeEntry(entry) {
+      const serviceType = normalizeServiceType(entry.serviceType || inferServiceType(entry), Boolean(entry.urgent));
+      const urgent = Boolean(entry.urgent);
+      const rate = getSetPrice(serviceType, urgent);
+      return {
+        id: entry.id || crypto.randomUUID(),
+        matterId: entry.matterId || '',
+        date: entry.date || todayStr(),
+        taskType: entry.taskType || 'Email',
+        serviceType,
+        rate: rate || 0,
+        description: entry.description || '',
+        durationMin: Number(entry.durationMin) || 0,
+        billing: entry.billing || 'billable',
+        relatedPerson: entry.relatedPerson || '',
+        urgent,
+        urgentSurcharge: 0,
+        followUp: Boolean(entry.followUp),
+        followUpStatus: entry.followUpStatus || '',
+        followUpDone: Boolean(entry.followUpDone),
+        notes: entry.notes || '',
+        createdAt: entry.createdAt || new Date().toISOString(),
+        source: entry.source || 'manual'
+      };
+    }
+
+    function normalizeTimer(timer) {
+      const urgent = Boolean(timer.urgent);
+      const serviceType = normalizeServiceType(timer.serviceType || inferServiceType(timer), urgent);
+      return {
+        id: timer.id || crypto.randomUUID(),
+        startedAt: timer.startedAt || new Date().toISOString(),
+        pausedAt: timer.pausedAt || null,
+        elapsedBeforeSec: Number(timer.elapsedBeforeSec ?? 0) || 0,
+        matterId: timer.matterId || '',
+        taskType: timer.taskType || 'Email',
+        serviceType,
+        rate: getSetPrice(serviceType, urgent) || 0,
+        description: timer.description || '',
+        relatedPerson: timer.relatedPerson || '',
+        billing: timer.billing || 'billable',
+        urgent,
+        urgentSurcharge: 0,
+        followUp: Boolean(timer.followUp),
+        followUpStatus: timer.followUpStatus || '',
+        createdAt: timer.createdAt || timer.startedAt || new Date().toISOString()
+      };
+    }
+
+    function normalizePreset(preset) {
+      const urgent = Boolean(preset.urgent);
+      return {
+        id: preset.id || crypto.randomUUID(),
+        label: preset.label || 'Untitled Preset',
+        matterId: preset.matterId || '',
+        taskType: preset.taskType || 'Email',
+        serviceType: normalizeServiceType(preset.serviceType || 'Paralegal', urgent),
+        billing: preset.billing || 'billable',
+        description: preset.description || '',
+        relatedPerson: preset.relatedPerson || '',
+        urgent,
+        followUp: Boolean(preset.followUp),
+        followUpStatus: preset.followUpStatus || '',
+        notes: preset.notes || '',
+        createdAt: preset.createdAt || new Date().toISOString(),
+        lastUsedAt: preset.lastUsedAt || '',
+        useCount: Number(preset.useCount ?? 0) || 0,
+        favorite: Boolean(preset.favorite)
+      };
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function populateStaticSelects() {
+      fillSelect(els.matterType, MATTER_TYPES);
+      fillSelect(els.matterStatus, MATTER_STATUSES);
+      fillSelect(els.timerTaskType, TASK_TYPES);
+      fillSelect(els.defaultTask, TASK_TYPES);
+      fillSelect(els.entryFollowStatus, FOLLOW_STATUSES);
+      fillSelect(els.timerFollowStatus, FOLLOW_STATUSES);
+    }
+
+    function seedInputs() {
+      const today = todayStr();
+      els.entryDate.value = els.entryDate.value || today;
+      els.reviewDate.value = els.reviewDate.value || today;
+      if (els.weeklyStart) els.weeklyStart.value = els.weeklyStart.value || startOfWeekMonday(today);
+
+      els.defaultBillable.value = state.settings.defaultBillable;
+      els.defaultTask.value = state.settings.defaultTask;
+      els.defaultServiceType.value = state.settings.defaultServiceType;
+      els.paralegalRate.value = formatMoneyInput(FIXED_PRICES.Paralegal);
+      els.adminRate.value = formatMoneyInput(FIXED_PRICES.Admin);
+      els.defaultUrgentSurcharge.value = formatMoneyInput(FIXED_PRICES.RUSH);
+      els.timerReminderMinutes.value = state.settings.timerReminderMinutes;
+      if (els.recentShortcutMode) els.recentShortcutMode.value = state.settings.recentShortcutMode || 'smart-now';
+      if (els.recentShortcutLimit) els.recentShortcutLimit.value = String(state.settings.recentShortcutLimit || 8);
+
+      state.ui.manualBillable = state.ui.manualBillable || state.settings.defaultBillable;
+      state.ui.selectedTaskType = state.ui.selectedTaskType || state.settings.defaultTask;
+      state.ui.manualServiceType = normalizeServiceType(state.ui.manualServiceType || state.settings.defaultServiceType, Boolean(state.ui.manualUrgent));
+      state.ui.manualUrgent = Boolean(state.ui.manualUrgent);
+      state.ui.manualFollowUp = Boolean(state.ui.manualFollowUp);
+      state.ui.selectedMatterColor = state.ui.selectedMatterColor || '#9d7eae';
+
+      if (state.ui.manualUrgent) state.ui.manualServiceType = 'Paralegal';
+      syncPriceDisplays();
+
+      els.timerBillable.value = state.settings.defaultBillable;
+      els.timerTaskType.value = state.settings.defaultTask;
+      els.timerServiceType.value = state.settings.defaultServiceType;
+      syncPriceDisplays();
+
+      renderMatterColors();
+      syncServicePills();
+      syncBillingPills();
+      syncFollowToggle();
+      syncUrgentToggle();
+      syncPriceDisplays();
+      updateNotifyButton();
+    }
+
+    function bindEvents() {
+      els.tabs.forEach(tab => tab.addEventListener('click', () => switchScreen(tab.dataset.screen)));
+
+      document.querySelectorAll('[data-toggle="billable"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.ui.manualBillable = btn.dataset.value;
+          saveState();
+          syncBillingPills();
+        });
+      });
+
+      document.querySelectorAll('[data-toggle="service"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.ui.manualServiceType = normalizeServiceType(btn.dataset.value, state.ui.manualUrgent);
+          saveState();
+          syncServicePills();
+        });
+      });
+
+      els.followToggle.addEventListener('click', () => {
+        state.ui.manualFollowUp = !state.ui.manualFollowUp;
+        saveState();
+        syncFollowToggle();
+      });
+
+      els.urgentToggle.addEventListener('click', () => {
+        state.ui.manualUrgent = !state.ui.manualUrgent;
+        if (state.ui.manualUrgent) {
+          state.ui.manualServiceType = 'Paralegal';
+          
+        } else {
+          syncPriceDisplays();
+        }
+        saveState();
+        syncUrgentToggle();
+        syncServicePills();
+      });
+
+      els.saveEntryBtn.addEventListener('click', saveManualEntry);
+      els.startTimerFromEntryBtn.addEventListener('click', startTimerFromEntryForm);
+      els.clearEntryBtn.addEventListener('click', () => clearManualEntryForm());
+      els.savePresetBtn.addEventListener('click', saveCurrentAsPreset);
+      if (els.recentShortcutMode) {
+        els.recentShortcutMode.addEventListener('change', () => {
+          state.settings.recentShortcutMode = els.recentShortcutMode.value || 'smart-now';
+          saveState();
+          renderRecentEntryStrip();
+        });
+      }
+      if (els.entryMatter) {
+        els.entryMatter.addEventListener('change', () => {
+          syncMatterAcrossForms('entry', els.entryMatter.value);
+          renderRecentEntryStrip();
+        });
+      }
+      if (els.timerMatter) {
+        els.timerMatter.addEventListener('change', () => {
+          syncMatterAcrossForms('timer', els.timerMatter.value);
+          renderRecentEntryStrip();
+        });
+      }
+      if (els.recentShortcutLimit) {
+        els.recentShortcutLimit.addEventListener('change', () => {
+          state.settings.recentShortcutLimit = clampRecentShortcutLimit(els.recentShortcutLimit.value);
+          els.recentShortcutLimit.value = String(state.settings.recentShortcutLimit);
+          saveState();
+          renderRecentEntryStrip();
+        });
+      }
+
+      els.saveMatterBtn.addEventListener('click', saveMatter);
+      els.clearMatterBtn.addEventListener('click', clearMatterForm);
+
+      els.startTimerBtn.addEventListener('click', startTimer);
+      els.pauseTimerBtn.addEventListener('click', pauseActiveTimer);
+      els.stopTimerBtn.addEventListener('click', stopTimerAndSave);
+      els.discardTimerBtn.addEventListener('click', discardTimer);
+      els.saveTimerPresetBtn.addEventListener('click', saveTimerAsPresetTemplate);
+
+      els.timerUrgent.addEventListener('change', () => {
+        if (els.timerUrgent.value === 'Yes') {
+          els.timerServiceType.value = 'Paralegal';
+        }
+        syncPriceDisplays();
+      });
+      els.timerServiceType.addEventListener('change', syncPriceDisplays);
+      els.defaultServiceType.addEventListener('change', syncPriceDisplays);
+
+      els.todayReviewBtn.addEventListener('click', () => {
+        els.reviewDate.value = todayStr();
+        renderReview();
+      });
+      els.reviewDate.addEventListener('change', renderReview);
+      if (els.reviewMatterFilter) els.reviewMatterFilter.addEventListener('change', renderReview);
+      if (els.reviewSearchFilter) els.reviewSearchFilter.addEventListener('input', renderReview);
+      if (els.clearReviewFiltersBtn) els.clearReviewFiltersBtn.addEventListener('click', clearReviewFilters);
+      if (els.currentWeekBtn) {
+        els.currentWeekBtn.addEventListener('click', () => {
+          els.weeklyStart.value = startOfWeekMonday(todayStr());
+          renderWeekly();
+        });
+      }
+      if (els.weeklyStart) els.weeklyStart.addEventListener('change', renderWeekly);
+      if (els.weeklyMatterFilter) els.weeklyMatterFilter.addEventListener('change', renderWeekly);
+      if (els.weeklySearchFilter) els.weeklySearchFilter.addEventListener('input', renderWeekly);
+      if (els.clearWeeklyFiltersBtn) els.clearWeeklyFiltersBtn.addEventListener('click', clearWeeklyFilters);
+
+      els.exportBtn.addEventListener('click', exportForExcel);
+      if (els.exportWeekBtn) els.exportWeekBtn.addEventListener('click', exportWeekForExcel);
+      els.themeToggle.addEventListener('click', toggleTheme);
+      els.backupBtn.addEventListener('click', backupData);
+      els.restoreInput.addEventListener('change', restoreData);
+
+      els.saveSettingsBtn.addEventListener('click', saveSettings);
+      els.notifyPermissionBtn.addEventListener('click', requestNotificationPermission);
+      els.testReminderBtn.addEventListener('click', showReminderPreview);
+      els.resetBtn.addEventListener('click', resetData);
+
+      els.modalCloseBtn.addEventListener('click', closeModal);
+      els.modalCancelBtn.addEventListener('click', closeModal);
+      els.modalOverlay.addEventListener('click', event => {
+        if (event.target === els.modalOverlay) closeModal();
+      });
+      els.modalSaveBtn.addEventListener('click', saveModalChanges);
+
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !els.modalOverlay.classList.contains('hidden')) closeModal();
+      });
+    }
+
+    function switchScreen(screenId) {
+      els.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.screen === screenId));
+      els.screens.forEach(screen => screen.classList.toggle('active', screen.id === screenId));
+    }
+
+    function renderAll() {
+      renderTaskTypeButtons();
+      renderMatterSelects();
+      renderStats();
+      renderPresets();
+      renderRecentEntryStrip();
+      renderTimeline();
+      renderFollowUps();
+      renderRecentMatters();
+      renderMatters();
+      renderReview();
+      renderWeekly();
+      renderTimer();
+      renderPausedTimers();
+      renderGlobalReminder();
+      updateNotifyButton();
+    }
+
+    function renderTaskTypeButtons() {
+      els.taskTypeButtons.innerHTML = '';
+      TASK_TYPES.forEach(type => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pill' + (state.ui.selectedTaskType === type ? ' active' : '');
+        btn.textContent = type;
+        btn.addEventListener('click', () => {
+          state.ui.selectedTaskType = type;
+          if (type === 'Admin' && !state.ui.manualUrgent) state.ui.manualServiceType = 'Admin';
+          if (state.ui.manualUrgent) state.ui.manualServiceType = 'Paralegal';
+          if (!state.activeTimer) els.timerTaskType.value = type;
+          saveState();
+          syncServicePills();
+          renderTaskTypeButtons();
+        });
+        els.taskTypeButtons.appendChild(btn);
+      });
+    }
+
+    function syncMatterAcrossForms(source, matterId) {
+      if (source === 'entry') {
+        if (!state.activeTimer) els.timerMatter.value = matterId || '';
+      } else if (source === 'timer') {
+        els.entryMatter.value = matterId || '';
+      }
+    }
+
+    function loadTimerDraftFromEntryForm() {
+      const urgent = Boolean(state.ui.manualUrgent);
+      const serviceType = normalizeServiceType(state.ui.manualServiceType, urgent);
+      els.timerMatter.value = els.entryMatter.value || els.timerMatter.value;
+      els.timerTaskType.value = state.ui.selectedTaskType || els.timerTaskType.value;
+      els.timerDesc.value = els.entryDesc.value.trim();
+      els.timerRelated.value = els.entryRelated.value.trim();
+      els.timerBillable.value = state.ui.manualBillable || state.settings.defaultBillable;
+      els.timerServiceType.value = serviceType;
+      els.timerUrgent.value = urgent ? 'Yes' : 'No';
+      els.timerFollow.value = state.ui.manualFollowUp ? 'Yes' : 'No';
+      els.timerFollowStatus.value = state.ui.manualFollowUp ? els.entryFollowStatus.value : FOLLOW_STATUSES[0];
+      syncPriceDisplays();
+      renderRecentEntryStrip();
+    }
+
+    function startTimerFromEntryForm() {
+      if (!els.entryMatter.value) return alert('Pick a matter first so the timer is attached to the right client.');
+      if (!els.entryDesc.value.trim()) return alert('Add a short description first so the timer is not a mystery later.');
+      loadTimerDraftFromEntryForm();
+      startTimer();
+    }
+
+    function renderMatterColors() {
+      els.matterColorPicker.innerHTML = '';
+      MATTER_COLORS.forEach(color => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'color-chip' + (state.ui.selectedMatterColor === color.value ? ' active' : '');
+        button.title = color.label;
+        button.style.background = color.value;
+        button.addEventListener('click', () => {
+          state.ui.selectedMatterColor = color.value;
+          saveState();
+          renderMatterColors();
+        });
+        els.matterColorPicker.appendChild(button);
+      });
+    }
+
+    function renderMatterSelects() {
+      const options = state.matters
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(matter => ({ value: matter.id, label: `${matter.name} — ${matter.type}` }));
+      fillSelect(els.entryMatter, options, { placeholder: 'Select matter' });
+      fillSelect(els.timerMatter, options, { placeholder: 'Select matter' });
+      if (els.reviewMatterFilter) fillSelect(els.reviewMatterFilter, options, { placeholder: 'All matters' });
+      if (els.weeklyMatterFilter) fillSelect(els.weeklyMatterFilter, options, { placeholder: 'All matters' });
+    }
+
+    function renderStats() {
+      const todayEntries = state.entries.filter(entry => entry.date === todayStr());
+      const todayBillable = todayEntries.filter(entry => entry.billing === 'billable');
+      const followUps = state.entries.filter(e => e.followUp && !e.followUpDone).length;
+      const pausedCount = state.pausedTimers.length;
+      const totalToday = roundMoney(todayBillable.reduce((sum, entry) => sum + calcLineTotal(entry), 0));
+
+      const items = [
+        { label: 'Today Entries', value: todayEntries.length },
+        { label: 'Billable Total', value: formatCurrency(totalToday) },
+        { label: 'Open Follow-Ups', value: followUps },
+        { label: 'Paused Timers', value: pausedCount }
+      ];
+
+      els.stats.innerHTML = items.map(item => `
+        <article class="kpi-card">
+          <span class="kpi-label">${escapeHtml(item.label)}</span>
+          <strong class="kpi-value">${escapeHtml(String(item.value))}</strong>
+        </article>
+      `).join('');
+    }
+
+    function renderPresets() {
+      if (!state.presets.length) {
+        els.presetList.innerHTML = '<div class="empty-state">No presets yet. Save a common matter + task combo once and stop rebuilding the same setup by hand.</div>';
+        return;
+      }
+
+      const sorted = state.presets
+        .slice()
+        .sort((a, b) => {
+          if (Boolean(b.favorite) !== Boolean(a.favorite)) return Number(b.favorite) - Number(a.favorite);
+          return (b.lastUsedAt || b.createdAt || '').localeCompare(a.lastUsedAt || a.createdAt || '');
+        });
+
+      els.presetList.innerHTML = sorted.map(preset => {
+        const matter = getMatter(preset.matterId);
+        const color = matter?.color || '#9d7eae';
+        const useLine = preset.useCount ? `Used ${preset.useCount} time${preset.useCount === 1 ? '' : 's'}` : 'Not used yet';
+        const lastUsed = preset.lastUsedAt ? ` · Last used ${formatDateTimeShort(preset.lastUsedAt)}` : '';
+        return `
+          <article class="preset-row card-preset">
+            <span class="ticket-strip" style="background:${escapeAttribute(color)};"></span>
+            <div class="preset-head">
+              <div class="stack-4">
+                <div class="preset-title">${escapeHtml(preset.label)}</div>
+                <div class="preset-subtle">${escapeHtml(matter?.name || 'Matter missing')} · ${escapeHtml(preset.taskType)} · ${escapeHtml(preset.serviceType)}${preset.urgent ? ' · RUSH' : ''}${preset.description ? ` · ${escapeHtml(preset.description)}` : ''}</div>
+                <div class="preset-meta">
+                  <span class="tiny-badge">${escapeHtml(useLine)}${escapeHtml(lastUsed)}</span>
+                  ${preset.favorite ? '<span class="tiny-badge">Favorite</span>' : ''}
+                  ${preset.followUp ? '<span class="tiny-badge">Includes follow-up</span>' : ''}
+                </div>
+              </div>
+              <div class="preset-actions">
+                <button class="btn secondary" onclick="fillEntryFromPreset('${preset.id}')">Fill Entry</button>
+                <button class="btn secondary" onclick="loadTimerFromPreset('${preset.id}')">Load Timer</button>
+                <button class="btn primary" onclick="startTimerFromPreset('${preset.id}')">Start Timer</button>
+                <button class="btn ghost" onclick="togglePresetFavorite('${preset.id}')">${preset.favorite ? 'Unfavorite' : 'Favorite'}</button>
+                <button class="btn ghost" onclick="renamePreset('${preset.id}')">Rename</button>
+                <button class="btn warn" onclick="deletePreset('${preset.id}')">Delete</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function getEntryShortcutSignature(entry) {
+      return [
+        entry.matterId || '',
+        entry.taskType || '',
+        normalizeServiceType(entry.serviceType, entry.urgent),
+        entry.billing || '',
+        entry.urgent ? '1' : '0',
+        (entry.description || '').trim(),
+        (entry.relatedPerson || '').trim(),
+        entry.followUp ? '1' : '0',
+        entry.followUp ? (entry.followUpStatus || '') : '',
+        (entry.notes || '').trim(),
+        String(Number(entry.durationMin) || 0)
+      ].join('¦');
+    }
+
+    function clampRecentShortcutLimit(value) {
+      const parsed = Number(value);
+      if (!Number.isFinite(parsed)) return 8;
+      return Math.min(12, Math.max(4, Math.round(parsed)));
+    }
+
+    function getRecentShortcutModeLabel(mode = state.settings.recentShortcutMode) {
+      if (mode === 'smart-now') return 'Smart Now';
+      if (mode === 'top-used-week') return 'Top Used This Week';
+      if (mode === 'recent-first') return 'Most Recent';
+      return 'Most Used';
+    }
+
+    function getCurrentDayPartInfo(date = new Date()) {
+      const hour = date.getHours();
+      if (hour < 5) return { key: 'late-night', label: 'Late Night' };
+      if (hour < 12) return { key: 'morning', label: 'Morning' };
+      if (hour < 17) return { key: 'afternoon', label: 'Afternoon' };
+      if (hour < 21) return { key: 'evening', label: 'Evening' };
+      return { key: 'night', label: 'Night' };
+    }
+
+    function getEntryDayPartKey(entry) {
+      const stamp = entry?.createdAt || (entry?.date ? `${entry.date}T12:00:00` : '');
+      const parsed = stamp ? new Date(stamp) : new Date();
+      if (Number.isNaN(parsed.getTime())) return getCurrentDayPartInfo().key;
+      return getCurrentDayPartInfo(parsed).key;
+    }
+
+    function getCurrentWeekBounds(referenceDate = todayStr()) {
+      const start = startOfWeekMonday(referenceDate);
+      const end = addDaysToDateStr(start, 6);
+      return { start, end };
+    }
+
+    function isDateInRange(dateStr, startDate, endDate) {
+      return Boolean(dateStr) && dateStr >= startDate && dateStr <= endDate;
+    }
+
+    function getShortcutFocusContext() {
+      const requestedMatterId = (els.entryMatter?.value || '').trim()
+        || state.activeTimer?.matterId
+        || (els.timerMatter?.value || '').trim()
+        || '';
+      const requestedMatter = requestedMatterId ? getMatter(requestedMatterId) : null;
+      const allEntries = Array.isArray(state.entries) ? state.entries.slice() : [];
+      const matchingMatterEntries = requestedMatterId ? allEntries.filter(entry => entry.matterId === requestedMatterId) : allEntries;
+      const usingMatter = Boolean(requestedMatterId && matchingMatterEntries.length);
+      const fallbackToAll = Boolean(requestedMatterId && !matchingMatterEntries.length && allEntries.length);
+      return {
+        requestedMatterId,
+        requestedMatter,
+        usingMatter,
+        fallbackToAll,
+        sourceEntries: usingMatter ? matchingMatterEntries : allEntries,
+        dayPart: getCurrentDayPartInfo(new Date())
+      };
+    }
+
+    function getRecentEntryShortcutGroups(sourceEntries = state.entries, dayPartKey = getCurrentDayPartInfo().key) {
+      const groups = new Map();
+      const pinned = new Set(state.ui.pinnedRecentSignatures || []);
+      const weekBounds = getCurrentWeekBounds(todayStr());
+      for (const entry of sourceEntries) {
+        const signature = getEntryShortcutSignature(entry);
+        const inCurrentWeek = isDateInRange(entry.date, weekBounds.start, weekBounds.end);
+        const entryDayPartKey = getEntryDayPartKey(entry);
+        const inCurrentDayPart = entryDayPartKey === dayPartKey;
+        const current = groups.get(signature);
+        if (!current) {
+          groups.set(signature, {
+            signature,
+            entry,
+            count: 1,
+            weekCount: inCurrentWeek ? 1 : 0,
+            currentDayPartCount: inCurrentDayPart ? 1 : 0,
+            latestCreatedAt: entry.createdAt || '',
+            weekLatestCreatedAt: inCurrentWeek ? (entry.createdAt || '') : '',
+            currentDayPartLatestCreatedAt: inCurrentDayPart ? (entry.createdAt || '') : '',
+            pinned: pinned.has(signature)
+          });
+          continue;
+        }
+        current.count += 1;
+        if (inCurrentWeek) current.weekCount += 1;
+        if (inCurrentDayPart) current.currentDayPartCount += 1;
+        if ((entry.createdAt || '') > (current.latestCreatedAt || '')) {
+          current.entry = entry;
+          current.latestCreatedAt = entry.createdAt || '';
+        }
+        if (inCurrentWeek && (entry.createdAt || '') > (current.weekLatestCreatedAt || '')) {
+          current.weekLatestCreatedAt = entry.createdAt || '';
+        }
+        if (inCurrentDayPart && (entry.createdAt || '') > (current.currentDayPartLatestCreatedAt || '')) {
+          current.currentDayPartLatestCreatedAt = entry.createdAt || '';
+        }
+      }
+      return Array.from(groups.values());
+    }
+
+    function getDisplayRecentEntryShortcuts(limit = state.settings.recentShortcutLimit || 8, context = getShortcutFocusContext()) {
+      const mode = state.settings.recentShortcutMode || 'smart-now';
+      const normalizedLimit = clampRecentShortcutLimit(limit);
+      const groups = getRecentEntryShortcutGroups(context.sourceEntries, context.dayPart.key).sort((a, b) => {
+        if (Number(b.pinned) !== Number(a.pinned)) return Number(b.pinned) - Number(a.pinned);
+        if (mode === 'smart-now') {
+          if ((b.currentDayPartCount || 0) !== (a.currentDayPartCount || 0)) return (b.currentDayPartCount || 0) - (a.currentDayPartCount || 0);
+          if ((b.currentDayPartLatestCreatedAt || '') !== (a.currentDayPartLatestCreatedAt || '')) return (b.currentDayPartLatestCreatedAt || '').localeCompare(a.currentDayPartLatestCreatedAt || '');
+          if (b.count !== a.count) return b.count - a.count;
+          return (b.latestCreatedAt || '').localeCompare(a.latestCreatedAt || '');
+        }
+        if (mode === 'top-used-week') {
+          if ((b.weekCount || 0) !== (a.weekCount || 0)) return (b.weekCount || 0) - (a.weekCount || 0);
+          if ((b.weekLatestCreatedAt || '') !== (a.weekLatestCreatedAt || '')) return (b.weekLatestCreatedAt || '').localeCompare(a.weekLatestCreatedAt || '');
+          if (b.count !== a.count) return b.count - a.count;
+          return (b.latestCreatedAt || '').localeCompare(a.latestCreatedAt || '');
+        }
+        if (mode === 'recent-first') {
+          if ((b.latestCreatedAt || '') !== (a.latestCreatedAt || '')) return (b.latestCreatedAt || '').localeCompare(a.latestCreatedAt || '');
+          if (b.count !== a.count) return b.count - a.count;
+          return (b.weekCount || 0) - (a.weekCount || 0);
+        }
+        if (b.count !== a.count) return b.count - a.count;
+        return (b.latestCreatedAt || '').localeCompare(a.latestCreatedAt || '');
+      });
+      const pinned = groups.filter(item => item.pinned);
+      const rest = groups.filter(item => !item.pinned);
+      return [...pinned, ...rest.slice(0, Math.max(0, normalizedLimit - pinned.length))];
+    }
+
+    function getRecentShortcutSummaryText(limit = state.settings.recentShortcutLimit || 8, mode = state.settings.recentShortcutMode || 'smart-now', context = getShortcutFocusContext()) {
+      const totalGroups = getRecentEntryShortcutGroups(context.sourceEntries, context.dayPart.key).length;
+      const pinnedCount = (state.ui.pinnedRecentSignatures || []).length;
+      const modeLabel = getRecentShortcutModeLabel(mode);
+      const focusPrefix = context.usingMatter
+        ? `Focused on ${context.requestedMatter?.name || 'selected matter'}. `
+        : (context.fallbackToAll ? `No saved shortcuts yet for ${context.requestedMatter?.name || 'that matter'}, so this strip is showing all matters for now. ` : '');
+      if (!totalGroups) return `${focusPrefix}Save a few finished entries and this strip will turn into a real shortcut lane.`;
+      const shown = Math.min(clampRecentShortcutLimit(limit), totalGroups);
+      const pinnedText = pinnedCount ? ' Pinned items stay first.' : '';
+      if (mode === 'smart-now') return `${focusPrefix}Showing ${shown} shortcut${shown === 1 ? '' : 's'} tuned for ${context.dayPart.label.toLowerCase()} patterns.${pinnedText}`;
+      if (mode === 'top-used-week') return `${focusPrefix}Showing ${shown} shortcut${shown === 1 ? '' : 's'} using ${modeLabel.toLowerCase()} order.${pinnedText}`;
+      if (mode === 'recent-first') return `${focusPrefix}Showing ${shown} shortcut${shown === 1 ? '' : 's'} by most recent finished work.${pinnedText}`;
+      return `${focusPrefix}Showing ${shown} shortcut${shown === 1 ? '' : 's'} by most-used repeat work.${pinnedText}`;
+    }
+
+    function renderRecentEntryStrip() {
+      if (!els.recentEntryStrip) return;
+      cleanPinnedRecentShortcuts();
+      const limit = clampRecentShortcutLimit(state.settings.recentShortcutLimit || 8);
+      const mode = state.settings.recentShortcutMode || 'smart-now';
+      const context = getShortcutFocusContext();
+      if (els.recentShortcutMode) els.recentShortcutMode.value = mode;
+      if (els.recentShortcutLimit) els.recentShortcutLimit.value = String(limit);
+      if (els.recentShortcutSummary) els.recentShortcutSummary.textContent = getRecentShortcutSummaryText(limit, mode, context);
+      const shortcuts = getDisplayRecentEntryShortcuts(limit, context);
+
+      if (!shortcuts.length) {
+        els.recentEntryStrip.innerHTML = `<div class="shortcut-empty-note">${context.usingMatter ? `No shortcut history yet for ${escapeHtml(context.requestedMatter?.name || 'this matter')}. Log it once and the fast lane will learn.` : 'Repeat work shortcuts will appear after you save a few finished entries.'}</div>`;
+        return;
+      }
+
+      els.recentEntryStrip.innerHTML = shortcuts.map(item => {
+        const entry = item.entry;
+        const matter = getMatter(entry.matterId);
+        const color = matter?.color || '#9d7eae';
+        const encoded = encodeURIComponent(item.signature);
+        const primaryBadge = mode === 'smart-now'
+          ? ((item.currentDayPartCount || 0) ? `${item.currentDayPartCount} ${context.dayPart.label.toLowerCase()} hit${item.currentDayPartCount === 1 ? '' : 's'}` : 'Fallback match')
+          : (mode === 'top-used-week'
+            ? `${item.weekCount || 0} this week`
+            : (mode === 'recent-first' ? 'Most recent' : `${item.count} saved time${item.count === 1 ? '' : 's'}`));
+        const secondaryBadge = mode === 'smart-now'
+          ? `${item.count} total`
+          : (mode === 'top-used-week' && item.weekCount !== item.count
+            ? `${item.count} total`
+            : `${formatMinutesShort(entry.durationMin)}`);
+        return `
+          <article class="recent-row card-matter">
+            <span class="ticket-strip" style="background:${escapeAttribute(color)};"></span>
+            <div class="card-top">
+              <div class="stack-4">
+                <strong class="card-title">${escapeHtml(entry.description || 'Repeat work line')}</strong>
+                <span class="card-meta">${escapeHtml(matter?.name || 'No matter selected')} · ${escapeHtml(entry.taskType)} · ${escapeHtml(getPriceType(entry))}</span>
+              </div>
+              <div class="card-badges">
+                <span class="tiny-badge">${escapeHtml(primaryBadge)}</span>
+                <span class="tiny-badge">${escapeHtml(secondaryBadge)}</span>
+                ${item.pinned ? '<span class="tiny-badge">Pinned</span>' : ''}
+              </div>
+            </div>
+            <div class="card-meta-line">${escapeHtml(entry.serviceType)} · ${escapeHtml(entry.billing)}${entry.relatedPerson ? ` · ${escapeHtml(entry.relatedPerson)}` : ''}${item.latestCreatedAt ? ` · Last used ${escapeHtml(formatDateTimeShort(item.latestCreatedAt))}` : ''}</div>
+            <div class="card-actions">
+              <button class="btn primary btn-sm" onclick="duplicateRecentShortcut('${encoded}')">Duplicate Today</button>
+              <button class="btn secondary btn-sm" onclick="loadRecentShortcut('${encoded}')">Load to Quick Add</button>
+              <button class="btn ghost btn-sm" onclick="toggleRecentShortcutPin('${encoded}')">${item.pinned ? 'Unpin' : 'Pin'}</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function getShortcutEntryBySignature(signature) {
+      const group = getRecentEntryShortcutGroups().find(item => item.signature === signature);
+      return group?.entry || null;
+    }
+
+    function toggleRecentShortcutPin(encodedSignature) {
+      const signature = decodeURIComponent(encodedSignature);
+      state.ui.pinnedRecentSignatures = Array.isArray(state.ui.pinnedRecentSignatures) ? state.ui.pinnedRecentSignatures : [];
+      const idx = state.ui.pinnedRecentSignatures.indexOf(signature);
+      if (idx >= 0) state.ui.pinnedRecentSignatures.splice(idx, 1);
+      else state.ui.pinnedRecentSignatures.unshift(signature);
+      saveState();
+      renderRecentEntryStrip();
+    }
+
+    function loadRecentShortcut(encodedSignature) {
+      const signature = decodeURIComponent(encodedSignature);
+      const entry = getShortcutEntryBySignature(signature);
+      if (!entry) return;
+      fillManualFormFromEntry(entry);
+      switchScreen('dashboard');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function duplicateRecentShortcut(encodedSignature) {
+      const signature = decodeURIComponent(encodedSignature);
+      const entry = getShortcutEntryBySignature(signature);
+      if (!entry) return;
+      duplicateEntry(entry.id);
+    }
+
+    function renderTimeline() {
+      const items = state.entries
+        .filter(entry => entry.date === todayStr())
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+
+      if (!items.length) {
+        els.todayTimeline.innerHTML = '<div class="empty-state">Nothing logged today yet. Either the day just started or memory is doing its usual vanishing-act nonsense.</div>';
+        return;
+      }
+
+      els.todayTimeline.innerHTML = items.map(entry => {
+        const matter = getMatter(entry.matterId);
+        const color = matter?.color || '#9d7eae';
+        const stateName = entry.followUp && !entry.followUpDone ? (entry.urgent ? 'urgent' : 'followup') : (entry.followUpDone ? 'done' : (entry.urgent ? 'urgent' : 'default'));
+        const financialLine = entry.billing === 'billable'
+          ? `Billable · ${getPriceType(entry)} Price ${formatCurrency(entry.rate)} · Line ${formatCurrency(calcLineTotal(entry))}`
+          : 'Non-billable';
+        const badges = [
+          `<span class="badge">${escapeHtml(entry.taskType)}</span>`,
+          `<span class="badge">${escapeHtml(entry.serviceType)}</span>`,
+          `<span class="badge">${escapeHtml(getPriceType(entry))}</span>`,
+          `<span class="badge">${escapeHtml(formatMinutesShort(entry.durationMin))}</span>`
+        ];
+        if (entry.followUp && !entry.followUpDone) {
+          badges.push(`<span class="badge badge-semantic-warning">${escapeHtml(entry.followUpStatus || 'Needs reply')}</span>`);
+        } else if (entry.followUpDone) {
+          badges.push('<span class="badge badge-semantic-success">Done</span>');
+        } else if (entry.urgent) {
+          badges.push('<span class="badge badge-semantic-danger">RUSH</span>');
+        } else if (entry.source === 'timer') {
+          badges.push('<span class="badge">Timer</span>');
+        } else {
+          badges.push('<span class="badge">Manual</span>');
+        }
+
+        return `
+          <article class="card-timeline" data-state="${stateName}">
+            <span class="card-status-strip" aria-hidden="true"></span>
+            <span class="ticket-strip" style="background:${escapeAttribute(color)};"></span>
+            <div class="card-top">
+              <div class="stack-4">
+                <strong class="card-title">${escapeHtml(entry.description)}</strong>
+                <span class="card-meta">${escapeHtml(matter?.name || 'No matter selected')}</span>
+              </div>
+              <div class="card-right-meta">${escapeHtml(entry.date)} · ${entry.source === 'timer' ? 'Timer' : 'Manual'}</div>
+            </div>
+            <div class="card-meta-line">${escapeHtml(financialLine)}${matter?.type ? ` · ${escapeHtml(matter.type)}` : ''}${entry.relatedPerson ? ` · ${escapeHtml(entry.relatedPerson)}` : ''}</div>
+            <div class="card-badges">${badges.join('')}</div>
+            ${entry.notes ? `<div class="card-note">${escapeHtml(entry.notes)}</div>` : ''}
+            <div class="card-actions">
+              <button class="btn secondary btn-sm" onclick="openEntryEditor('${entry.id}')">Edit</button>
+              <button class="btn ghost btn-sm" onclick="reuseEntry('${entry.id}')">Reuse</button>
+              <button class="btn primary btn-sm" onclick="duplicateEntry('${entry.id}')">Duplicate</button>
+              ${matter ? `<button class="btn ghost btn-sm" onclick="openMatterEditor('${matter.id}')">Edit Matter</button>` : ''}
+              ${entry.followUp && !entry.followUpDone ? `<button class="btn success btn-sm" onclick="markFollowUpDone('${entry.id}')">Mark Follow-Up Done</button>` : ''}
+              <button class="btn warn btn-sm" onclick="deleteEntry('${entry.id}')">Delete</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderFollowUps() {
+      const today = todayStr();
+      const urgencyRank = { overdue: 0, today: 1, upcoming: 2, none: 3 };
+      const getUrgency = (entry) => {
+        if (!entry.date) return 'none';
+        if (entry.date < today) return 'overdue';
+        if (entry.date === today) return 'today';
+        return 'upcoming';
+      };
+      const getUrgencyLabel = (urgency) => ({ overdue: 'Overdue', today: 'Due today', upcoming: 'Upcoming', none: 'Open' }[urgency] || 'Open');
+
+      const items = state.entries
+        .filter(entry => entry.followUp && !entry.followUpDone)
+        .slice()
+        .sort((a, b) => {
+          const ua = getUrgency(a), ub = getUrgency(b);
+          if (urgencyRank[ua] !== urgencyRank[ub]) return urgencyRank[ua] - urgencyRank[ub];
+          return b.createdAt.localeCompare(a.createdAt);
+        });
+
+      if (!items.length) {
+        els.followList.innerHTML = '<div class="empty-state">No open follow-ups. Suspiciously tidy, but acceptable.</div>';
+        return;
+      }
+
+      els.followList.innerHTML = items.map(entry => {
+        const matter = getMatter(entry.matterId);
+        const color = matter?.color || '#9d7eae';
+        const urgency = getUrgency(entry);
+        return `
+          <article class="card-followup" data-urgency="${urgency}">
+            <span class="card-status-strip" aria-hidden="true"></span>
+            <span class="ticket-strip" style="background:${escapeAttribute(color)};"></span>
+            <div class="card-top">
+              <div class="stack-4">
+                <strong class="card-title">${escapeHtml(entry.description)}</strong>
+                <span class="card-meta">${escapeHtml(matter?.name || 'No matter selected')}</span>
+              </div>
+              <span class="badge ${urgency === 'overdue' ? 'badge-semantic-danger' : urgency === 'today' ? 'badge-semantic-warning' : ''}">${escapeHtml(getUrgencyLabel(urgency))}</span>
+            </div>
+            <div class="card-badges">
+              <span class="badge badge-semantic-warning">${escapeHtml(entry.followUpStatus || 'Needs reply')}</span>
+              <span class="badge">${escapeHtml(entry.taskType)}</span>
+              <span class="badge">${escapeHtml(entry.serviceType)}</span>
+              <span class="badge">${escapeHtml(entry.date || '')}</span>
+            </div>
+            <div class="card-meta-line">${matter?.type ? `${escapeHtml(matter.type)}` : ''}${entry.relatedPerson ? `${matter?.type ? ' · ' : ''}${escapeHtml(entry.relatedPerson)}` : ''}</div>
+            <div class="card-actions">
+              <button class="btn secondary btn-sm" onclick="openEntryEditor('${entry.id}')">Edit</button>
+              <button class="btn ghost btn-sm" onclick="reuseEntry('${entry.id}')">Reuse</button>
+              <button class="btn primary btn-sm" onclick="duplicateEntry('${entry.id}')">Duplicate</button>
+              ${matter ? `<button class="btn ghost btn-sm" onclick="openMatterEditor('${matter.id}')">Edit Matter</button>` : ''}
+              <button class="btn success btn-sm" onclick="markFollowUpDone('${entry.id}')">Done</button>
+              <button class="btn warn btn-sm" onclick="deleteEntry('${entry.id}')">Delete</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderRecentMatters() {
+      const recent = [];
+      for (const entry of state.entries.slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt))) {
+        const matter = getMatter(entry.matterId);
+        if (!matter) continue;
+        if (!recent.find(item => item.id === matter.id)) {
+          recent.push({ ...matter, lastTask: entry.taskType, lastAt: entry.createdAt, desc: entry.description });
+        }
+        if (recent.length >= 5) break;
+      }
+
+      if (!recent.length) {
+        els.recentMatters.innerHTML = '<div class="empty-state">Recent matters will show up after a few entries exist.</div>';
+        return;
+      }
+
+      els.recentMatters.innerHTML = recent.map(item => `
+        <article class="recent-row card-matter">
+          <span class="ticket-strip" style="background:${escapeAttribute(item.color || '#9d7eae')};"></span>
+          <div class="card-top">
+            <div class="stack-4">
+              <strong class="card-title">${escapeHtml(item.name)}</strong>
+              <span class="card-meta">${escapeHtml(item.type)} · ${escapeHtml(item.lastTask)}</span>
+            </div>
+            <span class="badge ${item.status === 'Closed' ? 'badge-semantic-danger' : 'badge-semantic-success'}">${escapeHtml(item.status)}</span>
+          </div>
+          <div class="card-note">${escapeHtml(item.desc)}</div>
+          <div class="card-actions">
+            <button class="btn primary btn-sm" onclick="useMatter('${item.id}')">Use Matter</button>
+            <button class="btn secondary btn-sm" onclick="openMatterEditor('${item.id}')">Edit Matter</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderMatters() {
+      const matters = state.matters.slice().sort((a, b) => a.name.localeCompare(b.name));
+      if (!matters.length) {
+        els.matterList.innerHTML = '<div class="empty-state">No matters yet. Add one so work has something to attach itself to.</div>';
+        return;
+      }
+
+      els.matterList.innerHTML = matters.map(matter => `
+        <article class="card-matter">
+          <span class="ticket-strip" style="background:${escapeAttribute(matter.color || '#9d7eae')};"></span>
+          <div class="card-top">
+            <div class="stack-4">
+              <strong class="card-title">${escapeHtml(matter.name)}</strong>
+              <span class="card-meta">${escapeHtml(matter.type)}</span>
+            </div>
+            <span class="badge ${matter.status === 'Closed' ? 'badge-semantic-danger' : 'badge-semantic-success'}">${escapeHtml(matter.status)}</span>
+          </div>
+          ${matter.notes ? `<div class="card-note">${escapeHtml(matter.notes)}</div>` : ''}
+          <div class="card-actions">
+            <button class="btn secondary btn-sm" onclick="openMatterEditor('${matter.id}')">Edit</button>
+            <button class="btn primary btn-sm" onclick="useMatter('${matter.id}')">Use Matter</button>
+            <button class="btn warn btn-sm" onclick="deleteMatter('${matter.id}')">Delete</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function clearReviewFilters() {
+      if (els.reviewMatterFilter) els.reviewMatterFilter.value = '';
+      if (els.reviewSearchFilter) els.reviewSearchFilter.value = '';
+      renderReview();
+    }
+
+    function clearWeeklyFilters() {
+      if (els.weeklyMatterFilter) els.weeklyMatterFilter.value = '';
+      if (els.weeklySearchFilter) els.weeklySearchFilter.value = '';
+      renderWeekly();
+    }
+
+    function entryMatchesFilter(entry, matterFilter, textFilter) {
+      const matterOk = !matterFilter || entry.matterId === matterFilter;
+      const needle = (textFilter || '').trim().toLowerCase();
+      if (!matterOk) return false;
+      if (!needle) return true;
+      const matter = getMatter(entry.matterId);
+      const haystack = [
+        entry.description,
+        entry.relatedPerson,
+        entry.taskType,
+        entry.serviceType,
+        entry.notes,
+        entry.followUpStatus,
+        matter?.name,
+        matter?.type
+      ].filter(Boolean).join(' ').toLowerCase();
+      return haystack.includes(needle);
+    }
+
+    function getReviewFilteredEntries() {
+      const selectedDate = els.reviewDate.value || todayStr();
+      return state.entries
+        .filter(entry => entry.date === selectedDate)
+        .filter(entry => entryMatchesFilter(entry, els.reviewMatterFilter?.value || '', els.reviewSearchFilter?.value || ''))
+        .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    }
+
+    function getWeeklyFilteredEntries() {
+      const start = els.weeklyStart.value || startOfWeekMonday(todayStr());
+      const end = addDaysToDateStr(start, 6);
+      return state.entries
+        .filter(entry => entry.date >= start && entry.date <= end)
+        .filter(entry => entryMatchesFilter(entry, els.weeklyMatterFilter?.value || '', els.weeklySearchFilter?.value || ''))
+        .sort((a, b) => a.date.localeCompare(b.date) || a.createdAt.localeCompare(b.createdAt));
+    }
+
+    function buildFilterSummary(entries, matterFilter, textFilter, emptyText = 'Showing all entries.') {
+      const parts = [];
+      if (matterFilter) {
+        const matter = getMatter(matterFilter);
+        parts.push(`Matter: ${matter?.name || 'Unknown matter'}`);
+      }
+      if ((textFilter || '').trim()) {
+        parts.push(`Search: “${textFilter.trim()}”`);
+      }
+      if (!parts.length) return emptyText;
+      return `Showing ${entries.length} entr${entries.length === 1 ? 'y' : 'ies'} for ${parts.join(' · ')}.`;
+    }
+
+    function buildMatterSummaries(entries) {
+      const grouped = new Map();
+      for (const entry of entries) {
+        const key = entry.matterId || '__no_matter__';
+        if (!grouped.has(key)) {
+          grouped.set(key, {
+            matterId: entry.matterId || '',
+            matter: getMatter(entry.matterId),
+            count: 0,
+            openFollowUps: 0,
+            paralegal: 0,
+            admin: 0,
+            urgent: 0,
+            total: 0
+          });
+        }
+        const row = grouped.get(key);
+        row.count += 1;
+        if (entry.followUp && !entry.followUpDone) row.openFollowUps += 1;
+        if (entry.billing === 'billable') {
+          const line = calcLineTotal(entry);
+          row.total += line;
+          if (entry.urgent) row.urgent += line;
+          else if (entry.serviceType === 'Admin') row.admin += line;
+          else row.paralegal += line;
+        }
+      }
+
+      return Array.from(grouped.values())
+        .map(row => ({
+          ...row,
+          paralegal: roundMoney(row.paralegal),
+          admin: roundMoney(row.admin),
+          urgent: roundMoney(row.urgent),
+          total: roundMoney(row.total)
+        }))
+        .sort((a, b) => b.total - a.total || b.count - a.count || (a.matter?.name || '').localeCompare(b.matter?.name || ''));
+    }
+
+    function renderMatterSummaryRows(targetEl, entries, scope) {
+      if (!targetEl) return;
+      const rows = buildMatterSummaries(entries);
+      if (!rows.length) {
+        targetEl.innerHTML = '<tr><td colspan="9" class="muted">No matter totals to show for this filter set.</td></tr>';
+        return;
+      }
+
+      targetEl.innerHTML = rows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.matter?.name || 'No matter selected')}</td>
+          <td>${escapeHtml(row.matter?.type || '')}</td>
+          <td>${escapeHtml(String(row.count))}</td>
+          <td>${escapeHtml(String(row.openFollowUps))}</td>
+          <td>${escapeHtml(formatCurrency(row.paralegal))}</td>
+          <td>${escapeHtml(formatCurrency(row.admin))}</td>
+          <td>${escapeHtml(formatCurrency(row.urgent))}</td>
+          <td><span class="matter-total-chip">${escapeHtml(formatCurrency(row.total))}</span></td>
+          <td>
+            ${row.matterId ? `<button class="btn secondary btn-sm" onclick="${scope === 'weekly' ? "applyWeeklyMatterFilter" : "applyReviewMatterFilter"}('${row.matterId}')">Filter This Matter</button>` : '—'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function applyReviewMatterFilter(matterId) {
+      if (!els.reviewMatterFilter) return;
+      els.reviewMatterFilter.value = matterId || '';
+      renderReview();
+      switchScreen('review');
+    }
+
+    function applyWeeklyMatterFilter(matterId) {
+      if (!els.weeklyMatterFilter) return;
+      els.weeklyMatterFilter.value = matterId || '';
+      renderWeekly();
+      switchScreen('weekly');
+    }
+
+    function renderReview() {
+      const selectedDate = els.reviewDate.value || todayStr();
+      const entries = getReviewFilteredEntries();
+
+      const billable = entries.filter(entry => entry.billing === 'billable');
+      const paralegalTotal = roundMoney(billable.filter(e => !e.urgent && e.serviceType === 'Paralegal').reduce((sum, e) => sum + calcLineTotal(e), 0));
+      const adminTotal = roundMoney(billable.filter(e => e.serviceType === 'Admin').reduce((sum, e) => sum + calcLineTotal(e), 0));
+      const rushTotal = roundMoney(billable.filter(e => e.urgent).reduce((sum, e) => sum + calcLineTotal(e), 0));
+      const dayTotal = roundMoney(billable.reduce((sum, e) => sum + calcLineTotal(e), 0));
+
+      els.reviewSummary.innerHTML = [
+        { label: 'Paralegal Total', value: formatCurrency(paralegalTotal) },
+        { label: 'Admin Total', value: formatCurrency(adminTotal) },
+        { label: 'RUSH Total', value: formatCurrency(rushTotal) },
+        { label: 'Day Total', value: formatCurrency(dayTotal) }
+      ].map(item => `
+        <article class="kpi-card">
+          <span class="kpi-label">${escapeHtml(item.label)}</span>
+          <strong class="kpi-value">${escapeHtml(item.value)}</strong>
+        </article>
+      `).join('');
+      if (els.reviewFilterSummary) {
+        els.reviewFilterSummary.textContent = buildFilterSummary(entries, els.reviewMatterFilter?.value || '', els.reviewSearchFilter?.value || '', 'Showing all entries for this date.');
+      }
+      renderMatterSummaryRows(els.reviewMatterSummaryBody, entries, 'review');
+
+      if (!entries.length) {
+        els.reviewBody.innerHTML = '<tr><td colspan="12" class="muted">No entries match this date and filter combo.</td></tr>';
+        return;
+      }
+
+      els.reviewBody.innerHTML = entries.map(entry => {
+        const matter = getMatter(entry.matterId);
+        return `
+          <tr>
+            <td>${escapeHtml(entry.date)}</td>
+            <td>${escapeHtml(matter?.name || '')}</td>
+            <td>${escapeHtml(matter?.type || '')}</td>
+            <td>${escapeHtml(entry.taskType)}</td>
+            <td>${escapeHtml(entry.serviceType)}</td>
+            <td>${escapeHtml(entry.billing)}</td>
+            <td>${escapeHtml(getPriceType(entry))}</td>
+            <td>${escapeHtml(formatCurrency(entry.rate))}</td>
+            <td>${escapeHtml(formatMinutesShort(entry.durationMin))}</td>
+            <td>${escapeHtml(entry.billing === 'billable' ? formatCurrency(calcLineTotal(entry)) : '—')}</td>
+            <td>${escapeHtml(entry.description)}</td>
+            <td>
+              <div class="row-actions compact-row-actions">
+                <button class="btn secondary btn-sm" onclick="openEntryEditor('${entry.id}')">Edit</button>
+                <button class="btn ghost btn-sm" onclick="reuseEntry('${entry.id}')">Reuse</button>
+                <button class="btn primary btn-sm" onclick="duplicateEntry('${entry.id}')">Duplicate</button>
+                <button class="btn warn btn-sm" onclick="deleteEntry('${entry.id}')">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderWeekly() {
+      if (!els.weeklySummary || !els.weeklyDayBody || !els.weeklyEntryBody) return;
+      const start = els.weeklyStart.value || startOfWeekMonday(todayStr());
+      const end = addDaysToDateStr(start, 6);
+      const entries = getWeeklyFilteredEntries();
+
+      const billable = entries.filter(entry => entry.billing === 'billable');
+      const totals = {
+        count: entries.length,
+        paralegal: roundMoney(billable.filter(e => !e.urgent && e.serviceType === 'Paralegal').reduce((sum, e) => sum + calcLineTotal(e), 0)),
+        admin: roundMoney(billable.filter(e => e.serviceType === 'Admin').reduce((sum, e) => sum + calcLineTotal(e), 0)),
+        urgent: roundMoney(billable.filter(e => e.urgent).reduce((sum, e) => sum + calcLineTotal(e), 0)),
+        total: roundMoney(billable.reduce((sum, e) => sum + calcLineTotal(e), 0))
+      };
+
+      els.weeklySummary.innerHTML = [
+        { label: 'Week of', value: formatShortDate(start) + ' – ' + formatShortDate(end) },
+        { label: 'Entries', value: String(totals.count) },
+        { label: 'Paralegal', value: formatCurrency(totals.paralegal) },
+        { label: 'Admin', value: formatCurrency(totals.admin) },
+        { label: 'RUSH', value: formatCurrency(totals.urgent) },
+        { label: 'Week Total', value: formatCurrency(totals.total) }
+      ].map(item => `
+        <article class="kpi-card">
+          <span class="kpi-label">${escapeHtml(item.label)}</span>
+          <strong class="kpi-value">${escapeHtml(item.value)}</strong>
+        </article>
+      `).join('');
+      if (els.weeklyFilterSummary) {
+        els.weeklyFilterSummary.textContent = buildFilterSummary(entries, els.weeklyMatterFilter?.value || '', els.weeklySearchFilter?.value || '', 'Showing all entries for this week.');
+      }
+      renderMatterSummaryRows(els.weeklyMatterSummaryBody, entries, 'weekly');
+
+      const dayRows = [];
+      for (let i = 0; i < 7; i++) {
+        const day = addDaysToDateStr(start, i);
+        const dayEntries = entries.filter(entry => entry.date === day);
+        const openFollows = dayEntries.filter(entry => entry.followUp && !entry.followUpDone).length;
+        const total = roundMoney(dayEntries.filter(entry => entry.billing === 'billable').reduce((sum, entry) => sum + calcLineTotal(entry), 0));
+        dayRows.push(`
+          <tr>
+            <td>${escapeHtml(formatShortDate(day))}</td>
+            <td>${escapeHtml(String(dayEntries.length))}</td>
+            <td>${escapeHtml(formatCurrency(total))}</td>
+            <td>${escapeHtml(String(openFollows))}</td>
+          </tr>
+        `);
+      }
+      els.weeklyDayBody.innerHTML = dayRows.join('');
+
+      if (!entries.length) {
+        els.weeklyEntryBody.innerHTML = '<tr><td colspan="11" class="muted">No entries match this week and filter combo.</td></tr>';
+        return;
+      }
+
+      els.weeklyEntryBody.innerHTML = entries.map(entry => {
+        const matter = getMatter(entry.matterId);
+        return `
+          <tr>
+            <td>${escapeHtml(entry.date)}</td>
+            <td>${escapeHtml(matter?.name || '')}</td>
+            <td>${escapeHtml(entry.taskType)}</td>
+            <td>${escapeHtml(entry.serviceType)}</td>
+            <td>${escapeHtml(getPriceType(entry))}</td>
+            <td>${escapeHtml(entry.billing)}</td>
+            <td>${escapeHtml(formatCurrency(entry.rate))}</td>
+            <td>${escapeHtml(formatMinutesShort(entry.durationMin))}</td>
+            <td>${escapeHtml(entry.billing === 'billable' ? formatCurrency(calcLineTotal(entry)) : '—')}</td>
+            <td>${escapeHtml(entry.description)}</td>
+            <td>
+              <div class="row-actions compact-row-actions">
+                <button class="btn secondary btn-sm" onclick="openEntryEditor('${entry.id}')">Edit</button>
+                <button class="btn ghost btn-sm" onclick="reuseEntry('${entry.id}')">Reuse</button>
+                <button class="btn primary btn-sm" onclick="duplicateEntry('${entry.id}')">Duplicate</button>
+                <button class="btn warn btn-sm" onclick="deleteEntry('${entry.id}')">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function hasTimerDraftContent() {
+      return Boolean(els.timerMatter.value || els.timerDesc.value.trim() || els.timerRelated.value.trim());
+    }
+
+    function renderTimer() {
+      const timerBox = document.querySelector('.timer-box');
+      timerBox.classList.remove('ready', 'warn', 'active');
+
+      if (!state.activeTimer) {
+        els.timerDisplay.textContent = '00:00:00';
+        els.startTimerBtn.disabled = false;
+        els.startTimerBtn.textContent = state.pausedTimers.length ? 'Start New Timer' : (hasTimerDraftContent() ? 'Start Timer Now' : 'Start Timer');
+        els.pauseTimerBtn.disabled = true;
+        els.stopTimerBtn.disabled = true;
+        els.discardTimerBtn.disabled = !state.pausedTimers.length && !hasTimerDraftContent();
+        els.discardTimerBtn.textContent = state.pausedTimers.length ? 'Clear All Paused' : 'Clear Draft';
+
+        if (state.pausedTimers.length) {
+          const label = state.pausedTimers.length === 1 ? '1 paused timer is waiting' : `${state.pausedTimers.length} paused timers are waiting`;
+          timerBox.classList.add('warn');
+          els.timerReminder.className = 'timer-reminder warn';
+          els.timerReminder.textContent = `${label}. Resume one, save it, or start a new timer and keep the switch intentional.`;
+        } else if (hasTimerDraftContent()) {
+          const matter = getMatter(els.timerMatter.value);
+          timerBox.classList.add('ready');
+          els.timerReminder.className = 'timer-reminder active';
+          els.timerReminder.textContent = `Timer setup is ready${matter ? ` for ${matter.name}` : ''}. Start it now before the work wanders off and leaves you with vague memories and a headache.`;
+        } else {
+          els.timerReminder.className = 'timer-reminder idle';
+          els.timerReminder.textContent = 'No timer is running. Start one when work begins so the day does not vanish into email fog.';
+        }
+        updateDocumentTitle();
+        return;
+      }
+
+      const elapsedText = formatElapsedTimer(state.activeTimer);
+      els.timerDisplay.textContent = elapsedText;
+      els.startTimerBtn.disabled = false;
+      els.startTimerBtn.textContent = 'Pause Current + Start New';
+      els.pauseTimerBtn.disabled = false;
+      els.stopTimerBtn.disabled = false;
+      els.discardTimerBtn.disabled = false;
+      els.discardTimerBtn.textContent = 'Discard Active';
+      timerBox.classList.add('active');
+
+      const minutes = elapsedMinutesFromTimer(state.activeTimer);
+      const matter = getMatter(state.activeTimer.matterId);
+      if (minutes >= state.settings.timerReminderMinutes) {
+        timerBox.classList.add('warn');
+        els.timerReminder.className = 'timer-reminder warn';
+        els.timerReminder.textContent = `Timer is still running on ${matter?.name || 'this matter'} for ${formatMinutesShort(minutes)}. Stop it, save it, or switch it before your timesheet mutates into fiction.`;
+      } else {
+        els.timerReminder.className = 'timer-reminder active';
+        els.timerReminder.textContent = `Timer is running on ${matter?.name || 'this matter'}. If the work changes, click Pause Current + Start New. The current timer will pause automatically.`;
+      }
+
+      updateDocumentTitle(elapsedText);
+    }
+
+    function renderPausedTimers() {
+      const items = state.pausedTimers.slice().sort((a, b) => (b.pausedAt || b.startedAt || '').localeCompare(a.pausedAt || a.startedAt || ''));
+      if (!items.length) {
+        els.pausedTimerList.innerHTML = '<div class="empty-state">No paused timers. That is cleaner than a desk with 14 sticky notes and a prayer.</div>';
+        return;
+      }
+
+      els.pausedTimerList.innerHTML = items.map(timer => {
+        const matter = getMatter(timer.matterId);
+        const color = matter?.color || '#9d7eae';
+        const pausedMins = minutesSince(timer.pausedAt || timer.startedAt);
+        return `
+          <article class="paused-timer">
+            <span class="ticket-strip" style="background:${escapeAttribute(color)};"></span>
+            <div class="paused-top">
+              <div class="stack-4">
+                <div class="preset-title">${escapeHtml(timer.description || 'Paused timer')}</div>
+                <div class="paused-subtle">${escapeHtml(matter?.name || 'No matter selected')} · ${escapeHtml(timer.taskType)} · ${escapeHtml(formatMinutesShort(elapsedMinutesFromTimer(timer)))} logged · paused ${escapeHtml(formatMinutesShort(pausedMins))} ago</div>
+                <div class="preset-meta">
+                  <span class="tiny-badge">${escapeHtml(timer.serviceType)}</span>
+                  ${timer.urgent ? `<span class="tiny-badge">RUSH Price ${escapeHtml(formatCurrency(timer.rate || getSetPrice(timer.serviceType, true)))}</span>` : `<span class="tiny-badge">${escapeHtml(getPriceType(timer))} Price ${escapeHtml(formatCurrency(timer.rate || getSetPrice(timer.serviceType, false)))}</span>`}
+                </div>
+              </div>
+              <div class="preset-actions">
+                <button class="btn primary btn-sm" onclick="resumePausedTimer('${timer.id}')">${state.activeTimer ? 'Resume + Pause Current' : 'Resume'}</button>
+                <button class="btn secondary btn-sm" onclick="loadPausedTimerToForm('${timer.id}')">Load to Form</button>
+                <button class="btn ghost btn-sm" onclick="savePausedTimer('${timer.id}')">Save to Log</button>
+                <button class="btn warn btn-sm" onclick="discardPausedTimer('${timer.id}')">Discard</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderGlobalReminder() {
+      const banner = els.globalReminderBanner;
+      if (state.activeTimer) {
+        const matter = getMatter(state.activeTimer.matterId);
+        banner.classList.remove('hidden');
+        banner.innerHTML = `
+          <div>
+            <strong>Timer running</strong>
+            <div class="muted">${escapeHtml(matter?.name || 'Matter')} · ${escapeHtml(state.activeTimer.description || 'Active task')} · ${escapeHtml(formatElapsedTimer(state.activeTimer))}</div>
+          </div>
+          <div class="row-actions">
+            <button class="btn secondary" onclick="pauseActiveTimer()">Pause</button>
+            <button class="btn ghost" onclick="switchScreen('dashboard')">Switch Task</button>
+            <button class="btn primary" onclick="stopTimerAndSave()">Stop & Save</button>
+          </div>
+        `;
+        return;
+      }
+      if (state.pausedTimers.length) {
+        const oldest = state.pausedTimers.slice().sort((a, b) => (a.pausedAt || '').localeCompare(b.pausedAt || ''))[0];
+        const matter = getMatter(oldest?.matterId);
+        banner.classList.remove('hidden');
+        banner.innerHTML = `
+          <div>
+            <strong>Paused timer reminder</strong>
+            <div class="muted">${escapeHtml(state.pausedTimers.length === 1 ? '1 paused timer is waiting' : `${state.pausedTimers.length} paused timers are waiting`)}${matter ? ` · oldest: ${escapeHtml(matter.name)}` : ''}</div>
+          </div>
+          <div class="row-actions">
+            <button class="btn primary" onclick="resumePausedTimer('${oldest.id}')">Resume Oldest</button>
+            <button class="btn ghost" onclick="switchScreen('dashboard')">Review Timers</button>
+          </div>
+        `;
+        return;
+      }
+      if (hasTimerDraftContent()) {
+        const matter = getMatter(els.timerMatter.value);
+        banner.classList.remove('hidden');
+        banner.innerHTML = `
+          <div>
+            <strong>Timer draft ready</strong>
+            <div class="muted">${escapeHtml(matter?.name || 'Matter not selected yet')} · ${escapeHtml(els.timerDesc.value.trim() || 'Add a description and start when work begins')}</div>
+          </div>
+          <div class="row-actions">
+            <button class="btn primary" onclick="startTimer()">Start Timer</button>
+            <button class="btn ghost" onclick="switchScreen('dashboard')">Review Draft</button>
+          </div>
+        `;
+        return;
+      }
+      banner.classList.add('hidden');
+      banner.innerHTML = '';
+    }
+
+    function buildPresetFromEntryForm() {
+      if (!els.entryMatter.value) return { error: 'Pick a matter before saving a preset.' };
+      return normalizePreset({
+        matterId: els.entryMatter.value,
+        taskType: state.ui.selectedTaskType,
+        serviceType: normalizeServiceType(state.ui.manualServiceType, state.ui.manualUrgent),
+        billing: state.ui.manualBillable,
+        description: els.entryDesc.value.trim(),
+        relatedPerson: els.entryRelated.value.trim(),
+        urgent: state.ui.manualUrgent,
+        followUp: state.ui.manualFollowUp,
+        followUpStatus: state.ui.manualFollowUp ? els.entryFollowStatus.value : ''
+      });
+    }
+
+    function buildPresetFromTimerForm() {
+      if (!els.timerMatter.value) return { error: 'Pick a matter before saving a timer preset.' };
+      const urgent = els.timerUrgent.value === 'Yes';
+      return normalizePreset({
+        matterId: els.timerMatter.value,
+        taskType: els.timerTaskType.value,
+        serviceType: normalizeServiceType(els.timerServiceType.value, urgent),
+        billing: els.timerBillable.value,
+        description: els.timerDesc.value.trim(),
+        relatedPerson: els.timerRelated.value.trim(),
+        urgent,
+        followUp: els.timerFollow.value === 'Yes',
+        followUpStatus: els.timerFollow.value === 'Yes' ? els.timerFollowStatus.value : ''
+      });
+    }
+
+    function savePresetPayload(basePreset, labelPrompt, fallbackLabel) {
+      const label = prompt(labelPrompt, fallbackLabel);
+      if (label === null) return;
+      const finalLabel = label.trim() || fallbackLabel;
+      const existing = state.presets.find(item => item.label.trim().toLowerCase() === finalLabel.trim().toLowerCase());
+
+      if (existing) {
+        if (!confirm('A preset with that name already exists. Replace it?')) return;
+        Object.assign(existing, normalizePreset({
+          ...existing,
+          ...basePreset,
+          label: finalLabel,
+          id: existing.id,
+          createdAt: existing.createdAt,
+          lastUsedAt: existing.lastUsedAt,
+          useCount: existing.useCount
+        }));
+      } else {
+        state.presets.unshift(normalizePreset({
+          ...basePreset,
+          id: crypto.randomUUID(),
+          label: finalLabel,
+          createdAt: new Date().toISOString(),
+          lastUsedAt: '',
+          useCount: 0
+        }));
+      }
+
+      saveState();
+      renderPresets();
+    }
+
+    function touchPreset(id) {
+      const preset = state.presets.find(item => item.id === id);
+      if (!preset) return;
+      preset.useCount = Number(preset.useCount || 0) + 1;
+      preset.lastUsedAt = new Date().toISOString();
+      saveState();
+    }
+
+    function fillManualFormFromPreset(preset) {
+      const serviceType = normalizeServiceType(preset.serviceType, preset.urgent);
+      els.entryMatter.value = preset.matterId;
+      state.ui.selectedTaskType = preset.taskType;
+      state.ui.manualServiceType = serviceType;
+      state.ui.manualBillable = preset.billing;
+      state.ui.manualUrgent = Boolean(preset.urgent);
+      state.ui.manualFollowUp = Boolean(preset.followUp);
+      els.entryDesc.value = preset.description || '';
+      els.entryRelated.value = preset.relatedPerson || '';
+      els.entryFollowStatus.value = preset.followUpStatus || FOLLOW_STATUSES[0];
+      syncPriceDisplays();
+      renderTaskTypeButtons();
+      syncBillingPills();
+      syncServicePills();
+      syncFollowToggle();
+      syncUrgentToggle();
+    }
+
+    function fillTimerFormFromPreset(preset) {
+      const serviceType = normalizeServiceType(preset.serviceType, preset.urgent);
+      els.timerMatter.value = preset.matterId;
+      els.timerTaskType.value = preset.taskType;
+      els.timerServiceType.value = serviceType;
+      els.timerBillable.value = preset.billing;
+      els.timerDesc.value = preset.description || '';
+      els.timerRelated.value = preset.relatedPerson || '';
+      els.timerUrgent.value = preset.urgent ? 'Yes' : 'No';
+      syncPriceDisplays();
+      els.timerFollow.value = preset.followUp ? 'Yes' : 'No';
+      els.timerFollowStatus.value = preset.followUpStatus || FOLLOW_STATUSES[0];
+      renderRecentEntryStrip();
+    }
+
+    function fillEntryFromPreset(id) {
+      const preset = state.presets.find(item => item.id === id);
+      if (!preset) return;
+      fillManualFormFromPreset(preset);
+      touchPreset(id);
+      renderPresets();
+      switchScreen('dashboard');
+    }
+
+    function loadTimerFromPreset(id) {
+      const preset = state.presets.find(item => item.id === id);
+      if (!preset) return;
+      fillTimerFormFromPreset(preset);
+      touchPreset(id);
+      renderPresets();
+      switchScreen('dashboard');
+    }
+
+    function startTimerFromPreset(id) {
+      const preset = state.presets.find(item => item.id === id);
+      if (!preset) return;
+      fillTimerFormFromPreset(preset);
+      touchPreset(id);
+      renderPresets();
+      switchScreen('dashboard');
+      startTimer();
+    }
+
+    function saveManualEntry() {
+      if (!els.entryMatter.value) return alert('Pick a matter first. Otherwise this entry floats into the void.');
+      if (!els.entryDesc.value.trim()) return alert('Add a short description. Future-you is not clairvoyant.');
+      const durationMin = Number(els.entryDuration.value);
+      if (!durationMin || durationMin < 1) return alert('Add a duration in minutes greater than 0.');
+
+      const urgent = Boolean(state.ui.manualUrgent);
+      const serviceType = normalizeServiceType(state.ui.manualServiceType, urgent);
+      const rate = getSetPrice(serviceType, urgent);
+      const urgentSurcharge = 0;
+
+      const entry = normalizeEntry({
+        id: crypto.randomUUID(),
+        matterId: els.entryMatter.value,
+        date: els.entryDate.value || todayStr(),
+        taskType: state.ui.selectedTaskType,
+        serviceType,
+        rate,
+        description: els.entryDesc.value.trim(),
+        durationMin,
+        billing: state.ui.manualBillable,
+        relatedPerson: els.entryRelated.value.trim(),
+        urgent,
+        urgentSurcharge,
+        followUp: state.ui.manualFollowUp,
+        followUpStatus: state.ui.manualFollowUp ? els.entryFollowStatus.value : '',
+        followUpDone: false,
+        notes: els.entryNotes.value.trim(),
+        createdAt: new Date().toISOString(),
+        source: 'manual'
+      });
+
+      state.entries.push(entry);
+      saveState();
+      clearManualEntryForm({ keepMatter: true, keepDate: true });
+      renderAll();
+      switchScreen('dashboard');
+    }
+
+    function clearManualEntryForm(options = {}) {
+      if (!options.keepMatter) els.entryMatter.value = '';
+      if (!options.keepDate) els.entryDate.value = todayStr();
+      els.entryDesc.value = '';
+      els.entryDuration.value = '';
+      els.entryRelated.value = '';
+      syncPriceDisplays();
+      els.entryNotes.value = '';
+
+      state.ui.selectedTaskType = state.settings.defaultTask;
+      state.ui.manualBillable = state.settings.defaultBillable;
+      state.ui.manualServiceType = state.settings.defaultServiceType;
+      state.ui.manualFollowUp = false;
+      state.ui.manualUrgent = false;
+
+      saveState();
+      renderTaskTypeButtons();
+      syncBillingPills();
+      syncServicePills();
+      syncFollowToggle();
+      syncUrgentToggle();
+      renderRecentEntryStrip();
+    }
+
+    function saveMatter() {
+      const name = els.matterName.value.trim();
+      if (!name) return alert('Matter name is required. No mystery matters.');
+      state.matters.push(normalizeMatter({
+        id: crypto.randomUUID(),
+        name,
+        type: els.matterType.value,
+        status: els.matterStatus.value,
+        color: state.ui.selectedMatterColor || '#9d7eae',
+        notes: els.matterNote.value.trim()
+      }));
+      saveState();
+      clearMatterForm();
+      renderAll();
+    }
+
+    function clearMatterForm() {
+      els.matterName.value = '';
+      els.matterType.selectedIndex = 0;
+      els.matterStatus.selectedIndex = 0;
+      els.matterNote.value = '';
+      state.ui.selectedMatterColor = '#9d7eae';
+      saveState();
+      renderMatterColors();
+    }
+
+    function saveCurrentAsPreset() {
+      const preset = buildPresetFromEntryForm();
+      if (preset.error) return alert(preset.error);
+      const matter = getMatter(preset.matterId);
+      const defaultLabel = `${matter?.name || 'Matter'} — ${preset.taskType}`;
+      savePresetPayload(preset, 'Name this preset', defaultLabel);
+    }
+
+    function saveTimerAsPresetTemplate() {
+      const preset = buildPresetFromTimerForm();
+      if (preset.error) return alert(preset.error);
+      const matter = getMatter(preset.matterId);
+      const defaultLabel = `${matter?.name || 'Matter'} — ${preset.taskType}`;
+      savePresetPayload(preset, 'Name this timer preset', defaultLabel);
+    }
+
+    function renamePreset(id) {
+      const preset = state.presets.find(item => item.id === id);
+      if (!preset) return;
+      const label = prompt('Rename preset', preset.label);
+      if (label === null) return;
+      preset.label = label.trim() || preset.label;
+      saveState();
+      renderPresets();
+    }
+
+    function deletePreset(id) {
+      if (!confirm('Delete this preset?')) return;
+      state.presets = state.presets.filter(item => item.id !== id);
+      saveState();
+      renderPresets();
+    }
+
+    function togglePresetFavorite(id) {
+      const preset = state.presets.find(item => item.id === id);
+      if (!preset) return;
+      preset.favorite = !preset.favorite;
+      saveState();
+      renderPresets();
+    }
+
+    function readTimerForm() {
+      if (!els.timerMatter.value) return { error: 'Pick a matter before starting the timer.' };
+      if (!els.timerDesc.value.trim()) return { error: 'Add a description before starting the timer.' };
+
+      const urgent = els.timerUrgent.value === 'Yes';
+      const serviceType = normalizeServiceType(els.timerServiceType.value, urgent);
+      if (urgent) els.timerServiceType.value = 'Paralegal';
+
+      return {
+        matterId: els.timerMatter.value,
+        taskType: els.timerTaskType.value,
+        serviceType,
+        rate: getSetPrice(serviceType, urgent),
+        description: els.timerDesc.value.trim(),
+        relatedPerson: els.timerRelated.value.trim(),
+        billing: els.timerBillable.value,
+        urgent,
+        urgentSurcharge: 0,
+        followUp: els.timerFollow.value === 'Yes',
+        followUpStatus: els.timerFollow.value === 'Yes' ? els.timerFollowStatus.value : ''
+      };
+    }
+
+    function startTimer() {
+      const timerData = readTimerForm();
+      if (timerData.error) return alert(timerData.error);
+
+      if (state.activeTimer) pauseActiveTimer(true);
+
+      state.activeTimer = normalizeTimer({
+        id: crypto.randomUUID(),
+        startedAt: new Date().toISOString(),
+        elapsedBeforeSec: 0,
+        createdAt: new Date().toISOString(),
+        ...timerData
+      });
+
+      loadTimerDraftFromTimer(state.activeTimer);
+      state.ui.lastActiveReminderBucket = 0;
+      saveState();
+      startTimerTickIfNeeded();
+      renderAll();
+      switchScreen('dashboard');
+    }
+
+    function pauseActiveTimer(quiet = false) {
+      if (!state.activeTimer) return;
+      const paused = normalizeTimer({
+        ...state.activeTimer,
+        elapsedBeforeSec: elapsedSecondsFromTimer(state.activeTimer),
+        pausedAt: new Date().toISOString(),
+        startedAt: state.activeTimer.startedAt || new Date().toISOString()
+      });
+      state.pausedTimers.unshift(paused);
+      state.activeTimer = null;
+      state.ui.lastActiveReminderBucket = 0;
+      saveState();
+      startTimerTickIfNeeded();
+      renderAll();
+      if (!quiet) switchScreen('dashboard');
+    }
+
+    function resumePausedTimer(id) {
+      const index = state.pausedTimers.findIndex(item => item.id === id);
+      if (index === -1) return;
+      if (state.activeTimer) pauseActiveTimer(true);
+
+      const timer = state.pausedTimers.splice(index, 1)[0];
+      state.activeTimer = normalizeTimer({
+        ...timer,
+        startedAt: new Date().toISOString(),
+        pausedAt: null
+      });
+
+      loadTimerDraftFromTimer(state.activeTimer);
+      state.ui.lastActiveReminderBucket = 0;
+      state.ui.lastPausedReminderBucket = 0;
+      saveState();
+      startTimerTickIfNeeded();
+      renderAll();
+      switchScreen('dashboard');
+    }
+
+    function loadPausedTimerToForm(id) {
+      const timer = state.pausedTimers.find(item => item.id === id);
+      if (!timer) return;
+      loadTimerDraftFromTimer(timer);
+      switchScreen('dashboard');
+    }
+
+    function savePausedTimer(id) {
+      const index = state.pausedTimers.findIndex(item => item.id === id);
+      if (index === -1) return;
+      const timer = state.pausedTimers.splice(index, 1)[0];
+      saveTimerAsEntry(timer);
+      state.ui.lastPausedReminderBucket = 0;
+      saveState();
+      startTimerTickIfNeeded();
+      renderAll();
+    }
+
+    function discardPausedTimer(id) {
+      const timer = state.pausedTimers.find(item => item.id === id);
+      if (!timer) return;
+      if (!confirm('Discard this paused timer?')) return;
+      state.pausedTimers = state.pausedTimers.filter(item => item.id !== id);
+      state.ui.lastPausedReminderBucket = 0;
+      saveState();
+      startTimerTickIfNeeded();
+      renderAll();
+    }
+
+    function stopTimerAndSave() {
+      if (!state.activeTimer) return;
+      saveTimerAsEntry(state.activeTimer);
+      state.activeTimer = null;
+      state.ui.lastActiveReminderBucket = 0;
+      clearTimerDraft();
+      saveState();
+      startTimerTickIfNeeded();
+      renderAll();
+      switchScreen('dashboard');
+    }
+
+    function saveTimerAsEntry(timer) {
+      const durationMin = Math.max(1, Math.round(elapsedSecondsFromTimer(timer) / 60));
+      state.entries.push(normalizeEntry({
+        id: crypto.randomUUID(),
+        matterId: timer.matterId,
+        date: todayStr(),
+        taskType: timer.taskType,
+        serviceType: normalizeServiceType(timer.serviceType, timer.urgent),
+        rate: Number(timer.rate) || getSetPrice(normalizeServiceType(timer.serviceType, timer.urgent), timer.urgent),
+        description: timer.description,
+        durationMin,
+        billing: timer.billing,
+        relatedPerson: timer.relatedPerson,
+        urgent: timer.urgent,
+        urgentSurcharge: 0,
+        followUp: timer.followUp,
+        followUpStatus: timer.followUp ? timer.followUpStatus : '',
+        followUpDone: false,
+        notes: '',
+        createdAt: new Date().toISOString(),
+        source: 'timer'
+      }));
+    }
+
+    function discardTimer() {
+      if (!state.activeTimer) {
+        if (state.pausedTimers.length) {
+          if (!confirm('Discard all paused timers?')) return;
+          state.pausedTimers = [];
+          saveState();
+          startTimerTickIfNeeded();
+          renderAll();
+        }
+        return;
+      }
+      if (!confirm('Discard the active timer?')) return;
+      state.activeTimer = null;
+      state.ui.lastActiveReminderBucket = 0;
+      clearTimerDraft();
+      saveState();
+      startTimerTickIfNeeded();
+      renderAll();
+    }
+
+    function clearTimerDraft() {
+      els.timerDesc.value = '';
+      els.timerRelated.value = '';
+      els.timerUrgent.value = 'No';
+      syncPriceDisplays();
+      els.timerFollow.value = 'No';
+      els.timerFollowStatus.value = FOLLOW_STATUSES[0];
+      els.timerBillable.value = state.settings.defaultBillable;
+      els.timerTaskType.value = state.settings.defaultTask;
+      els.timerServiceType.value = state.settings.defaultServiceType;
+      renderRecentEntryStrip();
+    }
+
+    function loadTimerDraftFromTimer(timer) {
+      els.timerMatter.value = timer.matterId;
+      els.timerTaskType.value = timer.taskType;
+      els.timerServiceType.value = normalizeServiceType(timer.serviceType, timer.urgent);
+      els.timerDesc.value = timer.description || '';
+      els.timerRelated.value = timer.relatedPerson || '';
+      els.timerBillable.value = timer.billing;
+      els.timerUrgent.value = timer.urgent ? 'Yes' : 'No';
+      syncPriceDisplays();
+      els.timerFollow.value = timer.followUp ? 'Yes' : 'No';
+      els.timerFollowStatus.value = timer.followUpStatus || FOLLOW_STATUSES[0];
+      renderRecentEntryStrip();
+    }
+
+    function startTimerTickIfNeeded() {
+      stopTimerTick();
+      if (!state.activeTimer && !state.pausedTimers.length) return;
+      timerInterval = setInterval(() => {
+        renderTimer();
+        renderPausedTimers();
+        renderGlobalReminder();
+        maybeSendReminders();
+      }, 1000);
+      maybeSendReminders();
+      renderTimer();
+    }
+
+    function stopTimerTick() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      updateDocumentTitle();
+    }
+
+    function maybeSendReminders() {
+      const reminderMinutes = Math.max(5, Number(state.settings.timerReminderMinutes) || 20);
+
+      if (state.activeTimer) {
+        const activeBucket = Math.floor(elapsedMinutesFromTimer(state.activeTimer) / reminderMinutes);
+        if (activeBucket > 0 && activeBucket > (state.ui.lastActiveReminderBucket || 0)) {
+          const matter = getMatter(state.activeTimer.matterId);
+          notifyUser('Timer still running', `${matter?.name || 'Matter'} · ${state.activeTimer.description || 'Current task'}. Stop it or click Start Timer to switch if you moved to different work.`);
+          state.ui.lastActiveReminderBucket = activeBucket;
+          saveState();
+        }
+      }
+
+      if (!state.activeTimer && state.pausedTimers.length) {
+        const oldestPaused = state.pausedTimers
+          .slice()
+          .sort((a, b) => (a.pausedAt || '').localeCompare(b.pausedAt || ''))[0];
+        const pausedBucket = Math.floor(minutesSince(oldestPaused.pausedAt || oldestPaused.startedAt) / reminderMinutes);
+        if (pausedBucket > 0 && pausedBucket > (state.ui.lastPausedReminderBucket || 0)) {
+          const matter = getMatter(oldestPaused.matterId);
+          notifyUser('Paused timer reminder', `${matter?.name || 'Matter'} still has paused time waiting. Resume it, save it, or clear it before it disappears into memory soup.`);
+          state.ui.lastPausedReminderBucket = pausedBucket;
+          saveState();
+        }
+      }
+    }
+
+    function saveSettings() {
+      state.settings.defaultBillable = els.defaultBillable.value;
+      state.settings.defaultTask = els.defaultTask.value;
+      state.settings.defaultServiceType = els.defaultServiceType.value;
+      state.settings.paralegalRate = FIXED_PRICES.Paralegal;
+      state.settings.adminRate = FIXED_PRICES.Admin;
+      state.settings.defaultUrgentSurcharge = FIXED_PRICES.RUSH;
+      state.settings.timerReminderMinutes = Math.max(5, Number(els.timerReminderMinutes.value) || 20);
+      state.settings.recentShortcutMode = state.settings.recentShortcutMode || 'smart-now';
+      state.settings.recentShortcutLimit = clampRecentShortcutLimit(state.settings.recentShortcutLimit || 8);
+
+      state.ui.manualBillable = state.settings.defaultBillable;
+      state.ui.selectedTaskType = state.settings.defaultTask;
+      state.ui.manualServiceType = state.settings.defaultServiceType;
+
+      els.timerBillable.value = state.settings.defaultBillable;
+      els.timerTaskType.value = state.settings.defaultTask;
+      els.timerServiceType.value = state.settings.defaultServiceType;
+      els.paralegalRate.value = formatMoneyInput(FIXED_PRICES.Paralegal);
+      els.adminRate.value = formatMoneyInput(FIXED_PRICES.Admin);
+      els.defaultUrgentSurcharge.value = formatMoneyInput(FIXED_PRICES.RUSH);
+
+      saveState();
+      renderTaskTypeButtons();
+      syncBillingPills();
+      syncServicePills();
+      syncUrgentToggle();
+      syncPriceDisplays();
+      renderRecentEntryStrip();
+      alert('Settings saved.');
+    }
+
+    function reuseEntry(id) {
+      const entry = state.entries.find(item => item.id === id);
+      if (!entry) return;
+      fillManualFormFromEntry(entry);
+      switchScreen('dashboard');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function fillManualFormFromEntry(entry) {
+      const serviceType = normalizeServiceType(entry.serviceType, entry.urgent);
+      els.entryMatter.value = entry.matterId || '';
+      if (!state.activeTimer) els.timerMatter.value = entry.matterId || '';
+      els.entryDate.value = todayStr();
+      els.entryDuration.value = entry.durationMin || '';
+      els.entryDesc.value = entry.description || '';
+      els.entryRelated.value = entry.relatedPerson || '';
+      els.entryNotes.value = entry.notes || '';
+      state.ui.selectedTaskType = entry.taskType || state.settings.defaultTask;
+      state.ui.manualBillable = entry.billing || state.settings.defaultBillable;
+      state.ui.manualServiceType = serviceType;
+      state.ui.manualFollowUp = Boolean(entry.followUp);
+      state.ui.manualUrgent = Boolean(entry.urgent);
+      els.entryFollowStatus.value = entry.followUpStatus || FOLLOW_STATUSES[0];
+      renderTaskTypeButtons();
+      syncBillingPills();
+      syncServicePills();
+      syncFollowToggle();
+      syncUrgentToggle();
+      syncPriceDisplays();
+      renderRecentEntryStrip();
+      saveState();
+    }
+
+    function duplicateEntry(id) {
+      const entry = state.entries.find(item => item.id === id);
+      if (!entry) return;
+      const clone = normalizeEntry({
+        ...entry,
+        id: crypto.randomUUID(),
+        date: todayStr(),
+        rate: getSetPrice(entry.serviceType, entry.urgent),
+        followUpDone: false,
+        createdAt: new Date().toISOString(),
+        source: 'manual'
+      });
+      state.entries.push(clone);
+      saveState();
+      renderAll();
+      switchScreen('dashboard');
+    }
+
+    function cleanPinnedRecentShortcuts() {
+      const valid = new Set(state.entries.map(entry => getEntryShortcutSignature(entry)));
+      state.ui.pinnedRecentSignatures = (state.ui.pinnedRecentSignatures || []).filter(signature => valid.has(signature));
+    }
+
+    function deleteEntry(id) {
+      if (!confirm('Delete this entry?')) return;
+      state.entries = state.entries.filter(entry => entry.id !== id);
+      cleanPinnedRecentShortcuts();
+      saveState();
+      renderAll();
+    }
+
+    function markFollowUpDone(id) {
+      const entry = state.entries.find(item => item.id === id);
+      if (!entry) return;
+      entry.followUpDone = true;
+      saveState();
+      renderAll();
+    }
+
+    function deleteMatter(id) {
+      const linkedCount = state.entries.filter(entry => entry.matterId === id).length;
+      const presetCount = state.presets.filter(preset => preset.matterId === id).length;
+      const pausedCount = state.pausedTimers.filter(timer => timer.matterId === id).length + (state.activeTimer?.matterId === id ? 1 : 0);
+      const message = `Delete this matter? Linked entries: ${linkedCount}. Presets: ${presetCount}. Timers: ${pausedCount}. Existing entries keep their saved text and totals but lose the live matter link.`;
+      if (!confirm(message)) return;
+
+      state.entries = state.entries.map(entry => entry.matterId === id ? { ...entry, matterId: '' } : entry);
+      state.presets = state.presets.map(preset => preset.matterId === id ? { ...preset, matterId: '' } : preset);
+      state.pausedTimers = state.pausedTimers.map(timer => timer.matterId === id ? { ...timer, matterId: '' } : timer);
+      if (state.activeTimer?.matterId === id) state.activeTimer.matterId = '';
+      state.matters = state.matters.filter(matter => matter.id !== id);
+      cleanPinnedRecentShortcuts();
+      saveState();
+      renderAll();
+    }
+
+    function exportForExcel() {
+      const date = els.reviewDate.value || todayStr();
+      const rows = getReviewFilteredEntries()
+        .slice()
+        .sort((a, b) => (a.createdAt || '').localeCompare(b.createdAt || ''))
+        .map(entry => buildExportRow(entry));
+
+      if (!rows.length) return alert('No rows to export for that date and filter combo.');
+      downloadRowsAsCsv(rows, `paralegal-work-log-review-${date}.csv`);
+    }
+
+    function exportWeekForExcel() {
+      const start = els.weeklyStart.value || startOfWeekMonday(todayStr());
+      const rows = getWeeklyFilteredEntries()
+        .slice()
+        .sort((a, b) => `${a.date}|${a.createdAt || ''}`.localeCompare(`${b.date}|${b.createdAt || ''}`))
+        .map(entry => buildExportRow(entry));
+
+      if (!rows.length) return alert('No rows to export for that week and filter combo.');
+      downloadRowsAsCsv(rows, `paralegal-work-log-week-${start}.csv`);
+    }
+
+    function buildExportRow(entry) {
+      const matter = getMatter(entry.matterId);
+      return {
+        Date: entry.date,
+        'Logged Time': formatLoggedTime(entry.createdAt),
+        'Matter / Client': matter?.name || '',
+        'Matter Type': matter?.type || '',
+        'Task Type': entry.taskType,
+        Description: entry.description,
+        'Related Person': entry.relatedPerson || '',
+        'Service Type': entry.serviceType,
+        'Price Type': getPriceType(entry),
+        Billing: entry.billing,
+        'Set Price': entry.rate,
+        'Duration (Minutes)': entry.durationMin,
+        'Duration (H:MM)': formatDurationHMM(entry.durationMin),
+        'Line Total': entry.billing === 'billable' ? calcLineTotal(entry) : 0,
+        RUSH: entry.urgent ? 'Yes' : 'No',
+        'Follow-Up Status': entry.followUp && !entry.followUpDone ? entry.followUpStatus : '',
+        'Entry Source': entry.source || 'manual',
+        Notes: entry.notes || ''
+      };
+    }
+
+    function downloadRowsAsCsv(rows, filename) {
+      const headers = Object.keys(rows[0]);
+      const csv = [headers.join(',')]
+        .concat(rows.map(row => headers.map(key => csvEscape(row[key])).join(',')))
+        .join('\n');
+      downloadFile(csv, filename, 'text/csv;charset=utf-8;');
+    }
+
+    function backupData() {
+      downloadFile(JSON.stringify(state, null, 2), `paralegal-work-log-backup-${todayStr()}.json`, 'application/json');
+    }
+
+    function restoreData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          if (!parsed || typeof parsed !== 'object') throw new Error('Invalid file');
+          state = normalizeState(parsed);
+          saveState();
+          applyTheme();
+          seedInputs();
+          renderAll();
+          startTimerTickIfNeeded();
+          alert('Backup restored.');
+        } catch {
+          alert('That backup file could not be restored.');
+        } finally {
+          event.target.value = '';
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function toggleTheme() {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      saveState();
+      applyTheme();
+      renderAll();
+    }
+
+    function applyTheme() {
+      document.body.classList.toggle('dark', state.theme === 'dark');
+      document.body.setAttribute('data-theme', state.theme);
+    }
+
+    function resetData() {
+      if (!confirm('Reset all app data? This deletes matters, entries, timer state, paused timers, presets, and settings.')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = structuredClone(defaultState);
+      applyTheme();
+      seedInputs();
+      renderAll();
+      stopTimerTick();
+      closeModal();
+      alert('App data reset.');
+    }
+
+    function showReminderPreview() {
+      notifyUser('Timer reminder preview', 'This is the extra nudge: browser alert plus in-app reminder, while the page is open.');
+      els.timerReminder.className = 'timer-reminder warn';
+      els.timerReminder.textContent = 'Reminder preview: stop, pause, or switch the timer when the task changes. Paused timers also need attention so they do not fossilize.';
+      setTimeout(renderTimer, 2600);
+    }
+
+    async function requestNotificationPermission() {
+      if (!('Notification' in window)) {
+        alert('This browser does not support notifications for this file.');
+        return;
+      }
+      if (Notification.permission === 'granted') {
+        notifyUser('Browser alerts already enabled', 'This app can nudge you about running and paused timers while the tab stays open.');
+        updateNotifyButton();
+        return;
+      }
+      const permission = await Notification.requestPermission();
+      updateNotifyButton();
+      if (permission === 'granted') {
+        notifyUser('Browser alerts enabled', 'Timer reminders can now appear while this page is open.');
+      }
+    }
+
+    function updateNotifyButton() {
+      if (!els.notifyPermissionBtn) return;
+      if (!('Notification' in window)) {
+        els.notifyPermissionBtn.textContent = 'Browser Alerts Unsupported';
+        els.notifyPermissionBtn.disabled = true;
+        return;
+      }
+      els.notifyPermissionBtn.disabled = false;
+      if (Notification.permission === 'granted') {
+        els.notifyPermissionBtn.textContent = 'Browser Alerts Enabled';
+      } else if (Notification.permission === 'denied') {
+        els.notifyPermissionBtn.textContent = 'Browser Alerts Blocked';
+      } else {
+        els.notifyPermissionBtn.textContent = 'Enable Browser Alerts';
+      }
+    }
+
+    function notifyUser(title, body) {
+      if (!('Notification' in window)) return;
+      if (Notification.permission !== 'granted') return;
+      try {
+        new Notification(title, { body, silent: false });
+      } catch {}
+    }
+
+    function beforeUnloadGuard(event) {
+      if (!state.activeTimer) return;
+      event.preventDefault();
+      event.returnValue = 'A timer is still running.';
+      return 'A timer is still running.';
+    }
+
+    function syncBillingPills() {
+      document.querySelectorAll('[data-toggle="billable"]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.value === state.ui.manualBillable);
+      });
+    }
+
+    function syncServicePills() {
+      document.querySelectorAll('[data-toggle="service"]').forEach(btn => {
+        const lockedByUrgent = state.ui.manualUrgent && btn.dataset.value === 'Admin';
+        btn.classList.toggle('active', btn.dataset.value === state.ui.manualServiceType);
+        btn.disabled = lockedByUrgent;
+        btn.setAttribute('aria-disabled', lockedByUrgent ? 'true' : 'false');
+      });
+      syncPriceDisplays();
+    }
+
+    function syncFollowToggle() {
+      els.followToggle.classList.toggle('active', state.ui.manualFollowUp);
+    }
+
+    function syncUrgentToggle() {
+      els.urgentToggle.classList.toggle('active', state.ui.manualUrgent);
+      syncPriceDisplays();
+    }
+
+    function syncPriceDisplays() {
+      if (els.entryUrgentFee) {
+        const entryPrice = getSetPrice(normalizeServiceType(state.ui.manualServiceType, state.ui.manualUrgent), state.ui.manualUrgent);
+        els.entryUrgentFee.value = formatCurrency(entryPrice);
+      }
+      if (els.timerUrgentFee) {
+        const timerUrgent = els.timerUrgent?.value === 'Yes';
+        const timerService = normalizeServiceType(els.timerServiceType?.value || state.settings.defaultServiceType, timerUrgent);
+        els.timerUrgentFee.value = formatCurrency(getSetPrice(timerService, timerUrgent));
+      }
+    }
+
+    function getSetPrice(serviceType, urgent = false) {
+      if (urgent) return FIXED_PRICES.RUSH;
+      return serviceType === 'Admin' ? FIXED_PRICES.Admin : FIXED_PRICES.Paralegal;
+    }
+
+    function getRateForService(serviceType) {
+      return getSetPrice(serviceType, false);
+    }
+
+    function inferServiceType(entry) {
+      return entry.taskType === 'Admin' ? 'Admin' : (entry.serviceType || 'Paralegal');
+    }
+
+    function normalizeServiceType(serviceType, urgent = false) {
+      if (urgent) return 'Paralegal';
+      return serviceType === 'Admin' ? 'Admin' : 'Paralegal';
+    }
+
+    function getPriceType(entry) {
+      return entry.urgent ? 'RUSH' : (entry.serviceType === 'Admin' ? 'Admin' : 'Paralegal');
+    }
+
+    function calcLineTotal(entry) {
+      if (entry.billing !== 'billable') return 0;
+      return roundMoney(Number(entry.rate || getSetPrice(entry.serviceType, entry.urgent)) || 0);
+    }
+
+    function formatMinutesShort(mins) {
+      const total = Math.max(0, Number(mins) || 0);
+      const h = Math.floor(total / 60);
+      const m = total % 60;
+      if (!h) return `${m}m`;
+      if (!m) return `${h}h`;
+      return `${h}h ${m}m`;
+    }
+
+    function elapsedSecondsFromTimer(timer) {
+      const base = Number(timer.elapsedBeforeSec || 0);
+      if (timer.pausedAt && !timer.startedAt) return base;
+      if (timer.pausedAt) return base;
+      if (!timer.startedAt) return base;
+      return Math.max(0, base + Math.floor((Date.now() - new Date(timer.startedAt).getTime()) / 1000));
+    }
+
+    function elapsedMinutesFromTimer(timer) {
+      return Math.max(0, Math.round(elapsedSecondsFromTimer(timer) / 60));
+    }
+
+    function formatElapsedTimer(timer) {
+      const diff = elapsedSecondsFromTimer(timer);
+      const h = String(Math.floor(diff / 3600)).padStart(2, '0');
+      const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+      const s = String(diff % 60).padStart(2, '0');
+      return `${h}:${m}:${s}`;
+    }
+
+    function minutesSince(isoString) {
+      if (!isoString) return 0;
+      return Math.max(0, Math.round((Date.now() - new Date(isoString).getTime()) / 60000));
+    }
+
+    function formatDateTimeShort(value) {
+      if (!value) return '';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      return date.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+
+    function formatEntryTime(entry) {
+      return `${entry.date} · ${entry.source === 'timer' ? 'Timer' : 'Manual'}`;
+    }
+
+    function updateDocumentTitle(elapsed = null) {
+      if (state.activeTimer) {
+        document.title = `⏱ ${elapsed || formatElapsedTimer(state.activeTimer)} • Paralegal Work Log`;
+      } else if (state.pausedTimers.length) {
+        document.title = `⏸ ${state.pausedTimers.length} paused • Paralegal Work Log`;
+      } else {
+        document.title = 'Paralegal Work Log';
+      }
+    }
+
+    function formatDurationHMM(mins) {
+      const total = Math.max(0, Number(mins) || 0);
+      const hours = Math.floor(total / 60);
+      const minutes = total % 60;
+      return `${hours}:${String(minutes).padStart(2, '0')}`;
+    }
+
+    function formatLoggedTime(value) {
+      if (!value) return '';
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return '';
+      return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    }
+
+    function roundMoney(value) {
+      return Math.round((Number(value) || 0) * 100) / 100;
+    }
+
+    function normalizeMoneyInput(value, fallback = 0) {
+      const parsed = Number(value);
+      if (Number.isFinite(parsed)) return roundMoney(parsed);
+      return roundMoney(fallback);
+    }
+
+    function formatMoneyInput(value) {
+      const num = Number(value);
+      if (!Number.isFinite(num) || num === 0) return '';
+      return String(roundMoney(num));
+    }
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0);
+    }
+
+    function getMatter(id) {
+      return state.matters.find(matter => matter.id === id);
+    }
+
+    function dateToInputValue(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    function todayStr() {
+      return dateToInputValue(new Date());
+    }
+
+    function startOfWeekMonday(dateStr) {
+      const d = new Date(`${dateStr}T00:00:00`);
+      const day = (d.getDay() + 6) % 7;
+      d.setDate(d.getDate() - day);
+      return dateToInputValue(d);
+    }
+
+    function addDaysToDateStr(dateStr, days) {
+      const d = new Date(`${dateStr}T00:00:00`);
+      d.setDate(d.getDate() + days);
+      return dateToInputValue(d);
+    }
+
+    function formatShortDate(dateStr) {
+      const d = new Date(`${dateStr}T00:00:00`);
+      if (Number.isNaN(d.getTime())) return dateStr;
+      return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    }
+
+    function csvEscape(value) {
+      const str = String(value ?? '');
+      return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+    }
+
+    function downloadFile(content, filename, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function escapeAttribute(value) {
+      return escapeHtml(value);
+    }
+
+    function fillSelect(select, items, options = {}) {
+      const normalized = items.map(item => typeof item === 'string' ? { value: item, label: item } : item);
+      const current = select.value;
+      const html = [];
+      if (options.placeholder) html.push(`<option value="">${escapeHtml(options.placeholder)}</option>`);
+      normalized.forEach(item => {
+        html.push(`<option value="${escapeAttribute(item.value)}">${escapeHtml(item.label)}</option>`);
+      });
+      select.innerHTML = html.join('');
+      if (normalized.some(item => item.value === current)) {
+        select.value = current;
+      } else if (!options.placeholder && normalized[0]) {
+        select.value = normalized[0].value;
+      } else if (options.placeholder) {
+        select.value = current && normalized.some(item => item.value === current) ? current : '';
+      }
+    }
+
+    function useMatter(matterId) {
+      els.entryMatter.value = matterId;
+      els.timerMatter.value = matterId;
+      renderRecentEntryStrip();
+      renderTimer();
+      switchScreen('dashboard');
+    }
+
+    function openEntryEditor(id) {
+      const entry = state.entries.find(item => item.id === id);
+      if (!entry) return;
+      modalState = { type: 'entry', id };
+      els.modalTitle.textContent = 'Edit Entry';
+      els.modalSubtitle.textContent = 'Change the entry right here instead of hopping tabs like an overcaffeinated squirrel.';
+      const matterOptions = state.matters.slice().sort((a, b) => a.name.localeCompare(b.name))
+        .map(matter => `<option value="${escapeAttribute(matter.id)}"${matter.id === entry.matterId ? ' selected' : ''}>${escapeHtml(matter.name)} — ${escapeHtml(matter.type)}</option>`)
+        .join('');
+      const taskOptions = TASK_TYPES.map(task => `<option value="${escapeAttribute(task)}"${task === entry.taskType ? ' selected' : ''}>${escapeHtml(task)}</option>`).join('');
+      const followOptions = FOLLOW_STATUSES.map(status => `<option value="${escapeAttribute(status)}"${status === (entry.followUpStatus || FOLLOW_STATUSES[0]) ? ' selected' : ''}>${escapeHtml(status)}</option>`).join('');
+      els.modalBody.innerHTML = `
+        <div class="form-grid">
+          <div class="field">
+            <label for="editEntryMatter">Matter / Client</label>
+            <select id="editEntryMatter"><option value="">Select matter</option>${matterOptions}</select>
+          </div>
+          <div class="field">
+            <label for="editEntryDate">Date</label>
+            <input id="editEntryDate" type="date" value="${escapeAttribute(entry.date)}" />
+          </div>
+          <div class="field">
+            <label for="editEntryTask">Task Type</label>
+            <select id="editEntryTask">${taskOptions}</select>
+          </div>
+          <div class="field">
+            <label for="editEntryService">Service Type</label>
+            <select id="editEntryService">
+              <option value="Paralegal"${entry.serviceType === 'Paralegal' ? ' selected' : ''}>Paralegal</option>
+              <option value="Admin"${entry.serviceType === 'Admin' ? ' selected' : ''}>Admin</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="editEntryBilling">Billing</label>
+            <select id="editEntryBilling">
+              <option value="billable"${entry.billing === 'billable' ? ' selected' : ''}>Billable</option>
+              <option value="non-billable"${entry.billing === 'non-billable' ? ' selected' : ''}>Non-billable</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="editEntryDuration">Duration (minutes)</label>
+            <input id="editEntryDuration" type="number" min="1" step="1" value="${escapeAttribute(entry.durationMin)}" />
+          </div>
+          <div class="field full">
+            <label for="editEntryDesc">Description</label>
+            <input id="editEntryDesc" type="text" maxlength="180" value="${escapeAttribute(entry.description)}" />
+          </div>
+          <div class="field">
+            <label for="editEntryRelated">Related Person</label>
+            <input id="editEntryRelated" type="text" value="${escapeAttribute(entry.relatedPerson || '')}" />
+          </div>
+          <div class="field">
+            <label for="editEntryUrgent">RUSH</label>
+            <select id="editEntryUrgent">
+              <option value="No"${!entry.urgent ? ' selected' : ''}>No</option>
+              <option value="Yes"${entry.urgent ? ' selected' : ''}>Yes</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="editEntryUrgentFee">Applied Price</label>
+            <input id="editEntryUrgentFee" type="text" readonly value="${escapeAttribute(formatCurrency(getSetPrice(entry.serviceType, entry.urgent)))}" />
+          </div>
+          <div class="field">
+            <label for="editEntryFollow">Follow-Up</label>
+            <select id="editEntryFollow">
+              <option value="No"${!entry.followUp ? ' selected' : ''}>No follow-up</option>
+              <option value="Yes"${entry.followUp ? ' selected' : ''}>Needs follow-up</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="editEntryFollowStatus">Follow-Up Status</label>
+            <select id="editEntryFollowStatus">${followOptions}</select>
+          </div>
+          <div class="field full">
+            <label for="editEntryNotes">Notes</label>
+            <textarea id="editEntryNotes">${escapeHtml(entry.notes || '')}</textarea>
+          </div>
+        </div>
+      `;
+      const urgentEl = document.getElementById('editEntryUrgent');
+      const serviceEl = document.getElementById('editEntryService');
+      const priceEl = document.getElementById('editEntryUrgentFee');
+      const syncEditPrice = () => {
+        if (urgentEl.value === 'Yes') serviceEl.value = 'Paralegal';
+        priceEl.value = formatCurrency(getSetPrice(normalizeServiceType(serviceEl.value, urgentEl.value === 'Yes'), urgentEl.value === 'Yes'));
+      };
+      urgentEl.addEventListener('change', syncEditPrice);
+      serviceEl.addEventListener('change', syncEditPrice);
+      syncEditPrice();
+      showModal();
+    }
+
+    function openMatterEditor(id) {
+      const matter = state.matters.find(item => item.id === id);
+      if (!matter) return;
+      modalState = { type: 'matter', id, color: matter.color || '#9d7eae' };
+      els.modalTitle.textContent = 'Edit Matter';
+      els.modalSubtitle.textContent = 'Update matter details from wherever you are instead of digging through tabs like buried paperwork.';
+      const typeOptions = MATTER_TYPES.map(type => `<option value="${escapeAttribute(type)}"${type === matter.type ? ' selected' : ''}>${escapeHtml(type)}</option>`).join('');
+      const statusOptions = MATTER_STATUSES.map(status => `<option value="${escapeAttribute(status)}"${status === matter.status ? ' selected' : ''}>${escapeHtml(status)}</option>`).join('');
+      els.modalBody.innerHTML = `
+        <div class="form-grid">
+          <div class="field">
+            <label for="editMatterName">Client / Matter Name</label>
+            <input id="editMatterName" type="text" value="${escapeAttribute(matter.name)}" />
+          </div>
+          <div class="field">
+            <label for="editMatterType">Matter Type</label>
+            <select id="editMatterType">${typeOptions}</select>
+          </div>
+          <div class="field">
+            <label for="editMatterStatus">Status</label>
+            <select id="editMatterStatus">${statusOptions}</select>
+          </div>
+          <div class="field">
+            <label>Matter Color</label>
+            <div class="modal-color-picker" id="editMatterColorPicker"></div>
+          </div>
+          <div class="field full">
+            <label for="editMatterNotes">Notes</label>
+            <textarea id="editMatterNotes">${escapeHtml(matter.notes || '')}</textarea>
+          </div>
+        </div>
+      `;
+      renderModalColorPicker(matter.color || '#9d7eae');
+      showModal();
+    }
+
+    function renderModalColorPicker(selected) {
+      const wrap = document.getElementById('editMatterColorPicker');
+      if (!wrap) return;
+      modalState.color = selected;
+      wrap.innerHTML = MATTER_COLORS.map(color => `
+        <button type="button" class="modal-color-chip ${selected === color.value ? 'active' : ''}" data-color="${escapeAttribute(color.value)}" style="background:${escapeAttribute(color.value)};" title="${escapeAttribute(color.label)}"></button>
+      `).join('');
+      wrap.querySelectorAll('[data-color]').forEach(btn => {
+        btn.addEventListener('click', () => renderModalColorPicker(btn.dataset.color));
+      });
+    }
+
+    function showModal() {
+      els.modalOverlay.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      modalState = { type: null, id: null, color: '#9d7eae' };
+      els.modalOverlay.classList.add('hidden');
+      els.modalBody.innerHTML = '';
+    }
+
+    function saveModalChanges() {
+      if (modalState.type === 'entry') {
+        const entry = state.entries.find(item => item.id === modalState.id);
+        if (!entry) return;
+        const urgent = document.getElementById('editEntryUrgent').value === 'Yes';
+        const serviceType = normalizeServiceType(document.getElementById('editEntryService').value, urgent);
+        const editedDuration = Number(document.getElementById('editEntryDuration').value) || 0;
+        if (editedDuration < 1) return alert('Duration must be at least 1 minute.');
+        Object.assign(entry, normalizeEntry({
+          ...entry,
+          matterId: document.getElementById('editEntryMatter').value,
+          date: document.getElementById('editEntryDate').value || todayStr(),
+          taskType: document.getElementById('editEntryTask').value,
+          serviceType,
+          rate: getSetPrice(serviceType, urgent),
+          description: document.getElementById('editEntryDesc').value.trim(),
+          durationMin: editedDuration,
+          billing: document.getElementById('editEntryBilling').value,
+          relatedPerson: document.getElementById('editEntryRelated').value.trim(),
+          urgent,
+          urgentSurcharge: 0,
+          followUp: document.getElementById('editEntryFollow').value === 'Yes',
+          followUpStatus: document.getElementById('editEntryFollow').value === 'Yes' ? document.getElementById('editEntryFollowStatus').value : '',
+          notes: document.getElementById('editEntryNotes').value.trim()
+        }));
+      }
+
+      if (modalState.type === 'matter') {
+        const matter = state.matters.find(item => item.id === modalState.id);
+        if (!matter) return;
+        matter.name = document.getElementById('editMatterName').value.trim() || matter.name;
+        matter.type = document.getElementById('editMatterType').value;
+        matter.status = document.getElementById('editMatterStatus').value;
+        matter.color = modalState.color || matter.color;
+        matter.notes = document.getElementById('editMatterNotes').value.trim();
+      }
+
+      saveState();
+      closeModal();
+      renderAll();
+    }
+
+    window.applyPreset = applyPreset;
+    window.renamePreset = renamePreset;
+    window.togglePresetFavorite = togglePresetFavorite;
+    window.deletePreset = deletePreset;
+    window.useMatter = useMatter;
+    window.openEntryEditor = openEntryEditor;
+    window.openMatterEditor = openMatterEditor;
+    window.deleteEntry = deleteEntry;
+    window.deleteMatter = deleteMatter;
+    window.markFollowUpDone = markFollowUpDone;
+    window.pauseActiveTimer = pauseActiveTimer;
+    window.stopTimerAndSave = stopTimerAndSave;
+    window.resumePausedTimer = resumePausedTimer;
+    window.savePausedTimer = savePausedTimer;
+    window.discardPausedTimer = discardPausedTimer;
+  </script>
+
+</body>
+</html>
