@@ -3,8 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Paralegal Work Log — Preview</title>
-  <meta name="theme-color" content="#8c6aa6" />
+  <title>Paralegal Work Log — Invoice Ready</title>
+  <!--
+    This single‑file application implements a small paralegal work log.  It stores
+    matters and time entries in localStorage and exports invoice data in
+    tenth‑hour increments.  The user can add matters with a status, log time
+    manually or via a running timer and generate an invoice on demand.  All
+    billing calculations use 0.1 hour increments: minutes are rounded up to
+    the next 6‑minute block before applying an hourly rate.  Service rates are
+    fixed at $65/hr for Admin, $75/hr for Paralegal, and $85/hr for RUSH.  This
+    file is self contained and requires no backend.
+  -->
   <style>
     :root {
       color-scheme: light;
@@ -46,42 +55,45 @@
       --topbar-height: 4.625rem;
       --bottom-nav-height: 5.25rem;
       --page-pad: 1rem;
+      /* Input background for light mode uses the same surface as other elements */
+      --input-bg: var(--surface);
     }
-
     [data-theme="dark"] {
       color-scheme: dark;
-      --bg: #17131d;
-      --surface: #221b2b;
-      --surface-elevated: #2b2235;
-      --surface-muted: #31273d;
+      /* Softer dark theme with clear contrast.  The page background is darker
+         than cards, cards are darker than inputs, and text stays light. */
+      --bg: #1d1826;
+      --surface: #272033;
+      --surface-elevated: #31293f;
+      --surface-muted: #3a314b;
       --text: #f4edf8;
-      --text-muted: #b7a9c3;
-      --border: #433650;
-      --border-strong: #5a4a69;
-      --focus-ring: #b695d2;
-      --accent: #b695d2;
-      --accent-hover: #c4a8da;
-      --accent-soft: #3a2d47;
+      --text-muted: #c3b7cf;
+      --border: #4a405e;
+      --border-strong: #62567a;
+      --focus-ring: #c0a5d8;
+      --accent: #b89acb;
+      --accent-hover: #c7add8;
+      --accent-soft: #433654;
       --accent-foreground: #17131d;
-      --success: #66b28a;
-      --success-soft: #23372d;
-      --warning: #d0a256;
-      --warning-soft: #3c2f18;
-      --danger: #d27b92;
-      --danger-soft: #41232c;
-      --info: #88a7e6;
-      --info-soft: #22304f;
-      --service-admin: #9ab0c6;
-      --service-admin-soft: #273340;
-      --service-paralegal: #c1afe1;
-      --service-paralegal-soft: #332843;
-      --service-rush: #e1a18f;
-      --service-rush-soft: #442b25;
-      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
-      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.28);
-      --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.36);
+      --success: #79bf9a;
+      --success-soft: #26382f;
+      --warning: #ddb26a;
+      --warning-soft: #43331c;
+      --danger: #de8aa0;
+      --danger-soft: #46262f;
+      --info: #96b4ea;
+      --info-soft: #263454;
+      --service-admin: #aabdd1;
+      --service-admin-soft: #2a3646;
+      --service-paralegal: #c8b7e4;
+      --service-paralegal-soft: #3a2d49;
+      --service-rush: #e6ad9a;
+      --service-rush-soft: #4a2f29;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.32);
+      --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.4);
+      --input-bg: #342c43;
     }
-
     * { box-sizing: border-box; }
     html, body { min-height: 100%; }
     html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
@@ -92,19 +104,16 @@
       font: 14px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       letter-spacing: 0.01em;
     }
-
     button, input, select, textarea { font: inherit; }
     a { color: inherit; text-decoration: none; }
     :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
     .tabular { font-variant-numeric: tabular-nums; }
     .hidden { display: none !important; }
-
     .app {
       min-height: 100vh;
       display: grid;
       grid-template-columns: 1fr;
     }
-
     .sidebar {
       display: none;
       background: var(--surface);
@@ -114,25 +123,18 @@
       top: 0;
       align-self: start;
     }
-
     .sidebar-inner {
       width: var(--sidebar-width);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
-
-    .brand-wrap {
-      padding: 1.25rem;
-      border-bottom: 1px solid var(--border);
-    }
-
+    .brand-wrap { padding: 1.25rem; border-bottom: 1px solid var(--border); }
     .brand-card {
       background: var(--accent-soft);
       border-radius: var(--radius-lg);
       padding: 1rem;
     }
-
     .brand-kicker {
       font-size: 11px;
       text-transform: uppercase;
@@ -141,27 +143,9 @@
       font-weight: 700;
       margin: 0 0 0.5rem;
     }
-
-    .brand-title {
-      margin: 0;
-      font-size: 1.125rem;
-      font-weight: 700;
-    }
-
-    .brand-sub {
-      margin: 0.35rem 0 0;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    .sidebar-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      padding: 0.75rem;
-      flex: 1;
-    }
-
+    .brand-title { margin: 0; font-size: 1.125rem; font-weight: 700; }
+    .brand-sub { margin: 0.35rem 0 0; color: var(--text-muted); font-size: 0.95rem; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 0.25rem; padding: 0.75rem; flex: 1; }
     .nav-link {
       display: flex;
       align-items: center;
@@ -177,27 +161,10 @@
       background: transparent;
       text-align: left;
     }
-
     .nav-link:hover { background: var(--surface-muted); }
-    .nav-link.active {
-      background: var(--accent);
-      color: var(--accent-foreground);
-    }
-
-    .sidebar-footer {
-      padding: 1rem 1.25rem;
-      border-top: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: 12px;
-    }
-
-    .main {
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
+    .nav-link.active { background: var(--accent); color: var(--accent-foreground); }
+    .sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12px; }
+    .main { min-width: 0; display: flex; flex-direction: column; min-height: 100vh; }
     .topbar {
       position: sticky;
       top: 0;
@@ -206,7 +173,6 @@
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
-
     .topbar-inner {
       min-height: var(--topbar-height);
       display: flex;
@@ -215,7 +181,6 @@
       gap: 1rem;
       padding: 0.75rem var(--page-pad);
     }
-
     .topbar-kicker {
       margin: 0 0 0.125rem;
       font-size: 11px;
@@ -224,57 +189,15 @@
       color: var(--text-muted);
       font-weight: 700;
     }
-
-    .topbar-title {
-      margin: 0;
-      font-size: 1.125rem;
-      font-weight: 700;
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .page {
-      padding: 1rem var(--page-pad) calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 1rem);
-    }
-
+    .topbar-title { margin: 0; font-size: 1.125rem; font-weight: 700; }
+    .topbar-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end; }
+    .page { padding: 1rem var(--page-pad) calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 1rem); }
     .page-view { display: none; }
     .page-view.active { display: block; }
-
-    .page-header {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .page-title {
-      margin: 0;
-      font-size: clamp(1.75rem, 2.2vw, 2rem);
-      line-height: 1.15;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .page-description {
-      margin: 0.35rem 0 0;
-      color: var(--text-muted);
-      max-width: 64ch;
-      font-size: 0.98rem;
-    }
-
-    .page-header-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
+    .page-header { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+    .page-title { margin: 0; font-size: clamp(1.75rem, 2.2vw, 2rem); line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
+    .page-description { margin: 0.35rem 0 0; color: var(--text-muted); max-width: 64ch; font-size: 0.98rem; }
+    .page-header-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -282,21 +205,10 @@
       box-shadow: var(--shadow-sm);
       overflow: clip;
     }
-
     .card-header { padding: 1rem 1rem 0.75rem; }
     .card-content { padding: 0 1rem 1rem; }
-    .card-title {
-      margin: 0;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-    }
-    .card-description {
-      margin: 0.35rem 0 0;
-      color: var(--text-muted);
-      font-size: 0.92rem;
-    }
-
+    .card-title { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; }
+    .card-description { margin: 0.35rem 0 0; color: var(--text-muted); font-size: 0.92rem; }
     .button {
       min-height: 2.5rem;
       border-radius: var(--radius-md);
@@ -306,7 +218,6 @@
       cursor: pointer;
       transition: background-color .15s ease, color .15s ease, border-color .15s ease, opacity .15s ease;
     }
-
     .button:disabled { opacity: .5; cursor: not-allowed; }
     .button.primary { background: var(--accent); color: var(--accent-foreground); }
     .button.primary:hover { background: var(--accent-hover); }
@@ -315,7 +226,6 @@
     .button.ghost { background: transparent; color: var(--text); }
     .button.ghost:hover { background: var(--surface-muted); }
     .button.danger { background: var(--danger); color: white; }
-
     .badge {
       display: inline-flex;
       align-items: center;
@@ -334,73 +244,21 @@
     .badge.service-admin { background: var(--service-admin-soft); color: var(--service-admin); }
     .badge.service-paralegal { background: var(--service-paralegal-soft); color: var(--service-paralegal); }
     .badge.service-rush { background: var(--service-rush-soft); color: var(--service-rush); }
-
-    .grid-main {
-      display: grid;
-      gap: 1.5rem;
-      grid-template-columns: 1fr;
-    }
-
+    .grid-main { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
     .stack { display: grid; gap: 1rem; }
     .stack-lg { display: grid; gap: 1.5rem; }
-
-    .empty-card {
-      border-style: dashed;
-      background: var(--surface-elevated);
-    }
-
-    .soft-panel {
-      background: var(--surface-muted);
-      border-radius: var(--radius-md);
-      padding: 1rem;
-    }
-
-    .timer-readout {
-      margin-top: 1rem;
-      font-size: clamp(2rem, 5vw, 2.4rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      align-items: center;
-    }
-
+    .empty-card { border-style: dashed; background: var(--surface-elevated); }
+    .soft-panel { background: var(--surface-muted); border-radius: var(--radius-md); padding: 1rem; }
+    .timer-readout { margin-top: 1rem; font-size: clamp(2rem, 5vw, 2.4rem); font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
     .spaced { justify-content: space-between; }
-
     .muted { color: var(--text-muted); }
     .small { font-size: 0.92rem; }
     .tiny { font-size: 0.8rem; }
     .strong { font-weight: 700; }
-
-    .matter-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      border-radius: 999px;
-      background: var(--surface-muted);
-      padding: 0.5rem 0.875rem;
-      color: var(--text-muted);
-      font-size: 0.92rem;
-    }
-
-    .matter-dot {
-      width: 0.75rem;
-      height: 0.75rem;
-      border-radius: 999px;
-      display: inline-block;
-      flex: none;
-    }
-
-    .list {
-      display: grid;
-      gap: 0.75rem;
-    }
-
+    .matter-chip { display: inline-flex; align-items: center; gap: 0.5rem; border-radius: 999px; background: var(--surface-muted); padding: 0.5rem 0.875rem; color: var(--text-muted); font-size: 0.92rem; }
+    .matter-dot { width: 0.75rem; height: 0.75rem; border-radius: 999px; display: inline-block; flex: none; }
+    .list { display: grid; gap: 0.75rem; }
     .list-item {
       display: flex;
       flex-direction: column;
@@ -410,7 +268,6 @@
       border-radius: var(--radius-md);
       background: var(--surface-elevated);
     }
-
     .timeline-item {
       display: grid;
       gap: 0.85rem;
@@ -421,46 +278,12 @@
       background: var(--surface);
       overflow: hidden;
     }
-
-    .timeline-color {
-      min-height: 100%;
-      background: var(--accent);
-    }
-
-    .timeline-body {
-      padding: 0.95rem 1rem 1rem 0.9rem;
-      display: grid;
-      gap: 0.45rem;
-    }
-
-    .totals-grid {
-      display: grid;
-      gap: 0.75rem;
-      grid-template-columns: repeat(1, minmax(0,1fr));
-    }
-
-    .total-box {
-      background: var(--surface-elevated);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 0.9rem 1rem;
-    }
-
-    .total-label {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 700;
-      margin: 0;
-    }
-
-    .total-value {
-      margin: 0.35rem 0 0;
-      font-size: 1.2rem;
-      font-weight: 700;
-    }
-
+    .timeline-color { min-height: 100%; background: var(--accent); }
+    .timeline-body { padding: 0.95rem 1rem 1rem 0.9rem; display: grid; gap: 0.45rem; }
+    .totals-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(1, minmax(0,1fr)); }
+    .total-box { background: var(--surface-elevated); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.9rem 1rem; }
+    .total-label { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin: 0; }
+    .total-value { margin: 0.35rem 0 0; font-size: 1.2rem; font-weight: 700; }
     .mobile-nav {
       position: fixed;
       inset-inline: 0;
@@ -470,11 +293,53 @@
       background: color-mix(in srgb, var(--surface) 92%, transparent);
       backdrop-filter: blur(14px);
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
       gap: 0.25rem;
       padding: 0.5rem 0.5rem calc(env(safe-area-inset-bottom) + 0.5rem);
     }
 
+    /* Modal overlay for matter editing.  Covers the viewport with a semi‑
+       transparent backdrop and centers a modal dialog.  Hidden via the
+       `.hidden` utility class when not in use. */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    .modal-overlay.hidden { display: none !important; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 1.5rem;
+      width: 90%;
+      max-width: 32rem;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .modal-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
     .mobile-link {
       min-height: 3.25rem;
       border-radius: var(--radius-md);
@@ -490,56 +355,36 @@
       padding: 0.35rem;
       cursor: pointer;
     }
-
-    .mobile-link.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-    }
-
-    .field-grid {
-      display: grid;
-      gap: 0.85rem;
-      grid-template-columns: 1fr;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 0.4rem;
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: var(--text-muted);
-    }
-
+    .mobile-link.active { background: var(--accent-soft); color: var(--accent); }
+    .field-grid { display: grid; gap: 0.85rem; grid-template-columns: 1fr; }
+    .field label { display: block; margin-bottom: 0.4rem; font-size: 0.84rem; font-weight: 700; color: var(--text-muted); }
     .input, .select, .textarea {
       width: 100%;
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      background: var(--surface);
+      background: var(--input-bg);
       color: var(--text);
       padding: 0.72rem 0.85rem;
       min-height: 2.75rem;
     }
-
-    .textarea { min-height: 7rem; resize: vertical; }
-
-    .footer-note {
-      margin-top: 1rem;
-      color: var(--text-muted);
-      font-size: 0.84rem;
+    /* Ensure selects and inputs share the same overall height.  Without
+       explicitly setting height on select elements, some browsers render
+       dropdowns shorter than text inputs.  This override forces them to
+       align visually with the text inputs on the quick add form. */
+    .input,
+    .select {
+      height: 2.75rem;
+      line-height: 1.25rem;
     }
-
+    .textarea { min-height: 7rem; resize: vertical; }
+    .footer-note { margin-top: 1rem; color: var(--text-muted); font-size: 0.84rem; }
     @media (min-width: 700px) {
       :root { --page-pad: 1.5rem; }
-      .page-header {
-        flex-direction: row;
-        align-items: start;
-        justify-content: space-between;
-      }
+      .page-header { flex-direction: row; align-items: start; justify-content: space-between; }
       .field-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .totals-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
       .list-item { flex-direction: row; justify-content: space-between; align-items: center; }
     }
-
     @media (min-width: 1100px) {
       :root { --page-pad: 2rem; }
       .app { grid-template-columns: var(--sidebar-width) 1fr; }
@@ -560,21 +405,20 @@
         <div class="brand-wrap">
           <div class="brand-card">
             <p class="brand-kicker">Paralegal Work Log</p>
-            <h2 class="brand-title">Daily Memory Buffer</h2>
-            <p class="brand-sub">Capture work fast. Organize later.</p>
+            <h2 class="brand-title">Daily Billing</h2>
+            <p class="brand-sub">Log time accurately. Bill fairly.</p>
           </div>
         </div>
         <nav class="sidebar-nav" id="desktopNav"></nav>
-        <div class="sidebar-footer">Preview shell · v1 scaffold</div>
+        <div class="sidebar-footer">v1.1</div>
       </div>
     </aside>
-
     <div class="main">
       <header class="topbar">
         <div class="topbar-inner">
           <div>
             <p class="topbar-kicker" id="topbarKicker">Dashboard</p>
-            <h1 class="topbar-title">Paralegal Work Log</h1>
+            <h1 class="topbar-title" id="topbarTitle">Paralegal Work Log</h1>
           </div>
           <div class="topbar-actions">
             <span class="badge success hidden" id="runningBadge">1 running</span>
@@ -583,39 +427,34 @@
           </div>
         </div>
       </header>
-
       <main class="page">
+        <!-- Dashboard Page -->
         <section class="page-view active" data-page="dashboard">
           <div class="page-header">
             <div>
               <h2 class="page-title">Dashboard</h2>
-              <p class="page-description">Fast capture first. Organize later. The screen should help you move, not admire itself.</p>
+              <p class="page-description">Capture work quickly and refine later. This screen lets you log new entries, see today’s work and manage timers.</p>
             </div>
-            <div class="page-header-actions">
-              <span class="badge muted">v1 starter preview</span>
-            </div>
+            <div class="page-header-actions"><span class="badge muted">v1.1</span></div>
           </div>
-
           <div class="grid-main">
+            <!-- Left column: Quick add and timeline -->
             <div class="stack-lg">
+              <!-- Quick Add Card -->
               <section class="card">
                 <div class="card-header">
                   <h3 class="card-title">Quick Add</h3>
-                  <p class="card-description">This is the intended structure for the real entry form: matter, task type, description, service type, and follow-up flag.</p>
+                  <p class="card-description">Fill out the matter, task, actual minutes and description. Billing is calculated automatically.</p>
                 </div>
                 <div class="card-content stack">
                   <div class="field-grid">
                     <div class="field">
-                      <label for="matter">Matter</label>
-                      <select class="select" id="matter">
-                        <option>Martinez — Divorce</option>
-                        <option>Holloway — Custody</option>
-                        <option>Brooks — Parenting Plan</option>
-                      </select>
+                      <label for="quickMatter">Matter</label>
+                      <select class="select" id="quickMatter"></select>
                     </div>
                     <div class="field">
-                      <label for="task">Task type</label>
-                      <select class="select" id="task">
+                      <label for="quickTask">Task type</label>
+                      <select class="select" id="quickTask">
                         <option>Client Communication</option>
                         <option>Drafting</option>
                         <option>Document Review</option>
@@ -623,118 +462,87 @@
                         <option>Follow-Up</option>
                       </select>
                     </div>
-                    <div class="field" style="grid-column: 1 / -1;">
-                      <label for="description">Description</label>
-                      <input class="input" id="description" value="Reviewed client email and prepared response summary for attorney" />
+                    <div class="field">
+                      <label for="quickMinutes">Actual minutes</label>
+                      <input class="input" type="number" min="1" id="quickMinutes" placeholder="e.g. 15" />
                     </div>
                     <div class="field">
-                      <label for="serviceType">Service type</label>
-                      <select class="select" id="serviceType">
-                        <option>Paralegal — $75</option>
-                        <option>Admin — $65</option>
-                        <option>RUSH — $85</option>
+                      <label for="quickService">Service type</label>
+                      <select class="select" id="quickService">
+                        <option value="paralegal">Paralegal — $75/hr</option>
+                        <option value="admin">Admin — $65/hr</option>
+                        <option value="rush">RUSH — $85/hr</option>
                       </select>
                     </div>
+                    <div class="field" style="grid-column: 1 / -1;">
+                      <label for="quickDescription">Description</label>
+                      <input class="input" id="quickDescription" placeholder="Describe your work…" />
+                    </div>
                     <div class="field">
-                      <label for="followUp">Follow-up</label>
-                      <select class="select" id="followUp">
-                        <option>None</option>
-                        <option>Client docs pending</option>
-                        <option>Attorney review pending</option>
-                        <option>Return call later</option>
+                      <label for="quickFollow">Follow‑up status</label>
+                      <select class="select" id="quickFollow">
+                        <option value="none">None</option>
+                        <option value="client">Client docs pending</option>
+                        <option value="attorney">Attorney review pending</option>
+                        <option value="call">Return call later</option>
                       </select>
                     </div>
                   </div>
                   <div class="row">
-                    <button class="button primary" type="button">Save Entry</button>
+                    <button class="button primary" type="button" id="saveEntryBtn">Save Entry</button>
                     <button class="button secondary" type="button" id="quickStartTimer">Start Timer</button>
                   </div>
-                  <p class="footer-note">This preview keeps the structure visible without faking saved data. Better honest than decorative nonsense.</p>
+                  <p class="footer-note">Entries saved here appear in your timeline below. Actual minutes are rounded up to the next 0.1 hours for billing.</p>
                 </div>
               </section>
-
-              <section class="card empty-card">
+              <!-- Presets Card -->
+              <section class="card" id="presetsCard">
+                <div class="card-header" style="display:flex; align-items:start; justify-content:space-between; gap:0.5rem;">
+                  <div>
+                    <h3 class="card-title">Saved Presets</h3>
+                    <p class="card-description">Apply saved combinations of matter, task and service.</p>
+                  </div>
+                  <!-- Button to save the current quick add configuration as a preset -->
+                    <button class="button secondary" type="button" id="createPresetBtn">Save Preset</button>
+                </div>
+                <div class="card-content stack" id="presetList"></div>
+              </section>
+              <!-- Today’s Timeline Card -->
+              <section class="card empty-card" id="timelineCard">
                 <div class="card-header">
                   <h3 class="card-title">Today’s Timeline</h3>
-                  <p class="card-description">The real app will pull this from saved entries with edit, duplicate, and filter actions.</p>
+                  <p class="card-description">Entries logged today are listed here. Each row shows the actual and billed time.</p>
                 </div>
-                <div class="card-content stack">
-                  <article class="timeline-item">
-                    <div class="timeline-color" style="background:#8C6AA6"></div>
-                    <div class="timeline-body">
-                      <div class="row spaced">
-                        <div class="strong">Martinez — Client Communication</div>
-                        <span class="badge service-paralegal">Paralegal</span>
-                      </div>
-                      <div class="muted small">Reviewed client email and prepared summary for attorney</div>
-                      <div class="row small muted">
-                        <span class="tabular">09:14 AM</span>
-                        <span>•</span>
-                        <span>12 min</span>
-                      </div>
-                    </div>
-                  </article>
-
-                  <article class="timeline-item">
-                    <div class="timeline-color" style="background:#7B8F73"></div>
-                    <div class="timeline-body">
-                      <div class="row spaced">
-                        <div class="strong">Holloway — Drafting</div>
-                        <span class="badge service-rush">RUSH</span>
-                      </div>
-                      <div class="muted small">Updated proposed parenting schedule language after attorney note</div>
-                      <div class="row small muted">
-                        <span class="tabular">10:02 AM</span>
-                        <span>•</span>
-                        <span>21 min</span>
-                      </div>
-                    </div>
-                  </article>
-                </div>
+                <div class="card-content stack" id="todayTimeline"></div>
               </section>
-
-              <section class="card empty-card">
+              <!-- Today Totals Card -->
+              <section class="card empty-card" id="totalsCard">
                 <div class="card-header">
-                  <h3 class="card-title">Open Follow-Ups</h3>
-                  <p class="card-description">Pending work should stay visible until resolved. No disappearing into legal mist.</p>
+                  <h3 class="card-title">Today Totals</h3>
+                  <p class="card-description">Summary of today’s billing by service type.</p>
                 </div>
-                <div class="card-content list">
-                  <div class="list-item">
-                    <div>
-                      <div class="strong">Return client call after attorney review</div>
-                      <div class="small muted">Martinez matter · linked to earlier call entry</div>
-                    </div>
-                    <span class="badge warning">Open</span>
-                  </div>
-                  <div class="list-item">
-                    <div>
-                      <div class="strong">Waiting on financial affidavit documents</div>
-                      <div class="small muted">Brooks matter · client docs pending</div>
-                    </div>
-                    <span class="badge info">Pending docs</span>
-                  </div>
-                </div>
+                <div class="card-content totals-grid" id="totalsGrid"></div>
               </section>
             </div>
-
+            <!-- Right column: Timer Cards -->
             <div class="stack-lg">
+              <!-- Empty Timer Card -->
               <section class="card" id="timerCardEmpty">
                 <div class="card-header">
                   <h3 class="card-title">Timer</h3>
-                  <p class="card-description">Starter timer wiring is in place. Entry save integration comes next.</p>
+                  <p class="card-description">Start a timer for quick logging. Save to record when done.</p>
                 </div>
                 <div class="card-content row">
                   <button class="button primary" type="button" id="startTimerBtn">Start Timer</button>
-                  <button class="button secondary" type="button" id="startAdminBtn">Start Admin Timer</button>
                 </div>
               </section>
-
+              <!-- Active Timer Card -->
               <section class="card hidden" id="timerCardActive">
                 <div class="card-header">
                   <div class="row spaced">
                     <div>
                       <h3 class="card-title">Active Timer</h3>
-                      <p class="card-description">Keep this loud enough to notice, not loud enough to become a nuisance.</p>
+                      <p class="card-description">Current timer details. Save when finished.</p>
                     </div>
                     <span class="badge success">Running</span>
                   </div>
@@ -743,286 +551,181 @@
                   <div class="soft-panel">
                     <div class="small muted" id="timerMatter">No matter selected yet</div>
                     <div class="strong" style="margin-top:.25rem; font-size:1.125rem;" id="timerTask">Client Communication</div>
-                    <div class="small muted" style="margin-top:.25rem;" id="timerDescription">Quick timer draft</div>
-                    <div class="row" style="margin-top:1rem;">
+                    <div class="small muted" style="margin-top:.25rem;" id="timerDescription">Timer note</div>
+                    <div class="row" style="margin-top:0.5rem;">
                       <span class="badge service-paralegal" id="timerServiceBadge">Paralegal</span>
+                    </div>
+                    <div class="row small muted" style="margin-top:0.5rem;">
+                      <span id="timerActual">00:00:00 actual</span>
+                      <span>•</span>
+                      <span id="timerBilled">0.0 billed</span>
                     </div>
                     <div class="timer-readout tabular" id="timerReadout">00:00:00</div>
                   </div>
                   <div class="row">
                     <button class="button secondary" type="button" id="pauseTimerBtn">Pause</button>
+                    <button class="button primary" type="button" id="saveTimerBtn">Stop &amp; Save</button>
                     <button class="button danger" type="button" id="discardTimerBtn">Discard</button>
                   </div>
                 </div>
               </section>
-
+              <!-- Paused Timers Card -->
               <section class="card hidden" id="pausedTimersCard">
                 <div class="card-header">
                   <h3 class="card-title">Paused Timers</h3>
-                  <p class="card-description">These are parked, not saved. That distinction matters.</p>
+                  <p class="card-description">Resume or remove paused timers here.</p>
                 </div>
                 <div class="card-content list" id="pausedList"></div>
               </section>
             </div>
           </div>
         </section>
-
-        <section class="page-view" data-page="today">
-          <div class="page-header">
-            <div>
-              <h2 class="page-title">Today</h2>
-              <p class="page-description">This becomes the full daily timeline with filters, edit actions, duplication, and totals.</p>
-            </div>
-          </div>
-
-          <div class="stack-lg">
-            <section class="card">
-              <div class="card-header">
-                <h3 class="card-title">Daily totals</h3>
-                <p class="card-description">Matter totals and service totals should sit up top so the user spots gaps before export.</p>
-              </div>
-              <div class="card-content totals-grid">
-                <div class="total-box">
-                  <p class="total-label">Entries</p>
-                  <p class="total-value tabular">6</p>
-                </div>
-                <div class="total-box">
-                  <p class="total-label">Paralegal</p>
-                  <p class="total-value tabular">$300</p>
-                </div>
-                <div class="total-box">
-                  <p class="total-label">Admin / RUSH</p>
-                  <p class="total-value tabular">$215</p>
-                </div>
-              </div>
-            </section>
-
-            <section class="card">
-              <div class="card-header">
-                <h3 class="card-title">Timeline preview</h3>
-                <p class="card-description">The real page will make every row editable from here without making users hunt through the app like raccoons in a filing cabinet.</p>
-              </div>
-              <div class="card-content stack">
-                <article class="timeline-item">
-                  <div class="timeline-color" style="background:#B7747D"></div>
-                  <div class="timeline-body">
-                    <div class="row spaced">
-                      <div class="strong">Brooks — Document Review</div>
-                      <span class="badge service-admin">Admin</span>
-                    </div>
-                    <div class="small muted">Reviewed incoming school records and flagged missing attachments</div>
-                    <div class="row small muted"><span class="tabular">11:08 AM</span><span>•</span><span>17 min</span></div>
-                  </div>
-                </article>
-                <article class="timeline-item">
-                  <div class="timeline-color" style="background:#7F88B4"></div>
-                  <div class="timeline-body">
-                    <div class="row spaced">
-                      <div class="strong">Holloway — Attorney Support</div>
-                      <span class="badge service-paralegal">Paralegal</span>
-                    </div>
-                    <div class="small muted">Prepared quick chronology and highlighted communication gap for hearing prep</div>
-                    <div class="row small muted"><span class="tabular">01:42 PM</span><span>•</span><span>26 min</span></div>
-                  </div>
-                </article>
-              </div>
-            </section>
-          </div>
-        </section>
-
-        <section class="page-view" data-page="follow-ups">
-          <div class="page-header">
-            <div>
-              <h2 class="page-title">Follow-Ups</h2>
-              <p class="page-description">Pending work should stay visible until resolved. That is the whole bloody point.</p>
-            </div>
-          </div>
-
-          <section class="card">
-            <div class="card-header">
-              <h3 class="card-title">Open follow-ups</h3>
-              <p class="card-description">This preview shows the intended list density and action spacing for desktop and mobile.</p>
-            </div>
-            <div class="card-content list">
-              <div class="list-item">
-                <div>
-                  <div class="strong">Check filing status with clerk</div>
-                  <div class="small muted">Martinez · due today</div>
-                </div>
-                <div class="row">
-                  <span class="badge warning">Open</span>
-                  <button class="button secondary" type="button">Resolve</button>
-                </div>
-              </div>
-              <div class="list-item">
-                <div>
-                  <div class="strong">Send draft to attorney later today</div>
-                  <div class="small muted">Brooks · attorney review pending</div>
-                </div>
-                <div class="row">
-                  <span class="badge info">Pending review</span>
-                  <button class="button secondary" type="button">Resolve</button>
-                </div>
-              </div>
-              <div class="list-item">
-                <div>
-                  <div class="strong">Follow up with opposing counsel on exchange date</div>
-                  <div class="small muted">Holloway · no due date set</div>
-                </div>
-                <div class="row">
-                  <span class="badge warning">Open</span>
-                  <button class="button secondary" type="button">Resolve</button>
-                </div>
-              </div>
-            </div>
-          </section>
-        </section>
-
+        <!-- Matters Page -->
         <section class="page-view" data-page="matters">
           <div class="page-header">
             <div>
               <h2 class="page-title">Matters</h2>
-              <p class="page-description">Matter setup, color coding, archive state, and matter-level summaries live here.</p>
+              <p class="page-description">Set up your matters, assign a type and status, and review totals.  Active matters appear in dropdowns.</p>
             </div>
             <div class="page-header-actions">
-              <button class="button primary" type="button">Add Matter</button>
+              <button class="button primary" type="button" id="addMatterBtn">Add Matter</button>
             </div>
           </div>
-
           <div class="stack-lg">
+            <!-- Matter Types Card -->
             <section class="card">
               <div class="card-header">
-                <h3 class="card-title">Family-law matter types</h3>
-                <p class="card-description">These are defined as shared constants so forms and filters do not drift into inconsistency goblin territory.</p>
+                <h3 class="card-title">Matter Types</h3>
+                <p class="card-description">Use these for consistent categorization across matters.</p>
               </div>
-              <div class="card-content row">
-                <span class="matter-chip"><span class="matter-dot" style="background:#8C6AA6"></span>Divorce</span>
-                <span class="matter-chip"><span class="matter-dot" style="background:#7B8F73"></span>Custody</span>
-                <span class="matter-chip"><span class="matter-dot" style="background:#B7747D"></span>Parenting Plan</span>
-                <span class="matter-chip"><span class="matter-dot" style="background:#7F88B4"></span>Child Support</span>
-                <span class="matter-chip"><span class="matter-dot" style="background:#B28C5E"></span>Modification</span>
-                <span class="matter-chip"><span class="matter-dot" style="background:#5D8F8B"></span>Adoption</span>
-              </div>
+              <div class="card-content row" id="matterTypesRow"></div>
             </section>
-
+            <!-- Matter Summaries -->
             <section class="card">
               <div class="card-header">
-                <h3 class="card-title">Sample matter summaries</h3>
-                <p class="card-description">The real screen will derive these totals from entries, not duplicate them as separate truth tables.</p>
+                <h3 class="card-title">Matter Summaries</h3>
+                <p class="card-description">Totals by matter with quick actions.</p>
               </div>
-              <div class="card-content list">
-                <div class="list-item">
-                  <div>
-                    <div class="strong">Martinez</div>
-                    <div class="small muted">Divorce · 4 entries today · 2 open follow-ups</div>
-                  </div>
-                  <div class="row">
-                    <span class="badge service-paralegal">$225</span>
-                    <span class="badge service-admin">$65</span>
-                  </div>
-                </div>
-                <div class="list-item">
-                  <div>
-                    <div class="strong">Holloway</div>
-                    <div class="small muted">Custody · 3 entries this week · 1 open follow-up</div>
-                  </div>
-                  <div class="row">
-                    <span class="badge service-rush">$85</span>
-                  </div>
-                </div>
-              </div>
+              <div class="card-content list" id="mattersList"></div>
             </section>
           </div>
         </section>
-
-        <section class="page-view" data-page="review">
+        <!-- Invoice Page -->
+        <section class="page-view" data-page="invoice">
           <div class="page-header">
             <div>
-              <h2 class="page-title">Review &amp; Export</h2>
-              <p class="page-description">This becomes the cleanup layer between reality and Excel.</p>
+              <h2 class="page-title">Invoice &amp; Export</h2>
+              <p class="page-description">Review billable entries grouped by matter and export to CSV for attorney invoicing.</p>
             </div>
             <div class="page-header-actions">
-              <button class="button primary" type="button">Export for Excel</button>
+              <button class="button primary" id="exportCsvBtn" type="button">Export CSV</button>
             </div>
           </div>
-
           <div class="stack-lg">
+            <!-- Invoice Table -->
             <section class="card">
               <div class="card-header">
-                <h3 class="card-title">Totals by service type</h3>
-                <p class="card-description">Fixed prices are visible on purpose so the user does not have to do mental math like a medieval accountant.</p>
+                <h3 class="card-title">Invoice Preview</h3>
+                <p class="card-description">A detailed breakdown of all entries by matter, including minutes, billed hours and fees.</p>
               </div>
-              <div class="card-content totals-grid">
-                <div class="total-box">
-                  <p class="total-label">Admin</p>
-                  <p class="total-value tabular">$65</p>
-                </div>
-                <div class="total-box">
-                  <p class="total-label">Paralegal</p>
-                  <p class="total-value tabular">$300</p>
-                </div>
-                <div class="total-box">
-                  <p class="total-label">RUSH</p>
-                  <p class="total-value tabular">$85</p>
-                </div>
-              </div>
-            </section>
-
-            <section class="card">
-              <div class="card-header">
-                <h3 class="card-title">Excel-ready row preview</h3>
-                <p class="card-description">The real app will output consistent rows, not whatever chaos happened to be on screen that day.</p>
-              </div>
-              <div class="card-content stack">
-                <div class="soft-panel small">
-                  <div class="row spaced"><span class="strong">Matter</span><span>Martinez</span></div>
-                  <div class="row spaced"><span class="strong">Task</span><span>Client Communication</span></div>
-                  <div class="row spaced"><span class="strong">Service</span><span>Paralegal</span></div>
-                  <div class="row spaced"><span class="strong">Set Price</span><span class="tabular">$75</span></div>
-                  <div class="row spaced"><span class="strong">Description</span><span>Reviewed client email and attorney summary</span></div>
-                </div>
+              <div class="card-content">
+                <div id="invoiceSummary"></div>
               </div>
             </section>
           </div>
         </section>
-
+        <!-- Settings Page -->
         <section class="page-view" data-page="settings">
           <div class="page-header">
             <div>
               <h2 class="page-title">Settings</h2>
-              <p class="page-description">Keep settings tiny in v1. This is a work tool, not a personality quiz.</p>
+              <p class="page-description">Theme preferences and basic configuration.</p>
             </div>
           </div>
-
           <section class="card">
             <div class="card-header">
-              <h3 class="card-title">Preview settings</h3>
-              <p class="card-description">Theme is wired here now. Reminder preferences, backup, and restore belong in the real app next.</p>
+              <h3 class="card-title">Theme</h3>
+              <p class="card-description">Toggle between light and dark mode.</p>
             </div>
             <div class="card-content stack">
               <div class="row">
                 <button class="button secondary" type="button" id="themeToggleSecondary">Toggle Light / Dark</button>
               </div>
-              <div class="footer-note">This preview intentionally stops before fake persistence. Better a truthful shell than a lying demo.</div>
             </div>
           </section>
         </section>
       </main>
     </div>
-
     <nav class="mobile-nav" id="mobileNav" aria-label="Mobile primary"></nav>
+    <!-- Matter editing modal overlay.  This overlay is hidden by default and is
+         shown when creating or editing a matter.  It contains a small form
+         with fields for name, type, status and color. -->
+    <div id="matterDialog" class="modal-overlay hidden">
+      <div class="modal">
+        <div class="modal-header row spaced">
+          <h3 class="card-title" id="matterDialogTitle">Edit Matter</h3>
+          <button class="button ghost" type="button" id="closeMatterDialogBtn">Close</button>
+        </div>
+        <div class="modal-content">
+          <div class="field-grid">
+            <div class="field">
+              <label for="matterNameInput">Matter name</label>
+              <input class="input" id="matterNameInput" />
+            </div>
+            <div class="field">
+              <label for="matterTypeSelect">Matter type</label>
+              <select class="select" id="matterTypeSelect">
+                <option value="">Select type</option>
+                <option value="Divorce">Divorce</option>
+                <option value="Custody">Custody</option>
+                <option value="Parenting Plan">Parenting Plan</option>
+                <option value="Child Support">Child Support</option>
+                <option value="Modification">Modification</option>
+                <option value="Adoption">Adoption</option>
+                <option value="Internal">Internal</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="matterStatusSelect">Status</label>
+              <select class="select" id="matterStatusSelect">
+                <option value="active">Active</option>
+                <option value="waiting on client">Waiting on client</option>
+                <option value="waiting on attorney">Waiting on attorney</option>
+                <option value="court pending">Court pending</option>
+                <option value="on hold">On hold</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="matterColorInput">Color</label>
+              <input class="input" type="color" id="matterColorInput" />
+            </div>
+          </div>
+          <div class="modal-actions row" style="margin-top:1rem; justify-content: flex-end; gap:0.5rem;">
+            <button class="button secondary" type="button" id="cancelMatterBtn">Cancel</button>
+            <button class="button primary" type="button" id="saveMatterBtn">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
   <script>
-    (function () {
+    (function() {
+      // Service rate configuration: hourly rate per service key
+      const SERVICE_RATES = {
+        paralegal: 75,
+        admin: 65,
+        rush: 85
+      };
+      // Routes for navigation
       const routes = [
         { key: 'dashboard', label: 'Dashboard', shortLabel: 'Home' },
-        { key: 'today', label: 'Today', shortLabel: 'Today' },
-        { key: 'follow-ups', label: 'Follow-Ups', shortLabel: 'Follow-Ups' },
         { key: 'matters', label: 'Matters', shortLabel: 'Matters' },
-        { key: 'review', label: 'Review & Export', shortLabel: 'Review' },
+        { key: 'invoice', label: 'Invoice', shortLabel: 'Invoice' },
+        { key: 'settings', label: 'Settings', shortLabel: 'Settings' }
       ];
-
+      // Application state
       const state = {
         theme: localStorage.getItem('pwl-theme') || 'light',
         currentPage: 'dashboard',
@@ -1031,35 +734,274 @@
         intervalId: null,
       };
 
+      /**
+       * Ensure a default matter exists for invoice preparation.  Independent
+       * paralegals often charge attorneys for the time spent preparing
+       * invoices.  This helper creates a built‑in matter named
+       * "Invoice Preparation" if none exists.  Users can log time
+       * against this matter just like any other.  The matter uses
+       * a distinct ID so that it can be referenced reliably.
+       */
+      function ensureInvoiceMatter() {
+        const matters = loadMatters();
+        const exists = matters.some(m => m.id === '__invoice');
+        if (!exists) {
+          matters.push({
+            id: '__invoice',
+            name: 'Invoice Preparation',
+            type: 'Internal',
+            status: 'active',
+            color: '#B28C5E'
+          });
+          saveMatters(matters);
+        }
+      }
+      // DOM references
       const app = document.getElementById('app');
       const desktopNav = document.getElementById('desktopNav');
       const mobileNav = document.getElementById('mobileNav');
       const topbarKicker = document.getElementById('topbarKicker');
+      const topbarTitle = document.getElementById('topbarTitle');
       const runningBadge = document.getElementById('runningBadge');
       const pausedBadge = document.getElementById('pausedBadge');
-      const timerReadout = document.getElementById('timerReadout');
-      const timerMatter = document.getElementById('timerMatter');
-      const timerTask = document.getElementById('timerTask');
-      const timerDescription = document.getElementById('timerDescription');
-      const timerServiceBadge = document.getElementById('timerServiceBadge');
-      const timerCardEmpty = document.getElementById('timerCardEmpty');
-      const timerCardActive = document.getElementById('timerCardActive');
-      const pausedTimersCard = document.getElementById('pausedTimersCard');
-      const pausedList = document.getElementById('pausedList');
       const themeToggle = document.getElementById('themeToggle');
       const themeToggleSecondary = document.getElementById('themeToggleSecondary');
+      const quickMatter = document.getElementById('quickMatter');
+      const quickTask = document.getElementById('quickTask');
+      const quickMinutes = document.getElementById('quickMinutes');
+      const quickService = document.getElementById('quickService');
+      const quickDescription = document.getElementById('quickDescription');
+      const quickFollow = document.getElementById('quickFollow');
+      const saveEntryBtn = document.getElementById('saveEntryBtn');
+      // Button for creating a new preset lives in the presets card header
+      const createPresetBtn = document.getElementById('createPresetBtn');
+      // Preset selection dropdown is no longer used; presets are listed in a separate card
+      const presetSelect = null;
       const quickStartTimer = document.getElementById('quickStartTimer');
       const startTimerBtn = document.getElementById('startTimerBtn');
-      const startAdminBtn = document.getElementById('startAdminBtn');
+      const timerCardEmpty = document.getElementById('timerCardEmpty');
+      const timerCardActive = document.getElementById('timerCardActive');
+      const timerMatterElem = document.getElementById('timerMatter');
+      const timerTaskElem = document.getElementById('timerTask');
+      const timerDescriptionElem = document.getElementById('timerDescription');
+      const timerServiceBadge = document.getElementById('timerServiceBadge');
+      const timerActualElem = document.getElementById('timerActual');
+      const timerBilledElem = document.getElementById('timerBilled');
+      const timerReadout = document.getElementById('timerReadout');
       const pauseTimerBtn = document.getElementById('pauseTimerBtn');
+      const saveTimerBtn = document.getElementById('saveTimerBtn');
       const discardTimerBtn = document.getElementById('discardTimerBtn');
+      const pausedTimersCard = document.getElementById('pausedTimersCard');
+      const pausedList = document.getElementById('pausedList');
+      const timelineCard = document.getElementById('timelineCard');
+      const todayTimeline = document.getElementById('todayTimeline');
+      const totalsGrid = document.getElementById('totalsGrid');
+      const totalsCard = document.getElementById('totalsCard');
+      const mattersList = document.getElementById('mattersList');
+      const addMatterBtn = document.getElementById('addMatterBtn');
+      const invoiceSummary = document.getElementById('invoiceSummary');
+      const exportCsvBtn = document.getElementById('exportCsvBtn');
 
-      function serviceMeta(type) {
-        if (type === 'admin') return { label: 'Admin', variant: 'service-admin' };
-        if (type === 'rush') return { label: 'RUSH', variant: 'service-rush' };
-        return { label: 'Paralegal', variant: 'service-paralegal' };
+      // Matter type colors used for the Matter Types legend.  These values
+      // reflect common family‑law categories.  Users can still add any
+      // freeform type to a matter via the edit prompts.
+      const MATTER_TYPE_COLORS = {
+        'Divorce': '#8C6AA6',
+        'Custody': '#7B8F73',
+        'Parenting Plan': '#B7747D',
+        'Child Support': '#7F88B4',
+        'Modification': '#B28C5E',
+        'Adoption': '#5D8F8B'
+      };
+      // Reference for matter types row
+      const matterTypesRow = document.getElementById('matterTypesRow');
+      const matterDialog = document.getElementById('matterDialog');
+      const matterDialogTitle = document.getElementById('matterDialogTitle');
+      const matterNameInput = document.getElementById('matterNameInput');
+      const matterTypeSelect = document.getElementById('matterTypeSelect');
+      const matterStatusSelect = document.getElementById('matterStatusSelect');
+      const matterColorInput = document.getElementById('matterColorInput');
+      const closeMatterDialogBtn = document.getElementById('closeMatterDialogBtn');
+      const cancelMatterBtn = document.getElementById('cancelMatterBtn');
+      const saveMatterBtn = document.getElementById('saveMatterBtn');
+      let editingMatterId = null;
+      // Helper: Load matters from localStorage
+      function loadMatters() {
+        try {
+          return JSON.parse(localStorage.getItem('pwl-matters') || '[]');
+        } catch (e) { return []; }
+      }
+      function saveMatters(matters) {
+        localStorage.setItem('pwl-matters', JSON.stringify(matters));
+      }
+      // Helper: Load entries
+      function loadEntries() {
+        try {
+          return JSON.parse(localStorage.getItem('pwl-entries') || '[]');
+        } catch (e) { return []; }
+      }
+      function saveEntries(entries) {
+        localStorage.setItem('pwl-entries', JSON.stringify(entries));
+      }
+      // Billing calculation: round minutes to tenths and compute fee
+      function calculateBilling(minutes, rate) {
+        const billableTenths = Math.max(1, Math.ceil(minutes / 6));
+        const billableHours = billableTenths / 10;
+        const fee = Number((billableHours * rate).toFixed(2));
+        return { billableTenths, billableHours, fee };
+      }
+      // Date helpers
+      function formatDate(date) {
+        const d = new Date(date);
+        return d.toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' });
+      }
+      function formatTime(date) {
+        const d = new Date(date);
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       }
 
+      // Combine date and time into a single string for CSV exports.  Uses the
+      // user's locale for both portions.  Returns an empty string if the
+      // timestamp is falsy.
+      function formatDateTime(timestamp) {
+        if (!timestamp) return '';
+        const d = new Date(timestamp);
+        const dateStr = d.toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' });
+        const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return dateStr + ' ' + timeStr;
+      }
+      function formatDuration(ms) {
+        const totalSeconds = Math.floor(ms / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        return [hours, minutes, seconds].map(n => String(n).padStart(2, '0')).join(':');
+      }
+
+      // Preset helpers
+      function loadPresets() {
+        try {
+          return JSON.parse(localStorage.getItem('pwl-presets') || '[]');
+        } catch (e) { return []; }
+      }
+      function savePresets(presets) {
+        localStorage.setItem('pwl-presets', JSON.stringify(presets));
+      }
+      function renderPresets() {
+        // Render the list of presets inside the presets card.  Each preset
+        // displays its name, associated matter/task/service, and actions to
+        // apply or delete it.  When no presets exist, a friendly message is
+        // shown.  The preset dropdown from previous versions has been removed.
+        const list = document.getElementById('presetList');
+        if (!list) return;
+        const presets = loadPresets();
+        list.innerHTML = '';
+        if (presets.length === 0) {
+          const empty = document.createElement('p');
+          empty.className = 'small muted';
+          empty.textContent = 'No presets saved.';
+          list.appendChild(empty);
+          return;
+        }
+        presets.forEach(p => {
+          const matter = loadMatters().find(m => m.id === p.matterId);
+          const matterLabel = matter ? matter.name : '—';
+          const row = document.createElement('div');
+          row.className = 'list-item';
+          row.innerHTML = `
+            <div>
+              <div class="strong">${p.name}</div>
+              <div class="small muted">${matterLabel} · ${p.taskType} · ${p.serviceType}</div>
+            </div>
+          `;
+          const actions = document.createElement('div');
+          actions.className = 'row';
+          const applyBtn = document.createElement('button');
+          applyBtn.className = 'button secondary';
+          applyBtn.type = 'button';
+          applyBtn.textContent = 'Apply';
+          applyBtn.addEventListener('click', () => applyPreset(p.id));
+          actions.appendChild(applyBtn);
+          const deleteBtn = document.createElement('button');
+          deleteBtn.className = 'button ghost';
+          deleteBtn.type = 'button';
+          deleteBtn.textContent = 'Delete';
+          deleteBtn.addEventListener('click', () => deletePreset(p.id));
+          actions.appendChild(deleteBtn);
+          row.appendChild(actions);
+          list.appendChild(row);
+        });
+      }
+
+      // Remove a preset by id and re-render the preset list
+      function deletePreset(presetId) {
+        let presets = loadPresets();
+        presets = presets.filter(p => p.id !== presetId);
+        savePresets(presets);
+        renderPresets();
+      }
+
+      // Save a new preset based on the current quick add selections.  Prompts the
+      // user for a name and stores the preset in localStorage.  After
+      // saving, the preset drop‑down is refreshed.  The preset object
+      // includes the matter, task, service, description, follow‑up status and
+      // optionally the minutes value if provided.
+      function savePreset() {
+        const name = prompt('Preset name:');
+        if (!name) return;
+        const matterId = quickMatter.value;
+        if (!matterId) {
+          alert('Please select a matter before saving a preset.');
+          return;
+        }
+        const presets = loadPresets();
+        const preset = {
+          id: Math.random().toString(36).slice(2),
+          name: name,
+          matterId: matterId,
+          taskType: quickTask.value,
+          serviceType: quickService.value,
+          description: quickDescription.value.trim() || '',
+          followUpStatus: quickFollow.value || 'none',
+          minutes: quickMinutes.value ? parseInt(quickMinutes.value, 10) : null
+        };
+        presets.push(preset);
+        savePresets(presets);
+        renderPresets();
+      }
+
+      // Apply a preset to the quick add form.  Looks up the preset by id and
+      // populates the relevant fields.  If a value is missing in the preset
+      // (e.g. minutes), the corresponding field is left unchanged.
+      function applyPreset(presetId) {
+        const presets = loadPresets();
+        const preset = presets.find(p => p.id === presetId);
+        if (!preset) return;
+        if (preset.matterId) quickMatter.value = preset.matterId;
+        if (preset.taskType) quickTask.value = preset.taskType;
+        if (preset.serviceType) quickService.value = preset.serviceType;
+        if (preset.description) quickDescription.value = preset.description;
+        if (preset.followUpStatus) quickFollow.value = preset.followUpStatus;
+        if (preset.minutes) quickMinutes.value = preset.minutes;
+      }
+      // Timer helpers
+      function getElapsedMs(timer) {
+        if (!timer) return 0;
+        if (timer.status === 'running' && timer.startedAt) {
+          return timer.accumulatedMs + (Date.now() - timer.startedAt);
+        }
+        return timer.accumulatedMs;
+      }
+      function normalizeRunningTimer(timer) {
+        if (!timer || timer.status !== 'running' || !timer.startedAt) return timer;
+        return {
+          ...timer,
+          status: 'paused',
+          accumulatedMs: timer.accumulatedMs + (Date.now() - timer.startedAt),
+          startedAt: null,
+        };
+      }
+      // Navigation
       function buildNav(container, mobile) {
         container.innerHTML = '';
         routes.forEach(route => {
@@ -1072,7 +1014,27 @@
           container.appendChild(button);
         });
       }
-
+      function setPage(pageKey) {
+        // Update the current page state
+        state.currentPage = pageKey;
+        // Toggle which page view is active
+        document.querySelectorAll('.page-view').forEach(view => {
+          view.classList.toggle('active', view.dataset.page === pageKey);
+        });
+        // Highlight the active navigation link in both desktop and mobile nav
+        [...desktopNav.children, ...mobileNav.children].forEach(link => {
+          link.classList.toggle('active', link.dataset.page === pageKey);
+        });
+        // Update the top bar kicker with the current section name
+        const route = routes.find(r => r.key === pageKey);
+        topbarKicker.textContent = route ? route.label : 'Paralegal Work Log';
+        // When navigating back to the dashboard, refresh matter selector and today panels
+        if (pageKey === 'dashboard') {
+          renderMatters();
+          renderTodayTimeline();
+          renderTodayTotals();
+        }
+      }
       function applyTheme() {
         app.setAttribute('data-theme', state.theme);
         const nextLabel = state.theme === 'dark' ? 'Light mode' : 'Dark mode';
@@ -1080,184 +1042,242 @@
         if (themeToggleSecondary) themeToggleSecondary.textContent = 'Toggle Light / Dark';
         localStorage.setItem('pwl-theme', state.theme);
       }
-
-      function setPage(pageKey) {
-        state.currentPage = pageKey;
-        document.querySelectorAll('.page-view').forEach(view => {
-          view.classList.toggle('active', view.dataset.page === pageKey);
+      function renderMatters() {
+        const matters = loadMatters();
+        // Populate the matter types legend.  We show the predefined types
+        // regardless of whether a matter currently exists for them.  This
+        // mirrors the original UI which reminded users of the available
+        // categories.
+        if (matterTypesRow) {
+          matterTypesRow.innerHTML = '';
+          Object.entries(MATTER_TYPE_COLORS).forEach(([type, color]) => {
+            const span = document.createElement('span');
+            span.className = 'matter-chip';
+            span.innerHTML = `<span class="matter-dot" style="background:${color}"></span>${type}`;
+            matterTypesRow.appendChild(span);
+          });
+        }
+        // Refresh quick add matter select
+        quickMatter.innerHTML = '';
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = '-- Select matter --';
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        quickMatter.appendChild(placeholder);
+        matters.filter(m => m.status !== 'closed').forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.id;
+          opt.textContent = m.name + (m.status && m.status !== 'active' ? ` (${m.status})` : '');
+          quickMatter.appendChild(opt);
         });
-
-        [...desktopNav.children, ...mobileNav.children].forEach(link => {
-          link.classList.toggle('active', link.dataset.page === pageKey);
+        // Render summary list
+        mattersList.innerHTML = '';
+        matters.forEach(matter => {
+          const entries = loadEntries().filter(e => e.matterId === matter.id);
+          const totalFee = entries.reduce((acc, e) => acc + e.fee, 0);
+          const totalHours = entries.reduce((acc, e) => acc + e.billableHours, 0);
+          const entryCount = entries.length;
+          const openFollows = entries.filter(e => e.followUpStatus && e.followUpStatus !== 'none').length;
+          const item = document.createElement('div');
+          item.className = 'list-item';
+          // Color dot for matter
+          const dotColor = matter.color || '#8C6AA6';
+          const headerRow = document.createElement('div');
+          headerRow.className = 'row';
+          headerRow.style.gap = '0.5rem';
+          // Dot
+          const dot = document.createElement('span');
+          dot.className = 'matter-dot';
+          dot.style.background = dotColor;
+          headerRow.appendChild(dot);
+          // Name
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'strong';
+          nameSpan.textContent = matter.name;
+          headerRow.appendChild(nameSpan);
+          // Type badge
+          if (matter.type) {
+            const typeBadge = document.createElement('span');
+            typeBadge.className = 'badge muted';
+            typeBadge.textContent = matter.type;
+            headerRow.appendChild(typeBadge);
+          }
+          // Status badge (omit if active)
+          if (matter.status && matter.status !== 'active') {
+            const statusBadge = document.createElement('span');
+            // Map statuses to color variants roughly
+            let variant = 'muted';
+            if (matter.status === 'waiting on client' || matter.status === 'waiting on attorney') variant = 'warning';
+            else if (matter.status === 'court pending' || matter.status === 'on hold') variant = 'info';
+            else if (matter.status === 'closed') variant = 'danger';
+            statusBadge.className = 'badge ' + variant;
+            statusBadge.textContent = matter.status;
+            headerRow.appendChild(statusBadge);
+          }
+          // Summary row text
+          const summary = document.createElement('div');
+          summary.className = 'tiny muted';
+          let summaryParts = [];
+          summaryParts.push(entryCount + ' entr' + (entryCount === 1 ? 'y' : 'ies'));
+          if (openFollows) {
+            summaryParts.push(openFollows + ' follow‑up' + (openFollows === 1 ? '' : 's'));
+          }
+          summaryParts.push(totalHours.toFixed(1) + ' hr');
+          summaryParts.push('$' + totalFee.toFixed(2));
+          summary.textContent = summaryParts.join(' · ');
+          // Action row
+          const actions = document.createElement('div');
+          actions.className = 'row';
+          actions.style.gap = '0.5rem';
+          const editBtn = document.createElement('button');
+          editBtn.className = 'button ghost tiny';
+          editBtn.type = 'button';
+          editBtn.textContent = 'Edit';
+          editBtn.addEventListener('click', () => editMatter(matter.id));
+          actions.appendChild(editBtn);
+          const deleteBtn = document.createElement('button');
+          deleteBtn.className = 'button ghost danger tiny';
+          deleteBtn.type = 'button';
+          deleteBtn.textContent = 'Delete';
+          deleteBtn.addEventListener('click', () => deleteMatter(matter.id));
+          actions.appendChild(deleteBtn);
+          const startBtn = document.createElement('button');
+          startBtn.className = 'button secondary tiny';
+          startBtn.type = 'button';
+          startBtn.textContent = 'Start Timer';
+          startBtn.addEventListener('click', () => {
+            const data = {
+              matterId: matter.id,
+              matterName: matter.name,
+              matterStatus: matter.status,
+              taskType: 'Client Communication',
+              description: 'Timer entry',
+              serviceType: 'paralegal'
+            };
+            startTimer(data);
+          });
+          actions.appendChild(startBtn);
+          // Append to item
+          item.appendChild(headerRow);
+          item.appendChild(summary);
+          item.appendChild(actions);
+          mattersList.appendChild(item);
         });
-
-        const route = routes.find(r => r.key === pageKey);
-        topbarKicker.textContent = route ? route.label : 'Paralegal Work Log';
+      }
+      // Open the matter dialog for creating or editing a matter.
+      function openMatterDialog(id) {
+        editingMatterId = id || null;
+        const matter = id ? loadMatters().find(m => m.id === id) : null;
+        matterDialogTitle.textContent = matter ? 'Edit Matter' : 'Add Matter';
+        matterNameInput.value = matter?.name || '';
+        matterTypeSelect.value = matter?.type || '';
+        matterStatusSelect.value = matter?.status || 'active';
+        matterColorInput.value = matter?.color || '#8C6AA6';
+        matterDialog.classList.remove('hidden');
       }
 
-      function now() {
-        return Date.now();
+      function closeMatterDialog() {
+        matterDialog.classList.add('hidden');
+        editingMatterId = null;
       }
 
+      function saveMatter() {
+        const name = matterNameInput.value.trim();
+        if (!name) {
+          alert('Matter name is required.');
+          return;
+        }
+        const type = matterTypeSelect.value || '';
+        const status = matterStatusSelect.value || 'active';
+        const color = matterColorInput.value || '#8C6AA6';
+        const matters = loadMatters();
+        if (editingMatterId) {
+          const idx = matters.findIndex(m => m.id === editingMatterId);
+          if (idx !== -1) {
+            matters[idx] = { ...matters[idx], name, type, status, color };
+          }
+        } else {
+          matters.push({ id: Math.random().toString(36).slice(2), name, type, status, color });
+        }
+        saveMatters(matters);
+        closeMatterDialog();
+        render();
+      }
+
+      function editMatter(id) {
+        openMatterDialog(id);
+      }
+
+      addMatterBtn.addEventListener('click', () => openMatterDialog(null));
+      // Save new entry from Quick Add
+      function saveEntryManual() {
+        const matterId = quickMatter.value;
+        const matterObj = loadMatters().find(m => m.id === matterId);
+        if (!matterObj) {
+          alert('Please select or create a matter first.');
+          return;
+        }
+        const taskType = quickTask.value;
+        const minutes = parseInt(quickMinutes.value, 10);
+        if (!minutes || minutes <= 0) {
+          alert('Please enter actual minutes.');
+          return;
+        }
+        const serviceType = quickService.value;
+        const description = quickDescription.value.trim() || 'No description';
+        const followUp = quickFollow.value || 'none';
+        const rate = SERVICE_RATES[serviceType];
+        const billing = calculateBilling(minutes, rate);
+        // When saving manual entries, approximate the start and stop times based on
+        // the duration.  The stop time is now and the start time is now minus
+        // the actual minutes.  This allows CSV export to include start and stop
+        // timestamps even for entries that were not timed live.
+        const stopMs = Date.now();
+        const startMs = stopMs - minutes * 60000;
+        const entry = {
+          id: Math.random().toString(36).slice(2),
+          date: stopMs,
+          matterId: matterId,
+          matterName: matterObj.name,
+          matterStatus: matterObj.status,
+          taskType: taskType,
+          description: description,
+          serviceType: serviceType,
+          actualMinutes: minutes,
+          billableTenths: billing.billableTenths,
+          billableHours: billing.billableHours,
+          hourlyRate: rate,
+          fee: billing.fee,
+          followUpStatus: followUp,
+          entrySource: 'manual',
+          startTime: startMs,
+          stopTime: stopMs
+        };
+        const entries = loadEntries();
+        entries.push(entry);
+        saveEntries(entries);
+        // reset fields
+        quickMinutes.value = '';
+        quickDescription.value = '';
+        render();
+      }
+      saveEntryBtn.addEventListener('click', saveEntryManual);
+      // Timer functions
       function createTimer(data) {
         return {
           id: Math.random().toString(36).slice(2),
-          matter: data.matter || 'Martinez — Divorce',
-          taskType: data.taskType || 'Client Communication',
-          description: data.description || 'Quick timer draft',
-          serviceType: data.serviceType || 'paralegal',
+          matterId: data.matterId,
+          matterName: data.matterName,
+          matterStatus: data.matterStatus,
+          taskType: data.taskType,
+          description: data.description,
+          serviceType: data.serviceType,
           status: 'running',
-          startedAt: now(),
+          startedAt: Date.now(),
           accumulatedMs: 0,
         };
       }
-
-      function getElapsedMs(timer) {
-        if (!timer) return 0;
-        if (timer.status === 'running' && timer.startedAt) {
-          return timer.accumulatedMs + (now() - timer.startedAt);
-        }
-        return timer.accumulatedMs;
-      }
-
-      function formatElapsed(ms) {
-        const totalSeconds = Math.floor(ms / 1000);
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-        return [hours, minutes, seconds].map(n => String(n).padStart(2, '0')).join(':');
-      }
-
-      function normalizeRunningTimer(timer) {
-        if (!timer || timer.status !== 'running' || !timer.startedAt) return timer;
-        return {
-          ...timer,
-          status: 'paused',
-          accumulatedMs: timer.accumulatedMs + (now() - timer.startedAt),
-          startedAt: null,
-        };
-      }
-
-      function setDocumentTitle() {
-        if (state.activeTimer) {
-          document.title = '● Timer Running — Paralegal Work Log';
-        } else if (state.pausedTimers.length > 0) {
-          document.title = '⏸ Paused Timer — Paralegal Work Log';
-        } else {
-          document.title = 'Paralegal Work Log — Preview';
-        }
-      }
-
-      function startTicking() {
-        stopTicking();
-        state.intervalId = window.setInterval(() => {
-          if (state.activeTimer && timerReadout) {
-            timerReadout.textContent = formatElapsed(getElapsedMs(state.activeTimer));
-          }
-        }, 1000);
-      }
-
-      function stopTicking() {
-        if (state.intervalId) {
-          clearInterval(state.intervalId);
-          state.intervalId = null;
-        }
-      }
-
-      function renderPausedTimers() {
-        pausedList.innerHTML = '';
-
-        if (state.pausedTimers.length === 0) {
-          pausedTimersCard.classList.add('hidden');
-          return;
-        }
-
-        pausedTimersCard.classList.remove('hidden');
-
-        state.pausedTimers.forEach(timer => {
-          const meta = serviceMeta(timer.serviceType);
-          const item = document.createElement('div');
-          item.className = 'list-item';
-          item.innerHTML = `
-            <div>
-              <div class="strong">${timer.taskType}</div>
-              <div class="small muted">${timer.description}</div>
-              <div class="tiny muted" style="margin-top:.25rem;">${timer.matter} · ${meta.label} · ${formatElapsed(timer.accumulatedMs)}</div>
-            </div>
-            <div class="row">
-              <button class="button secondary" type="button" data-action="resume">Resume</button>
-              <button class="button ghost" type="button" data-action="remove">Remove</button>
-            </div>
-          `;
-
-          item.querySelector('[data-action="resume"]').addEventListener('click', () => {
-            if (state.activeTimer) {
-              state.pausedTimers.unshift(normalizeRunningTimer(state.activeTimer));
-            }
-            state.activeTimer = {
-              ...timer,
-              status: 'running',
-              startedAt: now(),
-            };
-            state.pausedTimers = state.pausedTimers.filter(t => t.id !== timer.id);
-            render();
-          });
-
-          item.querySelector('[data-action="remove"]').addEventListener('click', () => {
-            state.pausedTimers = state.pausedTimers.filter(t => t.id !== timer.id);
-            render();
-          });
-
-          pausedList.appendChild(item);
-        });
-      }
-
-      function renderTimer() {
-        if (!state.activeTimer && state.pausedTimers.length === 0) {
-          timerCardEmpty.classList.remove('hidden');
-          timerCardActive.classList.add('hidden');
-          pausedTimersCard.classList.add('hidden');
-          runningBadge.classList.add('hidden');
-          pausedBadge.classList.add('hidden');
-          stopTicking();
-          setDocumentTitle();
-          return;
-        }
-
-        if (state.activeTimer) {
-          const meta = serviceMeta(state.activeTimer.serviceType);
-          timerCardEmpty.classList.add('hidden');
-          timerCardActive.classList.remove('hidden');
-          timerMatter.textContent = state.activeTimer.matter || 'No matter selected yet';
-          timerTask.textContent = state.activeTimer.taskType;
-          timerDescription.textContent = state.activeTimer.description;
-          timerServiceBadge.textContent = meta.label;
-          timerServiceBadge.className = `badge ${meta.variant}`;
-          timerReadout.textContent = formatElapsed(getElapsedMs(state.activeTimer));
-          runningBadge.classList.remove('hidden');
-        } else {
-          timerCardEmpty.classList.remove('hidden');
-          timerCardActive.classList.add('hidden');
-          runningBadge.classList.add('hidden');
-          stopTicking();
-        }
-
-        if (state.pausedTimers.length > 0) {
-          pausedBadge.textContent = `${state.pausedTimers.length} paused`;
-          pausedBadge.classList.remove('hidden');
-        } else {
-          pausedBadge.classList.add('hidden');
-        }
-
-        renderPausedTimers();
-        if (state.activeTimer) startTicking();
-        setDocumentTitle();
-      }
-
-      function render() {
-        renderTimer();
-      }
-
       function startTimer(data) {
         if (state.activeTimer) {
           state.pausedTimers.unshift(normalizeRunningTimer(state.activeTimer));
@@ -1265,12 +1285,451 @@
         state.activeTimer = createTimer(data);
         render();
       }
+      function pauseActiveTimer() {
+        if (!state.activeTimer) return;
+        state.pausedTimers.unshift(normalizeRunningTimer(state.activeTimer));
+        state.activeTimer = null;
+        render();
+      }
+      function discardActiveTimer() {
+        state.activeTimer = null;
+        render();
+      }
+      function saveActiveTimer() {
+        if (!state.activeTimer) return;
+        const timer = normalizeRunningTimer(state.activeTimer);
+        const ms = timer.accumulatedMs;
+        const minutes = Math.ceil(ms / 60000);
+        const rate = SERVICE_RATES[timer.serviceType];
+        const billing = calculateBilling(minutes, rate);
+        // Calculate start and stop timestamps for the timer entry.  The timer object
+        // stores only the accumulated milliseconds, so we approximate the start as
+        // now minus the total duration.  This mirrors the logic used for manual
+        // entries and provides consistent start/stop values for export.
+        const stopMs = Date.now();
+        const startMs = stopMs - ms;
+        const entry = {
+          id: Math.random().toString(36).slice(2),
+          date: Date.now(),
+          matterId: timer.matterId,
+          matterName: timer.matterName,
+          matterStatus: timer.matterStatus,
+          taskType: timer.taskType,
+          description: timer.description,
+          serviceType: timer.serviceType,
+          actualMinutes: minutes,
+          billableTenths: billing.billableTenths,
+          billableHours: billing.billableHours,
+          hourlyRate: rate,
+          fee: billing.fee,
+          followUpStatus: 'none',
+          entrySource: 'timer',
+          startTime: startMs,
+          stopTime: stopMs
+        };
+        const entries = loadEntries();
+        entries.push(entry);
+        saveEntries(entries);
+        state.activeTimer = null;
+        render();
+      }
 
+      // Edit an existing entry in place.  Prompts the user for updated values and
+      // recalculates billing based on the new minutes and service type.  If the
+      // matter name provided does not exist, the entry retains its existing
+      // matter.  Start and stop times are updated based on the new duration.
+      function editEntry(entryId) {
+        const entries = loadEntries();
+        const idx = entries.findIndex(e => e.id === entryId);
+        if (idx === -1) return;
+        const entry = entries[idx];
+        // Prompt user for updates
+        const matterName = prompt('Matter name:', entry.matterName);
+        let matterId = entry.matterId;
+        let matterStatus = entry.matterStatus;
+        if (matterName && matterName !== entry.matterName) {
+          const matter = loadMatters().find(m => m.name === matterName);
+          if (matter) {
+            matterId = matter.id;
+            matterStatus = matter.status;
+          } else {
+            alert('Matter not found. Keeping existing matter.');
+          }
+        }
+        const taskType = prompt('Task type:', entry.taskType) || entry.taskType;
+        const minutesStr = prompt('Actual minutes:', entry.actualMinutes);
+        const minutesNum = parseInt(minutesStr, 10);
+        const minutes = minutesNum > 0 ? minutesNum : entry.actualMinutes;
+        const serviceType = prompt('Service type (paralegal, admin, rush):', entry.serviceType) || entry.serviceType;
+        const description = prompt('Description:', entry.description) || entry.description;
+        const followUpStatus = prompt('Follow‑up status (none, client, attorney, call):', entry.followUpStatus) || entry.followUpStatus;
+        // Recalculate billing
+        const rate = SERVICE_RATES[serviceType] || entry.hourlyRate;
+        const billing = calculateBilling(minutes, rate);
+        const stopMs = Date.now();
+        const startMs = stopMs - minutes * 60000;
+        entries[idx] = {
+          ...entry,
+          date: stopMs,
+          matterId: matterId,
+          matterName: matterName || entry.matterName,
+          matterStatus: matterStatus,
+          taskType: taskType,
+          description: description,
+          serviceType: serviceType,
+          actualMinutes: minutes,
+          billableTenths: billing.billableTenths,
+          billableHours: billing.billableHours,
+          hourlyRate: rate,
+          fee: billing.fee,
+          followUpStatus: followUpStatus,
+          startTime: startMs,
+          stopTime: stopMs
+        };
+        saveEntries(entries);
+        render();
+      }
+
+      // Duplicate an entry.  Creates a new entry with a new ID and current
+      // timestamp while preserving the original details.  The duration and
+      // billing remain the same, but start/stop times are updated relative to
+      // now.
+      function duplicateEntry(entryId) {
+        const entries = loadEntries();
+        const entry = entries.find(e => e.id === entryId);
+        if (!entry) return;
+        const stopMs = Date.now();
+        const minutes = entry.actualMinutes;
+        const startMs = stopMs - minutes * 60000;
+        const newEntry = {
+          ...entry,
+          id: Math.random().toString(36).slice(2),
+          date: stopMs,
+          startTime: startMs,
+          stopTime: stopMs
+        };
+        entries.push(newEntry);
+        saveEntries(entries);
+        render();
+      }
+
+      // Delete an entry permanently
+      function deleteEntry(entryId) {
+        let entries = loadEntries();
+        entries = entries.filter(e => e.id !== entryId);
+        saveEntries(entries);
+        render();
+      }
+      // Populate timer form defaults from Quick Add selection
+      quickStartTimer.addEventListener('click', () => {
+        const matterId = quickMatter.value;
+        const matterObj = loadMatters().find(m => m.id === matterId);
+        if (!matterObj) {
+          alert('Please select or create a matter first.');
+          return;
+        }
+        const data = {
+          matterId: matterObj.id,
+          matterName: matterObj.name,
+          matterStatus: matterObj.status,
+          taskType: quickTask.value,
+          description: quickDescription.value.trim() || 'Timer entry',
+          serviceType: quickService.value
+        };
+        startTimer(data);
+      });
+      startTimerBtn.addEventListener('click', () => {
+        // Basic timer without matter: we ask user to choose first matter later
+        if (loadMatters().length === 0) {
+          alert('Please select or create a matter first.');
+          return;
+        }
+        const matterObj = loadMatters()[0];
+        const data = {
+          matterId: matterObj.id,
+          matterName: matterObj.name,
+          matterStatus: matterObj.status,
+          taskType: 'Client Communication',
+          description: 'Timer entry',
+          serviceType: 'paralegal'
+        };
+        startTimer(data);
+      });
+      pauseTimerBtn.addEventListener('click', pauseActiveTimer);
+      discardTimerBtn.addEventListener('click', discardActiveTimer);
+      saveTimerBtn.addEventListener('click', saveActiveTimer);
+      // Handle resume/remove on paused timers list
+      function renderPausedTimers() {
+        pausedList.innerHTML = '';
+        if (state.pausedTimers.length === 0) {
+          pausedTimersCard.classList.add('hidden');
+          return;
+        }
+        pausedTimersCard.classList.remove('hidden');
+        state.pausedTimers.forEach(timer => {
+          const meta = timer;
+          const item = document.createElement('div');
+          item.className = 'list-item';
+          const matterLabel = timer.matterName || 'No matter';
+          const minutes = Math.ceil(timer.accumulatedMs / 60000);
+          const rate = SERVICE_RATES[timer.serviceType];
+          const billing = calculateBilling(minutes, rate);
+          item.innerHTML = `
+            <div>
+              <div class="strong">${timer.taskType}</div>
+              <div class="small muted">${timer.description}</div>
+              <div class="tiny muted" style="margin-top:.25rem;">${matterLabel} · ${timer.serviceType} · ${formatDuration(timer.accumulatedMs)}</div>
+            </div>
+            <div class="row">
+              <button class="button secondary" type="button" data-action="resume">Resume</button>
+              <button class="button ghost" type="button" data-action="remove">Remove</button>
+            </div>
+          `;
+          item.querySelector('[data-action="resume"]').addEventListener('click', () => {
+            if (state.activeTimer) {
+              state.pausedTimers.unshift(normalizeRunningTimer(state.activeTimer));
+            }
+            state.activeTimer = {
+              ...timer,
+              status: 'running',
+              startedAt: Date.now(),
+            };
+            state.pausedTimers = state.pausedTimers.filter(t => t.id !== timer.id);
+            render();
+          });
+          item.querySelector('[data-action="remove"]').addEventListener('click', () => {
+            state.pausedTimers = state.pausedTimers.filter(t => t.id !== timer.id);
+            render();
+          });
+          pausedList.appendChild(item);
+        });
+      }
+      // Render timeline for today
+      function renderTodayTimeline() {
+        const entries = loadEntries().filter(e => {
+          const entryDate = new Date(e.date);
+          const today = new Date();
+          return entryDate.toDateString() === today.toDateString();
+        });
+        todayTimeline.innerHTML = '';
+        if (entries.length === 0) {
+          timelineCard.classList.add('empty-card');
+          const empty = document.createElement('p');
+          empty.className = 'small muted';
+          empty.textContent = 'No entries for today yet.';
+          todayTimeline.appendChild(empty);
+          return;
+        }
+        timelineCard.classList.remove('empty-card');
+        entries.sort((a, b) => b.date - a.date);
+        entries.forEach(entry => {
+          const color = loadMatters().find(m => m.id === entry.matterId)?.color || '#8C6AA6';
+          const item = document.createElement('article');
+          item.className = 'timeline-item';
+          item.innerHTML = `
+            <div class="timeline-color" style="background:${color}"></div>
+            <div class="timeline-body">
+              <div class="row spaced">
+                <div class="strong">${entry.matterName} — ${entry.taskType}</div>
+                <span class="badge service-${entry.serviceType}">${entry.serviceType.charAt(0).toUpperCase() + entry.serviceType.slice(1)}</span>
+              </div>
+              <div class="muted small">${entry.description}</div>
+              <div class="row small muted">
+                <span>${formatTime(entry.date)}</span>
+                <span>•</span>
+                <span>${entry.actualMinutes} min</span>
+                <span>•</span>
+                <span>${entry.billableHours.toFixed(1)} hr</span>
+                <span>•</span>
+                <span>$${entry.fee.toFixed(2)}</span>
+              </div>
+              <div class="row" style="margin-top:0.5rem; gap:0.5rem;">
+                <button class="button ghost tiny" type="button" data-action="edit" data-id="${entry.id}">Edit</button>
+                <button class="button ghost tiny" type="button" data-action="duplicate" data-id="${entry.id}">Duplicate</button>
+                <!-- Provide an inline edit matter option for quickly editing the matter associated with this entry -->
+                <button class="button ghost tiny" type="button" data-action="edit-matter" data-id="${entry.matterId}">Edit Matter</button>
+                <button class="button ghost danger tiny" type="button" data-action="delete" data-id="${entry.id}">Delete</button>
+              </div>
+            </div>
+          `;
+          // Attach action handlers for edit, duplicate, edit matter and delete.
+          item.querySelectorAll('button[data-action]').forEach(btn => {
+            const action = btn.getAttribute('data-action');
+            const id = btn.getAttribute('data-id');
+            if (action === 'edit') {
+              btn.addEventListener('click', () => editEntry(id));
+            } else if (action === 'duplicate') {
+              btn.addEventListener('click', () => duplicateEntry(id));
+            } else if (action === 'edit-matter') {
+              btn.addEventListener('click', () => editMatter(id));
+            } else if (action === 'delete') {
+              btn.addEventListener('click', () => deleteEntry(id));
+            }
+          });
+          todayTimeline.appendChild(item);
+        });
+      }
+      // Render totals for today
+      function renderTodayTotals() {
+        const entries = loadEntries().filter(e => {
+          const entryDate = new Date(e.date);
+          const today = new Date();
+          return entryDate.toDateString() === today.toDateString();
+        });
+        const serviceTotals = {
+          paralegal: { minutes: 0, billableHours: 0, fee: 0, count: 0 },
+          admin: { minutes: 0, billableHours: 0, fee: 0, count: 0 },
+          rush: { minutes: 0, billableHours: 0, fee: 0, count: 0 }
+        };
+        entries.forEach(e => {
+          const t = serviceTotals[e.serviceType];
+          if (!t) return;
+          t.minutes += e.actualMinutes;
+          t.billableHours += e.billableHours;
+          t.fee += e.fee;
+          t.count += 1;
+        });
+        totalsGrid.innerHTML = '';
+        ['paralegal','rush','admin'].forEach(key => {
+          const t = serviceTotals[key];
+          const box = document.createElement('div');
+          box.className = 'total-box';
+          box.innerHTML = `
+            <p class="total-label">${key.charAt(0).toUpperCase() + key.slice(1)}</p>
+            <p class="total-value tabular">$${t.fee.toFixed(2)}</p>
+            <p class="small muted">${t.minutes} min • ${t.billableHours.toFixed(1)} hrs • ${t.count} entr${t.count === 1 ? 'y' : 'ies'}</p>
+          `;
+          totalsGrid.appendChild(box);
+        });
+      }
+      // Render invoice summary
+      function renderInvoice() {
+        const entries = loadEntries().slice().sort((a,b) => a.date - b.date);
+        if (entries.length === 0) {
+          invoiceSummary.innerHTML = '<p class="small muted">No entries to invoice yet.</p>';
+          return;
+        }
+        // Group by matter
+        const groups = {};
+        entries.forEach(e => {
+          if (!groups[e.matterId]) groups[e.matterId] = { matterName: e.matterName, entries: [], totalFee: 0, totalHours: 0, totalMinutes: 0 };
+          groups[e.matterId].entries.push(e);
+          groups[e.matterId].totalFee += e.fee;
+          groups[e.matterId].totalHours += e.billableHours;
+          groups[e.matterId].totalMinutes += e.actualMinutes;
+        });
+        // Build table
+        let html = '';
+        Object.keys(groups).forEach(mId => {
+          const g = groups[mId];
+          html += `<div style="margin-bottom:1.5rem;">
+            <h4 style="margin:0 0 .5rem 0;">${g.matterName}</h4>
+            <table style="width:100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background:var(--surface-muted);">
+                  <th style="text-align:left; padding:0.5rem; font-size:0.8rem;">Date</th>
+                  <th style="text-align:left; padding:0.5rem; font-size:0.8rem;">Task</th>
+                  <th style="text-align:left; padding:0.5rem; font-size:0.8rem;">Description</th>
+                  <th style="text-align:right; padding:0.5rem; font-size:0.8rem;">Min</th>
+                  <th style="text-align:right; padding:0.5rem; font-size:0.8rem;">Bill Hrs</th>
+                  <th style="text-align:right; padding:0.5rem; font-size:0.8rem;">Rate</th>
+                  <th style="text-align:right; padding:0.5rem; font-size:0.8rem;">Fee</th>
+                </tr>
+              </thead>
+              <tbody>`;
+          g.entries.forEach(e => {
+            html += `
+                <tr style="border-bottom:1px solid var(--border);">
+                  <td style="padding:0.5rem 0.5rem; font-size:0.8rem;">${formatDate(e.date)}</td>
+                  <td style="padding:0.5rem 0.5rem; font-size:0.8rem;">${e.taskType}</td>
+                  <td style="padding:0.5rem 0.5rem; font-size:0.8rem;">${e.description}</td>
+                  <td style="padding:0.5rem 0.5rem; font-size:0.8rem; text-align:right;">${e.actualMinutes}</td>
+                  <td style="padding:0.5rem 0.5rem; font-size:0.8rem; text-align:right;">${e.billableHours.toFixed(1)}</td>
+                  <td style="padding:0.5rem 0.5rem; font-size:0.8rem; text-align:right;">$${e.hourlyRate.toFixed(2)}</td>
+                  <td style="padding:0.5rem 0.5rem; font-size:0.8rem; text-align:right;">$${e.fee.toFixed(2)}</td>
+                </tr>`;
+          });
+          // matter totals
+          html += `<tr style="font-weight:bold; background:var(--surface-muted);">
+              <td colspan="3" style="padding:0.5rem; text-align:left;">Total</td>
+              <td style="padding:0.5rem; text-align:right;">${g.totalMinutes}</td>
+              <td style="padding:0.5rem; text-align-right;">${g.totalHours.toFixed(1)}</td>
+              <td style="padding:0.5rem; text-align-right;">—</td>
+              <td style="padding:0.5rem; text-align-right;">$${g.totalFee.toFixed(2)}</td>
+            </tr>`;
+          html += '</tbody></table></div>';
+        });
+        invoiceSummary.innerHTML = html;
+      }
+      // Export CSV
+      function exportCSV() {
+        const entries = loadEntries();
+        if (entries.length === 0) {
+          alert('No entries to export.');
+          return;
+        }
+        const headers = [
+          'Date','StartTime','StopTime','Matter','Status','Task','Description','Service','ActualMinutes','BillableTenths','BillableHours','HourlyRate','Fee','FollowUp','Source'
+        ];
+        const rows = entries.map(e => [
+          // Date in its own column
+          formatDate(e.date),
+          // StartTime and StopTime should only include the time of day
+          formatTime(e.startTime),
+          formatTime(e.stopTime),
+          e.matterName,
+          e.matterStatus,
+          e.taskType,
+          e.description.replace(/\n/g, ' '),
+          e.serviceType,
+          e.actualMinutes,
+          e.billableTenths,
+          e.billableHours.toFixed(1),
+          e.hourlyRate.toFixed(2),
+          e.fee.toFixed(2),
+          e.followUpStatus,
+          e.entrySource
+        ]);
+        let csv = headers.join(',') + '\n';
+        rows.forEach(r => {
+          csv += r.map(val => {
+            const v = String(val);
+            return v.includes(',') || v.includes('"') || v.includes('\n') ? '"' + v.replace(/"/g, '""') + '"' : v;
+          }).join(',') + '\n';
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'paralegal-invoice.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+      exportCsvBtn.addEventListener('click', exportCSV);
+      // Preset dropdown and save button events.  Saving a preset prompts the user
+      // for a name and persists the current quick add configuration.  Changing
+      // the preset selection fills in the quick add fields with the stored
+      // values.
+      if (createPresetBtn) {
+        createPresetBtn.addEventListener('click', savePreset);
+      }
+      if (closeMatterDialogBtn) {
+        closeMatterDialogBtn.addEventListener('click', closeMatterDialog);
+      }
+      if (cancelMatterBtn) {
+        cancelMatterBtn.addEventListener('click', closeMatterDialog);
+      }
+      if (saveMatterBtn) {
+        saveMatterBtn.addEventListener('click', saveMatter);
+      }
+      // Preset selection is handled via a separate list; no dropdown to monitor
+      // Theme toggle events
       themeToggle.addEventListener('click', () => {
         state.theme = state.theme === 'dark' ? 'light' : 'dark';
         applyTheme();
       });
-
       if (themeToggleSecondary) {
         themeToggleSecondary.addEventListener('click', () => {
           state.theme = state.theme === 'dark' ? 'light' : 'dark';
@@ -1278,49 +1737,99 @@
         });
       }
 
-      quickStartTimer.addEventListener('click', () => {
-        startTimer({
-          matter: document.getElementById('matter').value,
-          taskType: document.getElementById('task').value,
-          description: document.getElementById('description').value || 'Quick timer draft',
-          serviceType: ['Admin', 'RUSH'].includes(document.getElementById('serviceType').value.split(' — ')[0])
-            ? (document.getElementById('serviceType').value.startsWith('Admin') ? 'admin' : 'rush')
-            : 'paralegal',
-        });
-      });
-
-      startTimerBtn.addEventListener('click', () => {
-        startTimer({
-          taskType: 'Client Communication',
-          description: 'Quick timer draft',
-          serviceType: 'paralegal',
-        });
-      });
-
-      startAdminBtn.addEventListener('click', () => {
-        startTimer({
-          taskType: 'Admin Work',
-          description: 'Admin follow-up',
-          serviceType: 'admin',
-        });
-      });
-
-      pauseTimerBtn.addEventListener('click', () => {
-        if (!state.activeTimer) return;
-        state.pausedTimers.unshift(normalizeRunningTimer(state.activeTimer));
-        state.activeTimer = null;
-        render();
-      });
-
-      discardTimerBtn.addEventListener('click', () => {
-        state.activeTimer = null;
-        render();
-      });
-
-      buildNav(desktopNav, false);
-      buildNav(mobileNav, true);
-      applyTheme();
-      setPage(state.currentPage);
+      // Matter dialog button events removed.  The modal editing UI is no longer used.
+      // Render timer bar in topbar
+      function updateTopbarTimer() {
+        if (state.activeTimer) {
+          const timer = state.activeTimer;
+          const elapsedMs = getElapsedMs(timer);
+          const minutes = Math.ceil(elapsedMs / 60000);
+          const rate = SERVICE_RATES[timer.serviceType];
+          const billing = calculateBilling(minutes, rate);
+          topbarTitle.textContent = `${formatDuration(elapsedMs)} • ${timer.matterName} • ${timer.taskType} • $${billing.fee.toFixed(2)}`;
+        } else {
+          topbarTitle.textContent = 'Paralegal Work Log';
+        }
+      }
+      // Tick every second
+      function startTicking() {
+        stopTicking();
+        state.intervalId = setInterval(() => {
+          if (state.activeTimer) {
+            const ms = getElapsedMs(state.activeTimer);
+            timerReadout.textContent = formatDuration(ms);
+            timerActualElem.textContent = formatDuration(ms) + ' actual';
+            const minutes = Math.ceil(ms / 60000);
+            const billing = calculateBilling(minutes, SERVICE_RATES[state.activeTimer.serviceType]);
+            timerBilledElem.textContent = billing.billableHours.toFixed(1) + ' billed';
+            updateTopbarTimer();
+          }
+        }, 1000);
+      }
+      function stopTicking() {
+        if (state.intervalId) {
+          clearInterval(state.intervalId);
+          state.intervalId = null;
+        }
+      }
+      // Main render function
+      function render() {
+        // Theme
+        applyTheme();
+        // Navigation
+        buildNav(desktopNav, false);
+        buildNav(mobileNav, true);
+        setPage(state.currentPage);
+        // Matters
+        renderMatters();
+        // Timeline and totals
+        renderTodayTimeline();
+        renderTodayTotals();
+        // Invoice
+        renderInvoice();
+        // Timer display
+        if (!state.activeTimer && state.pausedTimers.length === 0) {
+          timerCardEmpty.classList.remove('hidden');
+          timerCardActive.classList.add('hidden');
+          pausedTimersCard.classList.add('hidden');
+          runningBadge.classList.add('hidden');
+          pausedBadge.classList.add('hidden');
+          stopTicking();
+          updateTopbarTimer();
+        } else {
+          if (state.activeTimer) {
+            const timer = state.activeTimer;
+            timerCardEmpty.classList.add('hidden');
+            timerCardActive.classList.remove('hidden');
+            const matterName = timer.matterName || 'No matter';
+            timerMatterElem.textContent = matterName;
+            timerTaskElem.textContent = timer.taskType;
+            timerDescriptionElem.textContent = timer.description;
+            const label = timer.serviceType.charAt(0).toUpperCase() + timer.serviceType.slice(1);
+            timerServiceBadge.textContent = label;
+            timerServiceBadge.className = 'badge service-' + timer.serviceType;
+            runningBadge.classList.remove('hidden');
+          } else {
+            timerCardEmpty.classList.remove('hidden');
+            timerCardActive.classList.add('hidden');
+            runningBadge.classList.add('hidden');
+          }
+          if (state.pausedTimers.length > 0) {
+            pausedBadge.textContent = state.pausedTimers.length + ' paused';
+            pausedBadge.classList.remove('hidden');
+          } else {
+            pausedBadge.classList.add('hidden');
+          }
+          renderPausedTimers();
+          if (state.activeTimer) startTicking(); else stopTicking();
+          updateTopbarTimer();
+        }
+      }
+      // Initialize
+      // Make sure invoice preparation matter exists before first render
+      ensureInvoiceMatter();
+      // Populate preset selector before first render so Quick Add has available presets
+      renderPresets();
       render();
     })();
   </script>
